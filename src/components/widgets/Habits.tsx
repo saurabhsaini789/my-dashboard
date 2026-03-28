@@ -42,6 +42,11 @@ export function Habits() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const habitsRef = useRef(habits);
+
+  useEffect(() => {
+    habitsRef.current = habits;
+  }, [habits]);
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
@@ -103,6 +108,32 @@ export function Habits() {
       } catch (e) {}
     }
     setIsLoaded(true);
+
+    const handleLocalUpdate = (e: any) => {
+      if (e.detail && e.detail.key === 'os_habits') {
+        const val = localStorage.getItem('os_habits');
+        if (val && val !== JSON.stringify(habitsRef.current)) {
+          try {
+            setHabits(JSON.parse(val));
+          } catch (e) {}
+        }
+      }
+    };
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'os_habits' && e.newValue && e.newValue !== JSON.stringify(habitsRef.current)) {
+        try {
+          setHabits(JSON.parse(e.newValue));
+        } catch (e) {}
+      }
+    };
+
+    window.addEventListener('local-storage-change', handleLocalUpdate);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('local-storage-change', handleLocalUpdate);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   useEffect(() => {

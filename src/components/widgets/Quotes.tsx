@@ -21,6 +21,11 @@ export function Quotes() {
   const [isAdding, setIsAdding] = useState(false);
   const [newQuoteText, setNewQuoteText] = useState("");
   const [newQuoteAuthor, setNewQuoteAuthor] = useState("");
+  const quotesRef = React.useRef(quotes);
+
+  useEffect(() => {
+    quotesRef.current = quotes;
+  }, [quotes]);
 
   useEffect(() => {
     const saved = localStorage.getItem("dashboard_quotes");
@@ -43,7 +48,7 @@ export function Quotes() {
     const handleLocalUpdate = (e: any) => {
       if (e.detail && e.detail.key === 'dashboard_quotes') {
         const val = localStorage.getItem('dashboard_quotes');
-        if (val) {
+        if (val && val !== JSON.stringify(quotesRef.current)) {
           try {
             setQuotes(JSON.parse(val));
           } catch (e) {}
@@ -52,7 +57,7 @@ export function Quotes() {
     };
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'dashboard_quotes' && e.newValue) {
+      if (e.key === 'dashboard_quotes' && e.newValue && e.newValue !== JSON.stringify(quotesRef.current)) {
         try {
           setQuotes(JSON.parse(e.newValue));
         } catch (e) {}

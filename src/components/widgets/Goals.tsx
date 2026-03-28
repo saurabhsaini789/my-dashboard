@@ -15,6 +15,11 @@ export function Goals() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const projectsRef = React.useRef(projects);
+
+  React.useEffect(() => {
+    projectsRef.current = projects;
+  }, [projects]);
 
   // Form states for creating a new project
   const [creatingForBucket, setCreatingForBucket] = useState<string | null>(null);
@@ -36,6 +41,32 @@ export function Goals() {
       }
     }
     setIsLoaded(true);
+
+    const handleLocalUpdate = (e: any) => {
+      if (e.detail && e.detail.key === 'goals_projects') {
+        const val = localStorage.getItem('goals_projects');
+        if (val && val !== JSON.stringify(projectsRef.current)) {
+          try {
+            setProjects(JSON.parse(val));
+          } catch (e) {}
+        }
+      }
+    };
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'goals_projects' && e.newValue && e.newValue !== JSON.stringify(projectsRef.current)) {
+        try {
+          setProjects(JSON.parse(e.newValue));
+        } catch (e) {}
+      }
+    };
+
+    window.addEventListener('local-storage-change', handleLocalUpdate);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('local-storage-change', handleLocalUpdate);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   useEffect(() => {
