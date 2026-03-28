@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 
 type TimeFilter = '1 Day' | '7 Days' | '1 Month' | '6 Months' | '1 Year';
 
@@ -73,7 +74,7 @@ export function HabitsOverview() {
             <option value="6 Months">6 Months</option>
             <option value="1 Year">1 Year</option>
           </select>
-          <a href="/habits" className="px-4 py-2 text-sm font-semibold rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20 transition-colors border border-rose-200 dark:border-rose-900/50">View All</a>
+          <Link href="/habits" className="px-4 py-2 text-sm font-semibold rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20 transition-colors border border-rose-200 dark:border-rose-900/50">View All</Link>
         </div>
       </div>
 
