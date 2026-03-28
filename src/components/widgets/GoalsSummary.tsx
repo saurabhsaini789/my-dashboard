@@ -12,36 +12,36 @@ export function GoalsSummary() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('goals_projects');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        
-        // At the moment goals_projects don't have explicit "completed at" timestamps.
-        // For a true time filter, we would filter by a `completedAt` field.
-        // Assuming user wants this as a demo or we fake it / show all completed.
-        // Since we don't have completion timestamps, we will just count the totals 
-        // to show the layout working, or apply a mock filter.
-        
-        // Calculate totals (mocking time filter by just showing all for now until backend supports timestamps)
-        let pCount = 0;
-        let tCount = 0;
+    const loadData = () => {
+      const saved = localStorage.getItem('goals_projects');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          let pCount = 0;
+          let tCount = 0;
+          parsed.forEach((p: any) => {
+            if (p.isCompleted) pCount++;
+            if (p.tasks && Array.isArray(p.tasks)) {
+              p.tasks.forEach((t: any) => {
+                if (t.isCompleted) tCount++;
+              });
+            }
+          });
+          setProjectsCount(pCount);
+          setTasksCount(tCount);
+        } catch (e) { }
+      }
+    };
 
-        parsed.forEach((p: any) => {
-          if (p.isCompleted) pCount++;
-          if (p.tasks && Array.isArray(p.tasks)) {
-            p.tasks.forEach((t: any) => {
-              if (t.isCompleted) tCount++;
-            });
-          }
-        });
-
-        setProjectsCount(pCount);
-        setTasksCount(tCount);
-      } catch (e) { }
-    }
+    loadData();
     setIsLoaded(true);
-  }, [filter]); // Re-run if filter changes (mock)
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'goals_projects') loadData();
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, [filter]);
 
   if (!isLoaded) return <div className="animate-pulse h-40 w-full rounded-2xl bg-zinc-100 dark:bg-zinc-800/50"></div>;
 
@@ -63,7 +63,7 @@ export function GoalsSummary() {
             <option value="6 Months">6 Months</option>
             <option value="1 Year">1 Year</option>
           </select>
-          <Link href="/goals" className="px-4 py-2 text-sm font-semibold rounded-xl bg-teal-50 text-teal-700 hover:bg-teal-100 dark:bg-teal-500/10 dark:text-teal-400 dark:hover:bg-teal-500/20 transition-colors border border-teal-200 dark:border-teal-900/50">View All</Link>
+          <Link href="/my-dashboard/goals" className="px-4 py-2 text-sm font-semibold rounded-xl bg-teal-50 text-teal-700 hover:bg-teal-100 dark:bg-teal-500/10 dark:text-teal-400 dark:hover:bg-teal-500/20 transition-colors border border-teal-200 dark:border-teal-900/50">View All</Link>
         </div>
       </div>
 

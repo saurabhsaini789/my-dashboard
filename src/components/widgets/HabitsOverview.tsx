@@ -12,41 +12,43 @@ export function HabitsOverview() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('os_habits');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        
-        let cCount = 0;
-        let mCount = 0;
+    const loadData = () => {
+      const saved = localStorage.getItem('os_habits');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          let cCount = 0;
+          let mCount = 0;
+          if (Array.isArray(parsed)) {
+            parsed.forEach((h: any) => {
+              if (h.records) {
+                Object.keys(h.records).forEach((monthKey) => {
+                  const days = h.records[monthKey];
+                  if (Array.isArray(days)) {
+                    days.forEach((dayStatus: string) => {
+                      if (dayStatus === 'done') cCount++;
+                      if (dayStatus === 'missed') mCount++;
+                    });
+                  }
+                });
+              }
+            });
+          }
+          setCompleted(cCount);
+          setMissed(mCount);
+        } catch (e) { }
+      }
+    };
 
-        // Since we don't have true timestamp data for individual habit ticks (just month arrays),
-        // we will process the current month and previous months based on the filter.
-        // For a hacky, layout-focused demo, we will just count ALL records we find 
-        // that match 'done' or 'missed' if filter > 1 month.
-
-        if (Array.isArray(parsed)) {
-          parsed.forEach((h: any) => {
-            if (h.records) {
-              Object.keys(h.records).forEach((monthKey) => {
-                const days = h.records[monthKey];
-                if (Array.isArray(days)) {
-                  days.forEach((dayStatus: string) => {
-                    if (dayStatus === 'done') cCount++;
-                    if (dayStatus === 'missed') mCount++;
-                  });
-                }
-              });
-            }
-          });
-        }
-
-        setCompleted(cCount);
-        setMissed(mCount);
-      } catch (e) { }
-    }
+    loadData();
     setIsLoaded(true);
-  }, [filter]); // Re-run if filter changes mock
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'os_habits') loadData();
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, [filter]);
 
   if (!isLoaded) return <div className="animate-pulse h-40 w-full rounded-2xl bg-zinc-100 dark:bg-zinc-800/50"></div>;
 
@@ -74,7 +76,7 @@ export function HabitsOverview() {
             <option value="6 Months">6 Months</option>
             <option value="1 Year">1 Year</option>
           </select>
-          <Link href="/habits" className="px-4 py-2 text-sm font-semibold rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20 transition-colors border border-rose-200 dark:border-rose-900/50">View All</Link>
+          <Link href="/my-dashboard/habits" className="px-4 py-2 text-sm font-semibold rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20 transition-colors border border-rose-200 dark:border-rose-900/50">View All</Link>
         </div>
       </div>
 

@@ -61,6 +61,18 @@ export function DataLoader() {
       // Trigger event to update home widgets immediately
       window.dispatchEvent(new StorageEvent('storage', { key: 'goals_projects' }));
     }
+
+    // --- Habit Seeding ---
+    if (typeof window !== 'undefined' && !localStorage.getItem('os_habits')) {
+      const SEED_HABITS = [
+        { id: crypto.randomUUID(), name: 'Morning Meditation', period: 'daily', records: {} },
+        { id: crypto.randomUUID(), name: 'Exercise', period: 'daily', records: {} },
+        { id: crypto.randomUUID(), name: 'Read 30 mins', period: 'daily', records: {} },
+        { id: crypto.randomUUID(), name: 'Deep Work', period: 'daily', records: {} }
+      ];
+      localStorage.setItem('os_habits', JSON.stringify(SEED_HABITS));
+      window.dispatchEvent(new StorageEvent('storage', { key: 'os_habits' }));
+    }
   }, []);
 
   return null;
