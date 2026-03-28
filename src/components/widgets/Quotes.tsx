@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { setSyncedItem } from "@/lib/storage";
 
 type Quote = {
   id: string;
@@ -38,11 +39,37 @@ export function Quotes() {
       setQuotes(defaultQuotes);
     }
     setIsLoaded(true);
+
+    const handleLocalUpdate = (e: any) => {
+      if (e.detail && e.detail.key === 'dashboard_quotes') {
+        const val = localStorage.getItem('dashboard_quotes');
+        if (val) {
+          try {
+            setQuotes(JSON.parse(val));
+          } catch (e) {}
+        }
+      }
+    };
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'dashboard_quotes' && e.newValue) {
+        try {
+          setQuotes(JSON.parse(e.newValue));
+        } catch (e) {}
+      }
+    };
+
+    window.addEventListener('local-storage-change', handleLocalUpdate);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('local-storage-change', handleLocalUpdate);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   useEffect(() => {
     if (isLoaded) {
-      localStorage.setItem("dashboard_quotes", JSON.stringify(quotes));
+      setSyncedItem("dashboard_quotes", JSON.stringify(quotes));
     }
   }, [quotes, isLoaded]);
 

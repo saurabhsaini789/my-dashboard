@@ -4,7 +4,7 @@ import { useEffect, useCallback, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
 // The local storage keys we want to sync
-const SYNC_KEYS = ['os_habits', 'goals_projects', 'goals_seeded_v2', 'goals_seeded_v3'];
+const SYNC_KEYS = ['os_habits', 'goals_projects', 'goals_seeded_v2', 'goals_seeded_v3', 'dashboard_quotes'];
 
 export function useSync() {
   const [isReady, setIsReady] = useState(false);
@@ -129,7 +129,12 @@ export function useSync() {
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log(`[Sync] Realtime subscription status: ${status}`);
+        if (status === 'CHANNEL_ERROR') {
+          console.error('[Sync] Realtime channel error. Check if table has Realtime enabled and RLS policies allow access.');
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
