@@ -1,9 +1,11 @@
+import React from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { NavigationBar } from "@/components/NavigationBar";
 import { DataLoader } from "@/components/DataLoader";
-
+import { SyncManager } from "@/components/SyncManager";
+import { AuthGuard } from "@/components/AuthGuard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,8 +22,6 @@ export const metadata: Metadata = {
   description: "Personal OS and Productivity Dashboard",
 };
 
-import { SyncManager } from "@/components/SyncManager";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,9 +32,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SyncManager />
-        <NavigationBar />
-        {children}
+        <AuthGuard>
+          <SyncManager />
+          <NavigationBar />
+          {children}
+        </AuthGuard>
       </body>
     </html>
   );

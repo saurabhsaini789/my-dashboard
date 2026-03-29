@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 export function NavigationBar() {
   const pathname = usePathname();
@@ -12,7 +13,7 @@ export function NavigationBar() {
         <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
           Personal OS
         </Link>
-        <nav className="flex gap-4">
+        <nav className="flex items-center gap-6">
           <Link 
             href="/" 
             className={`text-sm font-semibold transition-colors ${pathname === '/' ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
@@ -31,6 +32,12 @@ export function NavigationBar() {
           >
             Habits
           </Link>
+          <button 
+            onClick={() => supabase.auth.signOut()}
+            className="text-sm font-semibold text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors bg-rose-500/5 px-3 py-1.5 rounded-lg border border-rose-500/10"
+          >
+            Sign Out
+          </button>
         </nav>
       </header>
     </div>
