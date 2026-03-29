@@ -164,7 +164,11 @@ export function Goals() {
   const handleToggleProjectCompletion = (projectId: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     setProjects(projects.map(p =>
-      p.id === projectId ? { ...p, isCompleted: !p.isCompleted } : p
+      p.id === projectId ? { 
+        ...p, 
+        isCompleted: !p.isCompleted, 
+        completedAt: !p.isCompleted ? new Date().toISOString() : undefined 
+      } : p
     ));
   };
 

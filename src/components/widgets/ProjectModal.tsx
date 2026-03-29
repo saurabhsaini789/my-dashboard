@@ -6,6 +6,7 @@ export type Task = {
   id: string;
   title: string;
   isCompleted: boolean;
+  completedAt?: string; // ISO date string
 };
 
 export type Project = {
@@ -15,6 +16,7 @@ export type Project = {
   dueDate: string; // YYYY-MM-DD
   isImportant: boolean;
   isCompleted?: boolean;
+  completedAt?: string; // ISO date string
   tasks: Task[];
 };
 
@@ -72,7 +74,11 @@ export function ProjectModal({ project, onClose, onUpdateProject, onDeleteProjec
 
   const handleToggleTask = (taskId: string) => {
     const updatedTasks = project.tasks.map(t =>
-      t.id === taskId ? { ...t, isCompleted: !t.isCompleted } : t
+      t.id === taskId ? { 
+        ...t, 
+        isCompleted: !t.isCompleted, 
+        completedAt: !t.isCompleted ? new Date().toISOString() : undefined 
+      } : t
     );
     onUpdateProject({ ...project, tasks: updatedTasks });
   };
@@ -91,7 +97,11 @@ export function ProjectModal({ project, onClose, onUpdateProject, onDeleteProjec
   };
 
   const handleToggleProjectCompletion = () => {
-    onUpdateProject({ ...project, isCompleted: !project.isCompleted });
+    onUpdateProject({ 
+      ...project, 
+      isCompleted: !project.isCompleted, 
+      completedAt: !project.isCompleted ? new Date().toISOString() : undefined 
+    });
   };
 
   const saveEdits = (e: React.FormEvent) => {

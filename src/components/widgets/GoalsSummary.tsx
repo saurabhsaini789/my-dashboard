@@ -4,10 +4,12 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { getPrefixedKey } from "@/lib/keys";
 
-type TimeFilter = '1 Day' | '7 Days' | '1 Month' | '6 Months' | '1 Year';
+type TimeFilter = '1 Day' | '7 Days' | '1 Month' | '6 Months' | '1 Year' | 'Custom Month';
 
 export function GoalsSummary() {
   const [filter, setFilter] = useState<TimeFilter>('1 Month');
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [projectsCount, setProjectsCount] = useState(0);
   const [tasksCount, setTasksCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -20,14 +22,44 @@ export function GoalsSummary() {
           const parsed = JSON.parse(saved);
           let pCount = 0;
           let tCount = 0;
-          parsed.forEach((p: any) => {
-            if (p.isCompleted) pCount++;
-            if (p.tasks && Array.isArray(p.tasks)) {
-              p.tasks.forEach((t: any) => {
-                if (t.isCompleted) tCount++;
-              });
+
+          const now = new Date();
+          const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+          const isMatch = (item: any) => {
+            if (!item.isCompleted) return false;
+            
+            if (filter === 'Custom Month') {
+              const date = item.completedAt ? new Date(item.completedAt) : (item.dueDate ? new Date(item.dueDate + 'T12:00:00') : null);
+              if (!date) return false;
+              return date.getMonth() === selectedMonth && date.getFullYear() === selectedYear;
+            } else {
+              let daysToLookBack = 30;
+              if (filter === '1 Day') daysToLookBack = 1;
+              if (filter === '7 Days') daysToLookBack = 7;
+              if (filter === '1 Month') daysToLookBack = 30;
+              if (filter === '6 Months') daysToLookBack = 180;
+              if (filter === '1 Year') daysToLookBack = 365;
+
+              const date = item.completedAt ? new Date(item.completedAt) : (item.dueDate ? new Date(item.dueDate + 'T12:00:00') : null);
+              if (!date) return true; // Include legacy items without dates in preset ranges for now (or could exclude)
+              
+              const diffTime = today.getTime() - date.getTime();
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              return diffDays >= 0 && diffDays < daysToLookBack;
             }
-          });
+          };
+
+          if (Array.isArray(parsed)) {
+            parsed.forEach((p: any) => {
+              if (isMatch(p)) pCount++;
+              if (p.tasks && Array.isArray(p.tasks)) {
+                p.tasks.forEach((t: any) => {
+                  if (isMatch(t)) tCount++;
+                });
+              }
+            });
+          }
           setProjectsCount(pCount);
           setTasksCount(tCount);
         } catch (e) { }
@@ -52,7 +84,7 @@ export function GoalsSummary() {
       window.removeEventListener('storage', handleStorage);
       window.removeEventListener('local-storage-change', handleLocal);
     };
-  }, [filter]);
+  }, [filter, selectedMonth, selectedYear]);
 
   if (!isLoaded) return <div className="animate-pulse h-40 w-full rounded-2xl bg-zinc-100 dark:bg-zinc-800/50"></div>;
 
@@ -62,7 +94,31 @@ export function GoalsSummary() {
         <h3 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
           Goals
         </h3>
-        <div className="flex gap-4 items-center">
+        <div className="flex flex-wrap gap-2 items-center">
+          {filter === 'Custom Month' && (
+            <div className="flex gap-2">
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                className="appearance-none bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-950 dark:hover:bg-zinc-800 transition-colors text-sm font-semibold text-zinc-700 dark:text-zinc-300 rounded-xl px-4 py-2 cursor-pointer outline-none border border-zinc-200 dark:border-zinc-700 focus:ring-2 focus:ring-teal-500/50 shadow-sm"
+              >
+                {Array.from({ length: 12 }, (_, i) => (
+                  <option key={i} value={i}>
+                    {new Date(2000, i, 1).toLocaleDateString('en-US', { month: 'long' })}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                className="appearance-none bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-950 dark:hover:bg-zinc-800 transition-colors text-sm font-semibold text-zinc-700 dark:text-zinc-300 rounded-xl px-4 py-2 cursor-pointer outline-none border border-zinc-200 dark:border-zinc-700 focus:ring-2 focus:ring-teal-500/50 shadow-sm"
+              >
+                {Array.from({ length: 5 }, (_, i) => 2026 + i).map(y => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value as TimeFilter)}
@@ -73,8 +129,9 @@ export function GoalsSummary() {
             <option value="1 Month">1 Month</option>
             <option value="6 Months">6 Months</option>
             <option value="1 Year">1 Year</option>
+            <option value="Custom Month">Custom Month</option>
           </select>
-          <Link href="/goals" className="px-4 py-2 text-sm font-semibold rounded-xl bg-teal-50 text-teal-700 hover:bg-teal-100 dark:bg-teal-500/10 dark:text-teal-400 dark:hover:bg-teal-500/20 transition-colors border border-teal-200 dark:border-teal-900/50">View All</Link>
+          <Link href="/goals" className="px-4 py-2 text-sm font-semibold rounded-xl bg-teal-50 text-teal-700 hover:bg-teal-100 dark:bg-teal-500/10 dark:text-teal-400 dark:hover:bg-teal-500/20 transition-colors border border-teal-200 dark:border-teal-900/50 whitespace-nowrap">View All</Link>
         </div>
       </div>
 
