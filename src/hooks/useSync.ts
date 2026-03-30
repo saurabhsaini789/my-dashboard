@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { getPrefixedKey } from '@/lib/keys';
 
 // The local storage keys we want to sync
-const SYNC_KEYS = ['os_habits', 'goals_projects', 'goals_seeded_v2', 'goals_seeded_v3', 'dashboard_quotes'];
+const SYNC_KEYS = ['os_habits', 'goals_projects', 'goals_seeded_v2', 'goals_seeded_v3', 'dashboard_quotes', 'finances_income', 'finances_expenses', 'finances_emergency_fund', 'finances_assets', 'finances_liabilities', 'finances_business', 'finances_goals', 'finances_snapshots'];
 
 export function useSync() {
   const [isReady, setIsReady] = useState(false);

@@ -32,6 +32,12 @@ export function NavigationBar() {
           >
             Habits
           </Link>
+          <Link 
+            href="/finances" 
+            className={`text-sm font-semibold transition-colors ${pathname === '/finances' ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
+          >
+            Finances
+          </Link>
           <button 
             onClick={() => supabase.auth.signOut()}
             className="text-sm font-semibold text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 transition-colors bg-rose-500/5 px-3 py-1.5 rounded-lg border border-rose-500/10"
