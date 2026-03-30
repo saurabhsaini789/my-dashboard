@@ -64,6 +64,7 @@ export function useSync() {
           .upsert({ 
             key: prefixedKey, 
             value: parsedValue, 
+            user_id: session.user.id,
             updated_at: new Date().toISOString() 
           }, { onConflict: 'key' });
 
