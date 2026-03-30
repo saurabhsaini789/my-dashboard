@@ -5,6 +5,7 @@ import { getPrefixedKey } from '@/lib/keys';
 import { MultiSelectDropdown } from '../ui/MultiSelectDropdown';
 import { MONTHS, YEARS } from '@/lib/constants';
 import { getExchangeRate, convertToINR, calculateAssetBalance, calculateLiabilityBalance, type Asset, type Liability } from '@/lib/finances';
+import { SYNC_KEYS } from '@/lib/sync-keys';
 
 interface MetricProps {
   label: string;
@@ -82,7 +83,7 @@ export function FinanceOverview() {
     const exchangeRate = getExchangeRate();
 
     // 1. Calculate Income
-    const incomeData = localStorage.getItem(getPrefixedKey('finances_income'));
+    const incomeData = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_INCOME));
     let totalIncomeCount = 0;
     if (incomeData) {
       try {
@@ -98,7 +99,7 @@ export function FinanceOverview() {
     setIncome(totalIncomeCount);
 
     // 2. Calculate Expenses
-    const expenseData = localStorage.getItem(getPrefixedKey('finances_expenses'));
+    const expenseData = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EXPENSES));
     let totalExpensesCount = 0;
     if (expenseData) {
       try {
@@ -115,7 +116,7 @@ export function FinanceOverview() {
 
     // 3. Calculate Net Worth
     let totalAssets = 0;
-    const assetsData = localStorage.getItem(getPrefixedKey('finance_assets'));
+    const assetsData = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_ASSETS));
     if (assetsData) {
         try {
             const assets: Asset[] = JSON.parse(assetsData);
@@ -124,7 +125,7 @@ export function FinanceOverview() {
     }
 
     let totalLiabilities = 0;
-    const liabilitiesData = localStorage.getItem(getPrefixedKey('finance_liabilities'));
+    const liabilitiesData = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_LIABILITIES));
     if (liabilitiesData) {
         try {
             const liabilities: Liability[] = JSON.parse(liabilitiesData);
@@ -134,7 +135,7 @@ export function FinanceOverview() {
     setNetWorth(totalAssets - totalLiabilities);
 
     // 4. Calculate Emergency Fund
-    const efData = localStorage.getItem(getPrefixedKey('finance_emergency_fund'));
+    const efData = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EMERGENCY_FUND));
     let monthsCovered = 0;
     if (efData) {
         try {
@@ -152,12 +153,12 @@ export function FinanceOverview() {
 
     const handleLocal = (e: any) => {
       if (e.detail && [
-        'finances_income', 
-        'finances_expenses', 
-        'finance_assets', 
-        'finance_liabilities', 
-        'finance_emergency_fund',
-        'finance_exchange_rate'
+        SYNC_KEYS.FINANCES_INCOME, 
+        SYNC_KEYS.FINANCES_EXPENSES, 
+        SYNC_KEYS.FINANCES_ASSETS, 
+        SYNC_KEYS.FINANCES_LIABILITIES, 
+        SYNC_KEYS.FINANCES_EMERGENCY_FUND,
+        SYNC_KEYS.FINANCES_EXCHANGE_RATE
       ].includes(e.detail.key)) {
         calculateFinance();
       }
@@ -166,6 +167,7 @@ export function FinanceOverview() {
     window.addEventListener('local-storage-change', handleLocal);
     return () => window.removeEventListener('local-storage-change', handleLocal);
   }, [selectedMonths, selectedYears]);
+
 
   const savingsRate = income > 0 ? ((income - expenses) / income) * 100 : 0;
 

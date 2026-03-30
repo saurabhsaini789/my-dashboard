@@ -7,6 +7,7 @@ import { calculateAssetBalance } from '@/lib/finances';
 import { ExpenseMetrics } from './ExpenseMetrics';
 import { MultiSelectDropdown } from '../ui/MultiSelectDropdown';
 import { MONTHS, YEARS } from '@/lib/constants';
+import { SYNC_KEYS } from '@/lib/sync-keys';
 
 export interface ExpenseRecord {
   id: string;
@@ -61,7 +62,7 @@ export function ExpenseSection() {
   }, [records]);
 
   useEffect(() => {
-    const saved = localStorage.getItem(getPrefixedKey('finances_expenses'));
+    const saved = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EXPENSES));
     if (saved) {
       try {
         setRecords(JSON.parse(saved));
@@ -80,37 +81,37 @@ export function ExpenseSection() {
     setIsLoaded(true);
 
     // Load assets for dropdown
-    const savedAssets = localStorage.getItem(getPrefixedKey('finance_assets'));
+    const savedAssets = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_ASSETS));
     if (savedAssets) {
       try { setAssets(JSON.parse(savedAssets)); } catch (e) {}
     }
 
     const handleLocal = (e: any) => {
-      if (e.detail && e.detail.key === 'finances_expenses') {
-        const val = localStorage.getItem(getPrefixedKey('finances_expenses'));
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_EXPENSES) {
+        const val = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EXPENSES));
         if (val && val !== JSON.stringify(recordsRef.current)) {
           try { setRecords(JSON.parse(val)); } catch (err) {}
         }
       }
-      if (e.detail && e.detail.key === 'finance_assets') {
-        const val = localStorage.getItem(getPrefixedKey('finance_assets'));
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_ASSETS) {
+        const val = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_ASSETS));
         if (val) {
           try { setAssets(JSON.parse(val)); } catch (err) {}
         }
       }
-      if (e.detail && e.detail.key === 'finance_savings_goals') {
-        const val = localStorage.getItem(getPrefixedKey('finance_savings_goals'));
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_SAVINGS_TARGETS) {
+        const val = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_SAVINGS_TARGETS));
         if (val) {
           try { setSavingsGoals(JSON.parse(val)); } catch (err) {}
         }
       }
-      if (e.detail && e.detail.key === 'finance_emergency_fund') {
-        const val = localStorage.getItem(getPrefixedKey('finance_emergency_fund'));
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_EMERGENCY_FUND) {
+        const val = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EMERGENCY_FUND));
         if (val) {
           try { setEmergencyFund(JSON.parse(val)); } catch (err) {}
         }
       }
-      if (e.detail && e.detail.key === 'finance_exchange_rate') {
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_EXCHANGE_RATE) {
         // Trigger re-render to update metrics
         setIsLoaded(false);
         setTimeout(() => setIsLoaded(true), 0);
@@ -122,9 +123,10 @@ export function ExpenseSection() {
 
   useEffect(() => {
     if (isLoaded) {
-      setSyncedItem('finances_expenses', JSON.stringify(records));
+      setSyncedItem(SYNC_KEYS.FINANCES_EXPENSES, JSON.stringify(records));
     }
   }, [records, isLoaded]);
+
 
   const openAddModal = () => {
     setEditingRecord(null);
@@ -162,13 +164,13 @@ export function ExpenseSection() {
 
   const updateRecipientContribution = (expenseId: string, paidToType: string, paidToId: string | undefined, amount: number, currency: 'INR' | 'CAD', date: string, isDelete = false) => {
     // Get exchange rate
-    const savedRate = localStorage.getItem(getPrefixedKey('finance_exchange_rate'));
+    const savedRate = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EXCHANGE_RATE));
     const exchangeRate = savedRate ? parseFloat(savedRate) : 67;
     const amountInINR = currency === 'CAD' ? amount * exchangeRate : amount;
 
     // 1. Savings Goals
     if (paidToType === 'savings' || !paidToType) {
-      const saved = localStorage.getItem(getPrefixedKey('finance_savings_goals'));
+      const saved = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_SAVINGS_TARGETS));
       if (saved) {
         try {
           let goals = JSON.parse(saved);
@@ -183,14 +185,14 @@ export function ExpenseSection() {
             }
             return g;
           });
-          if (changed) setSyncedItem('finance_savings_goals', JSON.stringify(goals));
+          if (changed) setSyncedItem(SYNC_KEYS.FINANCES_SAVINGS_TARGETS, JSON.stringify(goals));
         } catch (e) {}
       }
     }
 
     // 2. Emergency Fund
     if (paidToType === 'emergency' || !paidToType) {
-      const saved = localStorage.getItem(getPrefixedKey('finance_emergency_fund'));
+      const saved = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EMERGENCY_FUND));
       if (saved) {
         try {
           let fund = JSON.parse(saved);
@@ -202,14 +204,14 @@ export function ExpenseSection() {
             fund.contributions.unshift({ id: `expense-${expenseId}`, date, amount, currency });
             changed = true;
           }
-          if (changed) setSyncedItem('finance_emergency_fund', JSON.stringify(fund));
+          if (changed) setSyncedItem(SYNC_KEYS.FINANCES_EMERGENCY_FUND, JSON.stringify(fund));
         } catch (e) {}
       }
     }
 
     // 3. Asset (Contribution to asset)
     if (paidToType === 'asset' || !paidToType) {
-      const saved = localStorage.getItem(getPrefixedKey('finance_assets'));
+      const saved = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_ASSETS));
       if (saved) {
         try {
           let assetsList = JSON.parse(saved);
@@ -224,17 +226,17 @@ export function ExpenseSection() {
             }
             return asset;
           });
-          if (changed) setSyncedItem('finance_assets', JSON.stringify(assetsList));
+          if (changed) setSyncedItem(SYNC_KEYS.FINANCES_ASSETS, JSON.stringify(assetsList));
         } catch (e) {}
       }
     }
   };
 
   const updateAssetContribution = (expenseId: string, assetId: string | undefined, amount: number, currency: 'INR' | 'CAD', date: string, isDelete = false) => {
-    const savedAssets = localStorage.getItem(getPrefixedKey('finance_assets'));
+    const savedAssets = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_ASSETS));
     if (!savedAssets) return;
 
-    const savedRate = localStorage.getItem(getPrefixedKey('finance_exchange_rate'));
+    const savedRate = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EXCHANGE_RATE));
     const exchangeRate = savedRate ? parseFloat(savedRate) : 67;
     const amountInINR = currency === 'CAD' ? amount * exchangeRate : amount;
 
@@ -269,7 +271,7 @@ export function ExpenseSection() {
       }
 
       if (changed) {
-        setSyncedItem('finance_assets', JSON.stringify(assetsList));
+        setSyncedItem(SYNC_KEYS.FINANCES_ASSETS, JSON.stringify(assetsList));
         // Update local state if the component is mounted (handled by event listener)
       }
     } catch (e) {

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
 import { calculateAssetBalance, type Asset, type Contribution } from '@/lib/finances';
+import { SYNC_KEYS } from '@/lib/sync-keys';
 
 export type AssetType = 'Cash' | 'Bank Balance' | 'Property' | 'Business Value' | 'Vehicle' | 'Investment' | 'Metal' | 'Loans Given';
 
@@ -43,7 +44,7 @@ export function AssetsSection() {
   }, [assets]);
 
   useEffect(() => {
-    const saved = localStorage.getItem(getPrefixedKey('finance_assets'));
+    const saved = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_ASSETS));
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -70,8 +71,8 @@ export function AssetsSection() {
     setIsLoaded(true);
 
     const handleLocal = (e: any) => {
-      if (e.detail && e.detail.key === 'finance_assets') {
-        const val = localStorage.getItem(getPrefixedKey('finance_assets'));
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_ASSETS) {
+        const val = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_ASSETS));
         if (val && val !== JSON.stringify(assetsRef.current)) {
           try { 
             const parsed = JSON.parse(val);
@@ -86,7 +87,7 @@ export function AssetsSection() {
           } catch (e) {}
         }
       }
-      if (e.detail && e.detail.key === 'finance_exchange_rate') {
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_EXCHANGE_RATE) {
         // Trigger re-render to update conversion
         setIsLoaded(false);
         setTimeout(() => setIsLoaded(true), 0);
@@ -98,9 +99,10 @@ export function AssetsSection() {
 
   useEffect(() => {
     if (isLoaded) {
-      setSyncedItem('finance_assets', JSON.stringify(assets));
+      setSyncedItem(SYNC_KEYS.FINANCES_ASSETS, JSON.stringify(assets));
     }
   }, [assets, isLoaded]);
+
 
   const openAddModal = () => {
     setEditingAsset(null);

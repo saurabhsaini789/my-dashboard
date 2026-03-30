@@ -1,4 +1,5 @@
 import { getPrefixedKey } from './keys';
+import { SYNC_KEYS } from './sync-keys';
 
 export interface IncomeRecord {
   id: string;
@@ -73,7 +74,7 @@ export interface Liability {
  */
 export const getExchangeRate = (): number => {
   if (typeof window === 'undefined') return 67;
-  const saved = localStorage.getItem(getPrefixedKey('finance_exchange_rate'));
+  const saved = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EXCHANGE_RATE));
   return saved ? parseFloat(saved) : 67;
 };
 

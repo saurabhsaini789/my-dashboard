@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
+import { SYNC_KEYS } from '@/lib/sync-keys';
 
 export function ExchangeRateSection() {
   const [exchangeRate, setExchangeRate] = useState<string>('67.00');
@@ -10,15 +11,15 @@ export function ExchangeRateSection() {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem(getPrefixedKey('finance_exchange_rate'));
+    const saved = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EXCHANGE_RATE));
     if (saved) {
       setExchangeRate(saved);
     }
     setIsLoaded(true);
 
     const handleLocal = (e: any) => {
-      if (e.detail && e.detail.key === 'finance_exchange_rate') {
-        const val = localStorage.getItem(getPrefixedKey('finance_exchange_rate'));
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_EXCHANGE_RATE) {
+        const val = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EXCHANGE_RATE));
         if (val) setExchangeRate(val);
       }
     };
@@ -31,7 +32,8 @@ export function ExchangeRateSection() {
     if (isNaN(rate) || rate <= 0) return;
     
     setIsSaving(true);
-    setSyncedItem('finance_exchange_rate', rate.toFixed(2));
+    setSyncedItem(SYNC_KEYS.FINANCES_EXCHANGE_RATE, rate.toFixed(2));
+
     
     setTimeout(() => {
       setIsSaving(false);

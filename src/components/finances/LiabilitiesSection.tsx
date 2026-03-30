@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
 import { getExchangeRate, calculateLiabilityBalance, type Liability, type PaymentLog } from '@/lib/finances';
+import { SYNC_KEYS } from '@/lib/sync-keys';
 
 export type LiabilityType = 'Home Loan' | 'Car Loan' | 'Personal Loan' | 'Credit Card' | 'Education Loan' | 'Business Loan' | 'Other';
 
@@ -50,7 +51,7 @@ export function LiabilitiesSection() {
 
   useEffect(() => {
     // Load Liabilities
-    const savedLiabilities = localStorage.getItem(getPrefixedKey('finance_liabilities'));
+    const savedLiabilities = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_LIABILITIES));
     if (savedLiabilities) {
       try {
         setLiabilities(JSON.parse(savedLiabilities));
@@ -76,7 +77,7 @@ export function LiabilitiesSection() {
     }
 
     // Load Income for DTI calculation
-    const savedIncome = localStorage.getItem(getPrefixedKey('finances_income'));
+    const savedIncome = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_INCOME));
     if (savedIncome) {
       try {
         const records = JSON.parse(savedIncome);
@@ -98,13 +99,13 @@ export function LiabilitiesSection() {
     setIsLoaded(true);
 
     const handleLocal = (e: any) => {
-      if (e.detail && e.detail.key === 'finance_liabilities') {
-        const val = localStorage.getItem(getPrefixedKey('finance_liabilities'));
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_LIABILITIES) {
+        const val = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_LIABILITIES));
         if (val && val !== JSON.stringify(liabilitiesRef.current)) {
           try { setLiabilities(JSON.parse(val)); } catch (e) {}
         }
       }
-      if (e.detail && e.detail.key === 'finance_exchange_rate') {
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_EXCHANGE_RATE) {
         // Trigger re-render to update conversion
         setIsLoaded(false);
         setTimeout(() => setIsLoaded(true), 0);
@@ -116,9 +117,10 @@ export function LiabilitiesSection() {
 
   useEffect(() => {
     if (isLoaded) {
-      setSyncedItem('finance_liabilities', JSON.stringify(liabilities));
+      setSyncedItem(SYNC_KEYS.FINANCES_LIABILITIES, JSON.stringify(liabilities));
     }
   }, [liabilities, isLoaded]);
+
 
   const openAddModal = () => {
     setEditingLiability(null);

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
 import { getExchangeRate, convertToINR } from '@/lib/finances';
+import { SYNC_KEYS } from '@/lib/sync-keys';
 
 interface Contribution {
   id: string;
@@ -39,7 +40,7 @@ export function EmergencyFundSection() {
   }, [data]);
 
   useEffect(() => {
-    const saved = localStorage.getItem(getPrefixedKey('finance_emergency_fund'));
+    const saved = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EMERGENCY_FUND));
     if (saved) {
       try {
         setData(JSON.parse(saved));
@@ -59,13 +60,13 @@ export function EmergencyFundSection() {
     setIsLoaded(true);
 
     const handleLocal = (e: any) => {
-      if (e.detail && e.detail.key === 'finance_emergency_fund') {
-        const val = localStorage.getItem(getPrefixedKey('finance_emergency_fund'));
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_EMERGENCY_FUND) {
+        const val = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EMERGENCY_FUND));
         if (val && val !== JSON.stringify(dataRef.current)) {
           try { setData(JSON.parse(val)); } catch (e) {}
         }
       }
-      if (e.detail && e.detail.key === 'finance_exchange_rate') {
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_EXCHANGE_RATE) {
         // Trigger re-render to update conversion
         setIsLoaded(false);
         setTimeout(() => setIsLoaded(true), 0);
@@ -77,9 +78,10 @@ export function EmergencyFundSection() {
 
   useEffect(() => {
     if (isLoaded && data) {
-      setSyncedItem('finance_emergency_fund', JSON.stringify(data));
+      setSyncedItem(SYNC_KEYS.FINANCES_EMERGENCY_FUND, JSON.stringify(data));
     }
   }, [data, isLoaded]);
+
 
   if (!isLoaded || !data) return null;
 

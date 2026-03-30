@@ -3,9 +3,7 @@
 import { useEffect, useCallback, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { getPrefixedKey } from '@/lib/keys';
-
-// The local storage keys we want to sync
-const SYNC_KEYS = ['os_habits', 'goals_projects', 'goals_seeded_v2', 'goals_seeded_v3', 'dashboard_quotes', 'finances_income', 'finances_expenses', 'finances_emergency_fund', 'finances_assets', 'finances_liabilities', 'finances_business', 'finances_goals', 'finances_snapshots'];
+import { ALL_SYNC_KEYS, LEGACY_KEY_MIGRATION } from '@/lib/sync-keys';
 
 export function useSync() {
   const [isReady, setIsReady] = useState(false);
@@ -43,6 +41,19 @@ export function useSync() {
   useEffect(() => {
     const initSync = async () => {
       console.log('[Sync] Initializing sync...');
+
+      // 0. Legacy Key Migration (Local)
+      for (const [legacyKey, newKey] of Object.entries(LEGACY_KEY_MIGRATION)) {
+        const legacyPrefixed = getPrefixedKey(legacyKey);
+        const newPrefixed = getPrefixedKey(newKey);
+        const legacyVal = localStorage.getItem(legacyPrefixed);
+        
+        if (legacyVal && !localStorage.getItem(newPrefixed)) {
+          console.log(`[Sync] Migrating legacy local data: ${legacyKey} -> ${newKey}`);
+          localStorage.setItem(newPrefixed, legacyVal);
+          // We keep the legacy data for safety during the transition
+        }
+      }
       
       const { data: remoteData, error } = await supabase
         .from('dashboard_data')
@@ -60,6 +71,7 @@ export function useSync() {
         projectID ? r.key.startsWith(`${projectID}:`) : !r.key.includes(':')
       ) || [];
 
+      // Also migrate remote data if legacy keys exist in cloud
       const remoteKeysMap = new Map(projectRemoteData.map(r => [r.key, r.value]));
 
       // a) Load remote data into local storage
@@ -68,7 +80,7 @@ export function useSync() {
         projectRemoteData.forEach((row) => {
           // Extract base key (e.g. "my_dashboard:os_habits" -> "os_habits")
           const baseKey = row.key.split(':').pop();
-          if (baseKey && SYNC_KEYS.includes(baseKey)) {
+          if (baseKey && ALL_SYNC_KEYS.includes(baseKey)) {
             localStorage.setItem(row.key, JSON.stringify(row.value));
             // Notify components
             window.dispatchEvent(new CustomEvent('local-storage-change', { detail: { key: baseKey } }));
@@ -79,7 +91,7 @@ export function useSync() {
       }
 
       // b) Push local data that isn't on remote yet (Migration)
-      for (const baseKey of SYNC_KEYS) {
+      for (const baseKey of ALL_SYNC_KEYS) {
         const prefixedKey = getPrefixedKey(baseKey);
         if (!remoteKeysMap.has(prefixedKey)) {
           const localVal = localStorage.getItem(prefixedKey);
@@ -103,7 +115,7 @@ export function useSync() {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key) {
         // Find if this prefixed key matches one of our sync keys
-        const baseKey = SYNC_KEYS.find(k => getPrefixedKey(k) === e.key);
+        const baseKey = ALL_SYNC_KEYS.find(k => getPrefixedKey(k) === e.key);
         if (baseKey) {
           pushToSupabase(baseKey, e.newValue);
         }
@@ -112,7 +124,7 @@ export function useSync() {
 
     // Current tab (via setSyncedItem)
     const handleLocalUpdate = (e: any) => {
-      if (e.detail && SYNC_KEYS.includes(e.detail.key)) {
+      if (e.detail && ALL_SYNC_KEYS.includes(e.detail.key)) {
         const val = localStorage.getItem(getPrefixedKey(e.detail.key));
         pushToSupabase(e.detail.key, val);
       }
@@ -144,7 +156,7 @@ export function useSync() {
           
           if (isProjectKey) {
             const baseKey = newRow.key.split(':').pop();
-            if (baseKey && SYNC_KEYS.includes(baseKey)) {
+            if (baseKey && ALL_SYNC_KEYS.includes(baseKey)) {
               console.log(`[Sync] Remote update received for ${newRow.key}`);
               isSyncingFromRemote.current = true;
               localStorage.setItem(newRow.key, JSON.stringify(newRow.value));

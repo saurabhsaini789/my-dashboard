@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
 import { getExchangeRate, convertToINR } from '@/lib/finances';
+import { SYNC_KEYS } from '@/lib/sync-keys';
 
 interface Contribution {
   id: string;
@@ -55,7 +56,7 @@ export function SavingsTargets() {
   }, [goals]);
 
   useEffect(() => {
-    const saved = localStorage.getItem(getPrefixedKey('finance_savings_goals'));
+    const saved = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_SAVINGS_TARGETS));
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -101,13 +102,13 @@ export function SavingsTargets() {
     setIsLoaded(true);
 
     const handleLocal = (e: any) => {
-      if (e.detail && e.detail.key === 'finance_savings_goals') {
-        const val = localStorage.getItem(getPrefixedKey('finance_savings_goals'));
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_SAVINGS_TARGETS) {
+        const val = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_SAVINGS_TARGETS));
         if (val && val !== JSON.stringify(goalsRef.current)) {
           try { setGoals(JSON.parse(val)); } catch (e) {}
         }
       }
-      if (e.detail && e.detail.key === 'finance_exchange_rate') {
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_EXCHANGE_RATE) {
         // Trigger re-render to update conversion
         setIsLoaded(false);
         setTimeout(() => setIsLoaded(true), 0);
@@ -119,9 +120,10 @@ export function SavingsTargets() {
 
   useEffect(() => {
     if (isLoaded) {
-      setSyncedItem('finance_savings_goals', JSON.stringify(goals));
+      setSyncedItem(SYNC_KEYS.FINANCES_SAVINGS_TARGETS, JSON.stringify(goals));
     }
   }, [goals, isLoaded]);
+
 
   const openAddModal = () => {
     setEditingGoal(null);

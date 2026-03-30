@@ -7,6 +7,7 @@ import { calculateAssetBalance, type IncomeRecord } from '@/lib/finances';
 import { IncomeMetrics } from './IncomeMetrics';
 import { MultiSelectDropdown } from '../ui/MultiSelectDropdown';
 import { MONTHS, YEARS } from '@/lib/constants';
+import { SYNC_KEYS } from '@/lib/sync-keys';
 
 export type IncomeSource = IncomeRecord['source'];
 export type IncomeType = IncomeRecord['type'];
@@ -42,7 +43,7 @@ export function IncomeSection() {
   }, [records]);
 
   useEffect(() => {
-    const saved = localStorage.getItem(getPrefixedKey('finances_income'));
+    const saved = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_INCOME));
     if (saved) {
       try {
         setRecords(JSON.parse(saved));
@@ -60,25 +61,25 @@ export function IncomeSection() {
     setIsLoaded(true);
 
     // Load assets for dropdown
-    const savedAssets = localStorage.getItem(getPrefixedKey('finance_assets'));
+    const savedAssets = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_ASSETS));
     if (savedAssets) {
       try { setAssets(JSON.parse(savedAssets)); } catch (e) {}
     }
 
     const handleLocal = (e: any) => {
-      if (e.detail && e.detail.key === 'finances_income') {
-        const val = localStorage.getItem(getPrefixedKey('finances_income'));
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_INCOME) {
+        const val = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_INCOME));
         if (val && val !== JSON.stringify(recordsRef.current)) {
           try { setRecords(JSON.parse(val)); } catch (e) {}
         }
       }
-      if (e.detail && e.detail.key === 'finance_assets') {
-        const val = localStorage.getItem(getPrefixedKey('finance_assets'));
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_ASSETS) {
+        const val = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_ASSETS));
         if (val) {
           try { setAssets(JSON.parse(val)); } catch (e) {}
         }
       }
-      if (e.detail && e.detail.key === 'finance_exchange_rate') {
+      if (e.detail && e.detail.key === SYNC_KEYS.FINANCES_EXCHANGE_RATE) {
         // Trigger re-render to update metrics
         setIsLoaded(false);
         setTimeout(() => setIsLoaded(true), 0);
@@ -90,9 +91,10 @@ export function IncomeSection() {
 
   useEffect(() => {
     if (isLoaded) {
-      setSyncedItem('finances_income', JSON.stringify(records));
+      setSyncedItem(SYNC_KEYS.FINANCES_INCOME, JSON.stringify(records));
     }
   }, [records, isLoaded]);
+
 
   const openAddModal = () => {
     setEditingRecord(null);
@@ -121,10 +123,10 @@ export function IncomeSection() {
   };
 
   const updateAssetContribution = (incomeId: string, assetId: string | undefined, amount: number, currency: 'INR' | 'CAD', date: string, isDelete = false) => {
-    const savedAssets = localStorage.getItem(getPrefixedKey('finance_assets'));
+    const savedAssets = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_ASSETS));
     if (!savedAssets) return;
 
-    const savedRate = localStorage.getItem(getPrefixedKey('finance_exchange_rate'));
+    const savedRate = localStorage.getItem(getPrefixedKey(SYNC_KEYS.FINANCES_EXCHANGE_RATE));
     const exchangeRate = savedRate ? parseFloat(savedRate) : 67;
     // We used to convert here, but now we'll store the original currency in the contribution
     // and let the balance calculation handle it dynamically.
@@ -160,7 +162,7 @@ export function IncomeSection() {
       }
 
       if (changed) {
-        setSyncedItem('finance_assets', JSON.stringify(assetsList));
+        setSyncedItem(SYNC_KEYS.FINANCES_ASSETS, JSON.stringify(assetsList));
         // Update local state if the component is mounted (handled by event listener)
       }
     } catch (e) {

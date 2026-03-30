@@ -4,13 +4,18 @@
 - [x] Database Setup
     - [x] User to run SQL in Supabase Dashboard
 - [x] Core Infrastructure
-    - [x] Create `src/lib/supabase.ts`
-    - [x] Create `src/hooks/useSync.ts`
-- [x] Integration
-    - [x] Add `useSync` to `src/app/layout.tsx`
-    - [x] Update `src/components/DataLoader.tsx` to handle sync initial state
-- [x] GitHub Actions Setup
-    - [x] User to add secrets to GitHub Actions
+    - [x] Create `src/lib/sync-keys.ts` with standardized constants
+- [x] Integrate `SYNC_KEYS` registry in `src/lib/sync-keys.ts`
+- [x] Update `useSync.ts` with legacy key migration logic
+- [x] Refactor `AssetsSection.tsx` to use standardized keys
+- [x] Refactor `LiabilitiesSection.tsx` to use standardized keys
+- [x] Refactor `IncomeSection.tsx` to use standardized keys
+- [x] Refactor `ExpenseSection.tsx` to use standardized keys
+- [x] Refactor `SavingsTargets.tsx` to use standardized keys
+- [x] Refactor `EmergencyFundSection.tsx` to use standardized keys
+- [x] Refactor `ExchangeRateSection.tsx` to use standardized keys
+- [x] Conduct final audit of `localStorage` calls to ensure no hardcoded strings remain
+- [x] Verify cross-tab synchronization and data integrity
 - [x] Verification
     - [x] Test local storage persistence to Supabase
     - [x] Test Supabase real-time updates to local storage
