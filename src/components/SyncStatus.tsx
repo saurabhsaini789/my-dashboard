@@ -1,42 +1,72 @@
 "use client";
+
 import React from 'react';
-import { useSync } from '@/hooks/useSync';
 
-export function SyncStatus() {
-  const { syncStatus } = useSync();
+interface SyncStatusProps {
+  status: 'idle' | 'syncing' | 'error' | 'unauthenticated' | 'connected' | 'initializing';
+}
 
-  if (syncStatus === 'unauthenticated') {
-    return (
-      <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50">
-        <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-pulse" />
-        <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-wider">Local Only</span>
-      </div>
-    );
-  }
+export function SyncStatus({ status }: SyncStatusProps) {
+  const getStatusConfig = () => {
+    switch (status) {
+      case 'syncing':
+        return { 
+          color: 'bg-amber-500', 
+          text: 'Syncing...', 
+          ping: true,
+          label: 'text-amber-600 dark:text-amber-400'
+        };
+      case 'connected':
+        return { 
+          color: 'bg-emerald-500', 
+          text: 'Cloud Active', 
+          ping: false,
+          label: 'text-emerald-600 dark:text-emerald-400'
+        };
+      case 'error':
+        return { 
+          color: 'bg-rose-500', 
+          text: 'Sync Error', 
+          ping: false,
+          label: 'text-rose-600 dark:text-rose-400'
+        };
+      case 'unauthenticated':
+        return { 
+          color: 'bg-zinc-400', 
+          text: 'Offline (Local Only)', 
+          ping: false,
+          label: 'text-zinc-500 dark:text-zinc-400'
+        };
+      case 'initializing':
+        return { 
+          color: 'bg-blue-500', 
+          text: 'Initializing...', 
+          ping: true,
+          label: 'text-blue-600 dark:text-blue-400'
+        };
+      default:
+        return { 
+          color: 'bg-emerald-500/50', 
+          text: 'Cloud Synced', 
+          ping: false,
+          label: 'text-zinc-400 dark:text-zinc-500'
+        };
+    }
+  };
 
-  if (syncStatus === 'syncing') {
-    return (
-      <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/30">
-        <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-bounce" />
-        <span className="text-[10px] font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wider">Syncing</span>
-      </div>
-    );
-  }
+  const config = getStatusConfig();
 
-  if (syncStatus === 'error') {
-    return (
-      <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-900/30">
-        <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]" />
-        <span className="text-[10px] font-medium text-rose-600 dark:text-rose-400 uppercase tracking-wider">Sync Error</span>
-      </div>
-    );
-  }
-
-  // Idle / Connected
   return (
-    <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-900/30">
-      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-      <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Cloud Synced</span>
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-100/50 dark:bg-zinc-800/30 border border-zinc-200/50 dark:border-zinc-700/30 transition-all duration-500">
+      <div className="relative flex h-2 w-2">
+        {config.ping && (
+          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${config.color} opacity-75`}></span>
+        )}
+        <span className={`relative inline-flex rounded-full h-2 w-2 ${config.color}`}></span>
+      </div>
+      <span className={`text-[10px] font-bold uppercase tracking-[0.15em] ${config.label} transition-colors duration-500`}>
+        {config.text}
+      </span>
     </div>
   );
 }

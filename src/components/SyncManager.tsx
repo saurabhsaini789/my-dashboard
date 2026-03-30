@@ -1,10 +1,10 @@
 "use client";
 
-import { useSync } from "@/hooks/useSync";
+import { useSyncStatus } from "@/context/SyncContext";
 import { DataLoader } from "./DataLoader";
 
 export function SyncManager() {
-  const { isReady } = useSync();
+  const { isReady } = useSyncStatus();
 
   // We wait for the initial sync from Supabase to complete 
   // before we allow the DataLoader to check for empty localStorage.

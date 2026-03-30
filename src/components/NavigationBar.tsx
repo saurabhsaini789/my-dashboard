@@ -4,9 +4,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { SyncStatus } from './SyncStatus';
+import { useSyncStatus } from '@/context/SyncContext';
 
 export function NavigationBar() {
   const pathname = usePathname();
+  const { syncStatus } = useSyncStatus();
 
   return (
     <div className="w-full flex justify-center bg-zinc-50 dark:bg-zinc-950 px-4 md:px-8 xl:px-12 pt-6 pb-2 text-zinc-900 dark:text-zinc-100">
@@ -15,7 +17,7 @@ export function NavigationBar() {
           <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
             Personal OS
           </Link>
-          <SyncStatus />
+          <SyncStatus status={syncStatus} />
         </div>
         <nav className="flex items-center gap-6">
           <Link 

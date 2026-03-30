@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   description: "Personal OS and Productivity Dashboard",
 };
 
+import { SyncProvider } from "@/context/SyncContext";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,9 +35,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthGuard>
-          <SyncManager />
-          <NavigationBar />
-          {children}
+          <SyncProvider>
+            <SyncManager />
+            <NavigationBar />
+            {children}
+          </SyncProvider>
         </AuthGuard>
       </body>
     </html>
