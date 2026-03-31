@@ -15,7 +15,9 @@ import {
   TrendingUp,
   LayoutGrid,
   List as ListIcon,
-  ChevronDown
+  ChevronDown,
+  BookCheck,
+  Library
 } from 'lucide-react';
 
 import { CompletedBook } from '@/types/books';
@@ -93,6 +95,7 @@ export function CompletedBooks() {
 
   const filteredBooks = books.filter(b => 
     b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    b.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
     b.notes.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -176,26 +179,16 @@ export function CompletedBooks() {
 
       {/* Stats/Insights Summary */}
       {books.length > 0 && (
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-6">
           <StatCard 
-            icon={<TrendingUp className="text-teal-500" size={20} />}
-            label="Total Finished"
+            icon={<BookCheck className="text-teal-500" size={24} />}
             value={books.length.toString()}
+            description="Total books finished"
           />
           <StatCard 
-            icon={<Star className="text-amber-500" size={20} fill="currentColor" />}
-            label="Average Rating"
-            value={(books.reduce((acc, b) => acc + b.rating, 0) / books.length).toFixed(1)}
-          />
-          <StatCard 
-            icon={<ThumbsUp className="text-blue-500" size={20} />}
-            label="Recommended"
-            value={`${Math.round((books.filter(b => b.wouldRecommend).length / books.length) * 100)}%`}
-          />
-          <StatCard 
-            icon={<Languages className="text-rose-500" size={20} />}
-            label="Hindi/English"
-            value={`${books.filter(b => b.language === 'Hindi').length}/${books.filter(b => b.language === 'English').length}`}
+            icon={<Library className="text-rose-500" size={24} />}
+            value={`${books.filter(b => b.language === 'Hindi').length} / ${books.filter(b => b.language === 'English').length}`}
+            description="Completion: Hin / Eng"
           />
         </div>
       )}
@@ -207,6 +200,7 @@ export function CompletedBooks() {
           book={selectedBook || {
             id: '',
             name: '',
+            author: '',
             language: 'English',
             completionDate: new Date().toISOString().split('T')[0],
             rating: 5,
@@ -239,6 +233,9 @@ function BookCard({ book, viewMode, onEdit }: { book: CompletedBook, viewMode: '
             <span className="text-[10px] font-black uppercase text-zinc-400 bg-zinc-100 dark:bg-zinc-900 px-2 py-0.5 rounded-md tracking-wider">
               {book.language}
             </span>
+          </div>
+          <div className="text-[10px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-2">
+            {book.author || 'Unknown Author'}
           </div>
           <div className="flex items-center gap-3 text-xs font-bold text-zinc-400">
             <span className="flex items-center gap-1"><Calendar size={12} /> {new Date(book.completionDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
@@ -275,6 +272,9 @@ function BookCard({ book, viewMode, onEdit }: { book: CompletedBook, viewMode: '
             <h4 className="font-black text-2xl text-zinc-900 dark:text-white tracking-tight leading-tight group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
               {book.name}
             </h4>
+            <div className="text-[10px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-600 mt-2">
+              {book.author || 'Unknown Author'}
+            </div>
           </div>
           <div className="flex flex-col items-end gap-1">
             <div className="flex gap-0.5">
@@ -316,16 +316,24 @@ function BookCard({ book, viewMode, onEdit }: { book: CompletedBook, viewMode: '
   );
 }
 
-function StatCard({ icon, label, value }: { icon: React.ReactNode, label: string, value: string }) {
+function StatCard({ icon, value, description }: { icon: React.ReactNode, value: string, description: string }) {
   return (
-    <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-6 rounded-[2rem] flex items-center gap-5 shadow-sm">
-      <div className="w-12 h-12 bg-zinc-50 dark:bg-zinc-900 rounded-2xl flex items-center justify-center shadow-inner">
+    <div className="bg-white dark:bg-zinc-950 border-2 border-zinc-50 dark:border-zinc-900 p-6 rounded-[2.5rem] flex items-center gap-6 shadow-sm hover:shadow-xl hover:border-teal-500/10 transition-all duration-300 group relative overflow-hidden">
+      <div className="w-14 h-14 bg-zinc-50 dark:bg-zinc-900 rounded-2xl flex items-center justify-center shadow-inner shrink-0 group-hover:scale-105 transition-transform duration-500">
         {icon}
       </div>
-      <div>
-        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-0.5">{label}</p>
-        <p className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">{value}</p>
+
+      <div className="flex-1 min-w-0 flex items-center justify-between gap-4">
+        <h4 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight leading-none truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+          {description}
+        </h4>
+        <p className="text-3xl font-black text-zinc-900 dark:text-white tracking-tighter shrink-0 tabular-nums">
+          {value}
+        </p>
       </div>
+      
+      {/* Subtle border accent */}
+      <div className="absolute right-0 top-0 h-full w-1.5 bg-zinc-50 dark:bg-zinc-900 group-hover:bg-teal-500/20 transition-colors"></div>
     </div>
   );
 }

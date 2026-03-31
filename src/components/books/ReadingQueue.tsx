@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   DndContext, 
   closestCenter,
@@ -22,16 +22,14 @@ import {
   GripVertical, 
   Plus, 
   Search, 
-  Filter, 
   Languages, 
   Tag, 
-  TrendingUp,
-  Book as BookIcon,
   Clock,
-  CheckCircle2
+  CheckCircle2,
+  Book as BookIcon
 } from 'lucide-react';
 
-import { Book, BOOK_CATEGORIES } from '@/types/books';
+import { Book } from '@/types/books';
 import { BookModal } from './BookModal';
 import { setSyncedItem } from '@/lib/storage';
 import { getPrefixedKey } from '@/lib/keys';
@@ -101,11 +99,14 @@ function SortableItem({ book, onEdit }: SortableItemProps) {
       </div>
 
       {/* Name & Details */}
-      <div className="flex-1 min-w-0" onClick={() => onEdit(book)}>
+      <div className="flex-1 min-w-0 pointer-events-auto" onClick={() => onEdit(book)}>
         <h4 className="font-bold text-zinc-900 dark:text-white truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors cursor-pointer">
           {book.name}
         </h4>
         <div className="flex flex-wrap items-center gap-3 mt-1.5">
+          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+            {book.author || 'Unknown Author'}
+          </span>
           <span className="flex items-center gap-1 text-[10px] uppercase font-bold text-zinc-400 tracking-wider">
             <Languages size={10} />
             {book.language}
@@ -205,7 +206,6 @@ export function ReadingQueue({ onPromote }: ReadingQueueProps) {
         
         const newArray = arrayMove(items, oldIndex, newIndex);
         
-        // Update order numbers based on new position
         return newArray.map((book, index) => ({
           ...book,
           order: index + 1
@@ -227,7 +227,6 @@ export function ReadingQueue({ onPromote }: ReadingQueueProps) {
   const handleUpdateBook = (updatedBook: Book) => {
     setBooks(books.map(b => b.id === updatedBook.id ? updatedBook : b));
     
-    // Check for promotion
     if (updatedBook.status === 'Completed' && onPromote) {
       onPromote(updatedBook);
     }
@@ -235,22 +234,16 @@ export function ReadingQueue({ onPromote }: ReadingQueueProps) {
 
   const handleDeleteBook = (id: string) => {
     const remaining = books.filter(b => b.id !== id);
-    // Re-index order numbers
     setBooks(remaining.map((b, i) => ({ ...b, order: i + 1 })));
   };
 
   const filteredBooks = books.filter(b => 
     b.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (b.author || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
     (b.category && b.category.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  if (!isLoaded) return (
-    <div className="animate-pulse space-y-4">
-      {[1, 2, 3].map(i => (
-        <div key={i} className="h-20 bg-zinc-100 dark:bg-zinc-800/50 rounded-2xl w-full"></div>
-      ))}
-    </div>
-  );
+  if (!isLoaded) return <div className="h-40 animate-pulse bg-zinc-100 dark:bg-zinc-800 rounded-3xl" />;
 
   return (
     <div className="w-full">
@@ -260,7 +253,7 @@ export function ReadingQueue({ onPromote }: ReadingQueueProps) {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
           <input
             type="text"
-            placeholder="Search books or categories..."
+            placeholder="Search books, authors or categories..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl pl-11 pr-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500/50 shadow-sm transition-all"
@@ -320,22 +313,6 @@ export function ReadingQueue({ onPromote }: ReadingQueueProps) {
         </DndContext>
       )}
 
-      {/* Info Card */}
-      <div className="mt-12 p-6 bg-teal-50/50 dark:bg-teal-500/5 border border-teal-100/50 dark:border-teal-500/10 rounded-3xl flex flex-col sm:flex-row items-center gap-6">
-        <div className="w-12 h-12 bg-white dark:bg-zinc-900 rounded-2xl flex items-center justify-center shadow-sm text-teal-500 flex-shrink-0">
-          <TrendingUp size={24} />
-        </div>
-        <div>
-          <h4 className="text-lg font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-            👉 Why this matters
-          </h4>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
-            Intentional reading gives your journey direction instead of random consumption. 
-            Prioritize your queue based on your current goals and curiosities.
-          </p>
-        </div>
-      </div>
-
       {/* Modals */}
       {(selectedBook || isAdding) && (
         <BookModal
@@ -344,6 +321,7 @@ export function ReadingQueue({ onPromote }: ReadingQueueProps) {
             id: '',
             order: books.length + 1,
             name: '',
+            author: '',
             language: 'English',
             category: 'Self-help',
             status: 'Planned',

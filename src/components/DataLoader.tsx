@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { setSyncedItem } from "@/lib/storage";
 import { getPrefixedKey } from "@/lib/keys";
 import type { Project, Task } from "./widgets/ProjectModal";
+import type { BusinessChannel } from "@/types/business";
 
 /**
  * Seeding data for new users or empty localStorage on public site.
@@ -72,6 +73,44 @@ export function DataLoader() {
         { id: crypto.randomUUID(), name: 'Deep Work', period: 'daily', records: {} }
       ];
       setSyncedItem('os_habits', JSON.stringify(SEED_HABITS));
+    }
+
+    // --- Business Channel Seeding ---
+    if (typeof window !== 'undefined' && !localStorage.getItem(getPrefixedKey('finances_business'))) {
+      const today = new Date().toISOString().split('T')[0];
+      const SEED_BUSINESSES: BusinessChannel[] = [
+        { 
+          id: crypto.randomUUID(), 
+          name: 'Personal Brand', 
+          platform: 'Instagram', 
+          contentType: 'Reel', 
+          status: 'Active', 
+          lastPostedDate: today, 
+          postingFrequency: 1, 
+          nextPostDueDate: today 
+        },
+        { 
+          id: crypto.randomUUID(), 
+          name: 'Tech Insights', 
+          platform: 'YouTube', 
+          contentType: 'Short', 
+          status: 'Active', 
+          lastPostedDate: today, 
+          postingFrequency: 2, 
+          nextPostDueDate: today 
+        },
+        { 
+          id: crypto.randomUUID(), 
+          name: 'Career Tips', 
+          platform: 'LinkedIn', 
+          contentType: 'Post', 
+          status: 'Active', 
+          lastPostedDate: today, 
+          postingFrequency: 3, 
+          nextPostDueDate: today 
+        }
+      ];
+      setSyncedItem('finances_business', JSON.stringify(SEED_BUSINESSES));
     }
   }, []);
 

@@ -2,6 +2,7 @@ export interface Book {
   id: string;
   order: number;
   name: string;
+  author: string;
   language: 'English' | 'Hindi';
   category: string;
   status: 'Planned' | 'Reading' | 'Completed';
@@ -22,11 +23,16 @@ export const BOOK_CATEGORIES = [
   'Other'
 ];
 
+export interface LogBookEntry {
+  id: string;
+  title: string;
+  author: string;
+  status: 'Completed' | 'Reading' | 'Planned' | 'None';
+}
+
 export interface MonthlyEntry {
-  english: string;
-  hindi: string;
-  englishStatus: 'Completed' | 'Reading' | 'Planned' | 'None';
-  hindiStatus: 'Completed' | 'Reading' | 'Planned' | 'None';
+  englishBooks: LogBookEntry[];
+  hindiBooks: LogBookEntry[];
 }
 
 export type YearlyLogData = Record<string, MonthlyEntry>; // Month name is key
@@ -36,6 +42,7 @@ export type MultiYearLogData = Record<number, YearlyLogData>; // Year is key
 export interface CompletedBook {
   id: string;
   name: string;
+  author: string;
   language: 'English' | 'Hindi';
   completionDate: string; // YYYY-MM-DD
   rating: number; // 1-5
@@ -43,3 +50,5 @@ export interface CompletedBook {
   wouldRecommend: boolean;
   createdAt: string;
 }
+
+export type BookSource = 'queue' | 'log';

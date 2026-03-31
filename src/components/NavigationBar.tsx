@@ -51,6 +51,12 @@ export function NavigationBar() {
             Finances
           </Link>
           <Link 
+            href="/businesses" 
+            className={`text-sm font-semibold transition-colors ${pathname === '/businesses' ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
+          >
+            Businesses
+          </Link>
+          <Link 
             href="/pantry" 
             className={`text-sm font-semibold transition-colors ${pathname === '/pantry' ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
           >

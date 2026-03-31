@@ -8,12 +8,14 @@ import {
   Repeat, 
   CircleDollarSign, 
   ShoppingBasket,
-  BookMarked
+  BookMarked,
+  Rocket
 } from 'lucide-react';
 
 export function FloatingNavbar() {
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,11 +27,34 @@ export function FloatingNavbar() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    // Initial check
-    handleScroll();
+    const checkModals = () => {
+      // Look for common modal patterns in the app
+      const modal = document.querySelector('.fixed.inset-0.z-\\[100\\]') || 
+                    document.querySelector('.fixed.inset-0.z-\\[101\\]');
+      setIsModalOpen(!!modal);
+    };
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Initial checks
+    handleScroll();
+    checkModals();
+
+    // Use MutationObserver to detect modal additions/removals
+    const observer = new MutationObserver(() => {
+      checkModals();
+    });
+
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true,
+      attributeFilter: ['class'] 
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
+    };
   }, []);
 
   const navItems = [
@@ -38,13 +63,14 @@ export function FloatingNavbar() {
     { name: 'Habits', href: '/habits', icon: Repeat },
     { name: 'Books', href: '/books', icon: BookMarked },
     { name: 'Finances', href: '/finances', icon: CircleDollarSign },
+    { name: 'Businesses', href: '/businesses', icon: Rocket },
     { name: 'Pantry', href: '/pantry', icon: ShoppingBasket },
   ];
 
   return (
     <div 
-      className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${
-        isVisible 
+      className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-[999] transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${
+        isVisible && !isModalOpen 
           ? 'opacity-100 translate-y-0 scale-100' 
           : 'opacity-0 translate-y-12 scale-90 pointer-events-none'
       }`}
@@ -62,25 +88,13 @@ export function FloatingNavbar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl transition-all duration-300 group ${
+              className={`relative flex items-center justify-center p-3 rounded-xl transition-all duration-300 group ${
                 isActive 
-                  ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-lg shadow-zinc-900/20 dark:shadow-white/10' 
+                  ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-xl shadow-zinc-900/20 dark:shadow-white/10' 
                   : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800'
               }`}
             >
-              <Icon size={20} className={`${isActive ? 'scale-110' : 'group-hover:scale-110'} transition-transform duration-300`} />
-              <span className={`text-xs font-bold overflow-hidden transition-all duration-500 ease-in-out ${
-                isActive ? 'max-w-24 opacity-100' : 'max-w-0 opacity-0'
-              }`}>
-                {item.name}
-              </span>
-              
-              {/* Tooltip for non-active items */}
-              {!isActive && (
-                <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none whitespace-nowrap shadow-xl border border-white/10 dark:border-zinc-900/10 uppercase tracking-[0.15em] font-black translate-y-1 group-hover:translate-y-0">
-                  {item.name}
-                </div>
-              )}
+              <Icon size={22} className={`${isActive ? 'scale-110' : 'group-hover:scale-110'} transition-transform duration-300`} />
 
               {/* Ping effect for active item */}
               {isActive && (

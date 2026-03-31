@@ -8,10 +8,10 @@ import {
   CheckCircle2, 
   Clock, 
   MoreVertical,
-  Book as BookIcon,
+  Search,
   Plus
 } from 'lucide-react';
-import { MultiYearLogData, MonthlyEntry, YearlyLogData } from '@/types/books';
+import { MultiYearLogData, MonthlyEntry, YearlyLogData, LogBookEntry } from '@/types/books';
 import { setSyncedItem } from '@/lib/storage';
 import { getPrefixedKey } from '@/lib/keys';
 
@@ -20,7 +20,7 @@ const MONTHS = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-type Status = MonthlyEntry['englishStatus'];
+type Status = LogBookEntry['status'];
 
 const STATUS_ICONS: Record<Status, React.ReactNode> = {
   'Completed': <CheckCircle2 size={14} className="text-teal-500" />,
@@ -31,23 +31,72 @@ const STATUS_ICONS: Record<Status, React.ReactNode> = {
 
 const STATUS_OPTIONS: Status[] = ['None', 'Planned', 'Reading', 'Completed'];
 
-export function YearlyReadingLog() {
+export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, author: string, language: 'English' | 'Hindi') => void }) {
   const [data, setData] = useState<MultiYearLogData>({});
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [searchQuery, setSearchQuery] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
-  const [editingCell, setEditingCell] = useState<{ month: string, type: 'english' | 'hindi' } | null>(null);
   const dataRef = React.useRef(data);
 
   useEffect(() => {
     dataRef.current = data;
   }, [data]);
 
+  const migrateData = (oldData: any): MultiYearLogData => {
+    const newData: MultiYearLogData = {};
+    
+    Object.keys(oldData).forEach(yearStr => {
+      const year = parseInt(yearStr);
+      const yearEntries = oldData[year];
+      const newYearEntries: YearlyLogData = {};
+      
+      Object.keys(yearEntries).forEach(month => {
+        const entry = yearEntries[month];
+        // Check if it's the old format
+        if (entry && ('english' in entry || 'hindi' in entry)) {
+          const englishBooks: LogBookEntry[] = [];
+          const hindiBooks: LogBookEntry[] = [];
+          
+          if (entry.english) {
+            englishBooks.push({ 
+              id: crypto.randomUUID(), 
+              title: entry.english, 
+              author: '', 
+              status: entry.englishStatus || 'None' 
+            });
+          }
+          if (entry.hindi) {
+            hindiBooks.push({ 
+              id: crypto.randomUUID(), 
+              title: entry.hindi, 
+              author: '', 
+              status: entry.hindiStatus || 'None' 
+            });
+          }
+          
+          newYearEntries[month] = { englishBooks, hindiBooks };
+        } else if (entry) {
+          // Ensure every book has an author field
+          const englishBooks = (entry.englishBooks || []).map((b: any) => ({ ...b, author: b.author || '' }));
+          const hindiBooks = (entry.hindiBooks || []).map((b: any) => ({ ...b, author: b.author || '' }));
+          newYearEntries[month] = { englishBooks, hindiBooks };
+        } else {
+          newYearEntries[month] = { englishBooks: [], hindiBooks: [] };
+        }
+      });
+      newData[year] = newYearEntries;
+    });
+    
+    return newData;
+  };
+
   // Load data
   useEffect(() => {
     const stored = localStorage.getItem(getPrefixedKey('os_books_yearly_log'));
     if (stored) {
       try {
-        setData(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        setData(migrateData(parsed));
       } catch (e) {
         console.error('Failed to parse yearly log data', e);
       }
@@ -60,8 +109,9 @@ export function YearlyReadingLog() {
         if (val) {
           try {
             const newVal = JSON.parse(val);
-            if (JSON.stringify(newVal) !== JSON.stringify(dataRef.current)) {
-              setData(newVal);
+            const migrated = migrateData(newVal);
+            if (JSON.stringify(migrated) !== JSON.stringify(dataRef.current)) {
+              setData(migrated);
             }
           } catch (e) {}
         }
@@ -83,19 +133,55 @@ export function YearlyReadingLog() {
     return data[year] || {};
   };
 
-  const updateEntry = (month: string, type: 'english' | 'hindi', field: 'title' | 'status', value: string) => {
+  const updateBook = (month: string, type: 'english' | 'hindi', bookId: string, updates: Partial<LogBookEntry>) => {
     setData(prev => {
       const yearData = { ...(prev[currentYear] || {}) };
-      const monthData = { ...(yearData[month] || { english: '', hindi: '', englishStatus: 'None', hindiStatus: 'None' }) };
+      const monthData = { ...(yearData[month] || { englishBooks: [], hindiBooks: [] }) };
+      const key = type === 'english' ? 'englishBooks' : 'hindiBooks';
       
-      if (type === 'english') {
-        if (field === 'title') monthData.english = value;
-        else monthData.englishStatus = value as Status;
-      } else {
-        if (field === 'title') monthData.hindi = value;
-        else monthData.hindiStatus = value as Status;
-      }
+      monthData[key] = monthData[key].map(book => {
+        if (book.id === bookId) {
+          const updatedBook = { ...book, ...updates };
+          // Trigger promotion if status changed to Completed
+          if (updates.status === 'Completed' && book.status !== 'Completed' && onPromote) {
+            onPromote(updatedBook.title, updatedBook.author, type === 'english' ? 'English' : 'Hindi');
+          }
+          return updatedBook;
+        }
+        return book;
+      });
 
+      yearData[month] = monthData;
+      return { ...prev, [currentYear]: yearData };
+    });
+  };
+
+  const addBook = (month: string, type: 'english' | 'hindi') => {
+    setData(prev => {
+      const yearData = { ...(prev[currentYear] || {}) };
+      const monthData = { ...(yearData[month] || { englishBooks: [], hindiBooks: [] }) };
+      const key = type === 'english' ? 'englishBooks' : 'hindiBooks';
+      
+      const newBook: LogBookEntry = {
+        id: crypto.randomUUID(),
+        title: '',
+        author: '',
+        status: 'None'
+      };
+      
+      monthData[key] = [...monthData[key], newBook];
+      yearData[month] = monthData;
+      return { ...prev, [currentYear]: yearData };
+    });
+  };
+
+  const removeBook = (month: string, type: 'english' | 'hindi', bookId: string) => {
+    setData(prev => {
+      const yearData = { ...(prev[currentYear] || {}) };
+      const monthData = { ...(yearData[month] || { englishBooks: [], hindiBooks: [] }) };
+      const key = type === 'english' ? 'englishBooks' : 'hindiBooks';
+      
+      monthData[key] = monthData[key].filter(b => b.id !== bookId);
       yearData[month] = monthData;
       return { ...prev, [currentYear]: yearData };
     });
@@ -126,6 +212,20 @@ export function YearlyReadingLog() {
             <ChevronRight size={20} />
           </button>
         </div>
+
+        <div className="flex flex-1 items-center gap-4 w-full sm:max-w-md">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={16} />
+            <input
+              type="text"
+              placeholder="Search books or authors in log..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-10 pr-4 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all placeholder:text-zinc-400"
+            />
+          </div>
+        </div>
+
         
         <div className="flex items-center gap-6 text-xs font-bold uppercase tracking-widest text-zinc-400">
           <div className="flex items-center gap-2">
@@ -144,12 +244,12 @@ export function YearlyReadingLog() {
       </div>
 
       {/* Grid Header */}
-      <div className="grid grid-cols-12 border-b border-zinc-100 dark:border-zinc-800 text-[10px] uppercase font-black text-zinc-500 tracking-[0.2em] bg-zinc-50/30 dark:bg-zinc-900/10">
-        <div className="col-span-2 px-6 py-3 border-r border-zinc-100 dark:border-zinc-800">Month</div>
-        <div className="col-span-5 px-6 py-3 border-r border-zinc-100 dark:border-zinc-800 flex items-center gap-2">
+      <div className="grid grid-cols-12 border-b border-zinc-100 dark:border-zinc-800 text-[13px] uppercase font-black text-zinc-500 tracking-[0.2em] bg-zinc-50/30 dark:bg-zinc-900/10">
+        <div className="col-span-2 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 text-center">Month</div>
+        <div className="col-span-5 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-center justify-center gap-2">
           English 📘
         </div>
-        <div className="col-span-5 px-6 py-3 flex items-center gap-2">
+        <div className="col-span-5 px-6 py-4 flex items-center justify-center gap-2">
           Hindi 📗
         </div>
       </div>
@@ -157,35 +257,72 @@ export function YearlyReadingLog() {
       {/* Grid Rows */}
       <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
         {MONTHS.map((month) => {
-          const entry = yearData[month] || { english: '', hindi: '', englishStatus: 'None', hindiStatus: 'None' };
+          const entry = yearData[month] || { englishBooks: [], hindiBooks: [] };
+          
+          const filterBooks = (books: LogBookEntry[]) => books.filter(b => 
+            b.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            b.author.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+
+          const filteredEnglish = filterBooks(entry.englishBooks);
+          const filteredHindi = filterBooks(entry.hindiBooks);
+
+          // Only skip row if search is active and both lists are empty
+          if (searchQuery && filteredEnglish.length === 0 && filteredHindi.length === 0) return null;
           
           return (
-            <div key={month} className="grid grid-cols-12 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/20 transition-colors group">
+            <div key={month} className="grid grid-cols-12 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/20 transition-colors group/row min-h-[64px]">
               {/* Month */}
-              <div className="col-span-2 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-center font-bold text-zinc-900 dark:text-zinc-100 text-sm">
-                {month}
+              <div className="col-span-2 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-center justify-center font-black text-zinc-400 dark:text-zinc-600 text-sm uppercase tracking-widest">
+                {month.slice(0, 3)}
               </div>
 
-              {/* English Book */}
-              <div className="col-span-5 px-6 py-2 border-r border-zinc-100 dark:border-zinc-800 relative">
-                <EditableCell 
-                  value={entry.english}
-                  status={entry.englishStatus}
-                  onUpdate={(title) => updateEntry(month, 'english', 'title', title)}
-                  onStatusUpdate={(status) => updateEntry(month, 'english', 'status', status)}
-                  placeholder="Enter English book..."
-                />
+              {/* English Books */}
+              <div className="col-span-5 px-4 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-start gap-3">
+                {!searchQuery && (
+                  <button 
+                    onClick={() => addBook(month, 'english')}
+                    className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300 hover:text-teal-500 hover:border-teal-500/30 hover:bg-teal-500/5 transition-all group/add"
+                    title="Add Book"
+                  >
+                    <Plus size={14} />
+                  </button>
+                )}
+                <div className="flex-1 min-w-0 space-y-3">
+                  {filteredEnglish.map(book => (
+                    <EditableBookRow 
+                      key={book.id}
+                      book={book}
+                      onUpdate={(updates) => updateBook(month, 'english', book.id, updates)}
+                      onRemove={() => removeBook(month, 'english', book.id)}
+                      placeholder="English book name..."
+                    />
+                  ))}
+                </div>
               </div>
 
-              {/* Hindi Book */}
-              <div className="col-span-5 px-6 py-2 relative">
-                <EditableCell 
-                  value={entry.hindi}
-                  status={entry.hindiStatus}
-                  onUpdate={(title) => updateEntry(month, 'hindi', 'title', title)}
-                  onStatusUpdate={(status) => updateEntry(month, 'hindi', 'status', status)}
-                  placeholder="Enter Hindi book..."
-                />
+              {/* Hindi Books */}
+              <div className="col-span-5 px-4 py-4 flex items-start gap-3">
+                {!searchQuery && (
+                  <button 
+                    onClick={() => addBook(month, 'hindi')}
+                    className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300 hover:text-rose-500 hover:border-rose-500/30 hover:bg-rose-500/5 transition-all group/add"
+                    title="Add Book"
+                  >
+                    <Plus size={14} />
+                  </button>
+                )}
+                <div className="flex-1 min-w-0 space-y-3">
+                  {filteredHindi.map(book => (
+                    <EditableBookRow 
+                      key={book.id}
+                      book={book}
+                      onUpdate={(updates) => updateBook(month, 'hindi', book.id, updates)}
+                      onRemove={() => removeBook(month, 'hindi', book.id)}
+                      placeholder="Hindi book name..."
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           );
@@ -195,86 +332,112 @@ export function YearlyReadingLog() {
   );
 }
 
-interface EditableCellProps {
-  value: string;
-  status: Status;
-  onUpdate: (val: string) => void;
-  onStatusUpdate: (status: Status) => void;
-  placeholder: string;
-}
-
-function EditableCell({ value, status, onUpdate, onStatusUpdate, placeholder }: EditableCellProps) {
+function EditableBookRow({ book, onUpdate, onRemove, placeholder }: { 
+  book: LogBookEntry, 
+  onUpdate: (updates: Partial<LogBookEntry>) => void,
+  onRemove: () => void,
+  placeholder: string 
+}) {
   const [isEditing, setIsEditing] = useState(false);
-  const [localValue, setLocalValue] = useState(value);
+  const [localTitle, setLocalTitle] = useState(book.title);
+  const [localAuthor, setLocalAuthor] = useState(book.author || '');
 
   useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
+    setLocalTitle(book.title);
+    setLocalAuthor(book.author || '');
+  }, [book.title, book.author]);
 
   const handleSubmit = () => {
-    onUpdate(localValue);
+    if (localTitle !== book.title || localAuthor !== book.author) {
+      onUpdate({ title: localTitle, author: localAuthor });
+    }
     setIsEditing(false);
   };
 
   return (
-    <div className="flex items-center gap-3 h-full">
+    <div className="flex items-center gap-2 group/book animate-in fade-in slide-in-from-left-2 duration-300">
       {/* Status Picker */}
       <div className="flex-shrink-0 group/status relative">
         <button 
           className={`w-7 h-7 flex items-center justify-center rounded-lg transition-all border ${
-            status === 'None' 
-              ? 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 bg-zinc-50 dark:bg-zinc-900' 
+            book.status === 'None' 
+              ? 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-zinc-300' 
               : 'border-transparent bg-zinc-100 dark:bg-zinc-800 shadow-sm'
           }`}
         >
-          {STATUS_ICONS[status] || <Plus size={12} className="text-zinc-400" />}
+          {STATUS_ICONS[book.status] || <Plus size={12} />}
         </button>
         
-        {/* Dropdown overlay */}
-        <div className="absolute left-0 top-full mt-1 z-20 hidden group-hover/status:flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xl p-1 w-32 animate-in fade-in slide-in-from-top-1 duration-200">
+        <div className="absolute left-0 top-full mt-1 z-20 hidden group-hover/status:flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xl p-1 w-32">
           {STATUS_OPTIONS.map((opt) => (
             <button
               key={opt}
-              onClick={() => onStatusUpdate(opt)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
-                status === opt 
+              onClick={() => onUpdate({ status: opt })}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors ${
+                book.status === opt 
                   ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white' 
                   : 'text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white'
               }`}
             >
-              {STATUS_ICONS[opt] || <div className="w-3.5 h-3.5 border border-zinc-300 dark:border-zinc-700 rounded-full"></div>}
+              {STATUS_ICONS[opt] || <div className="w-3.5 h-3.5 border border-zinc-200 dark:border-zinc-700 rounded-full"></div>}
               {opt}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Title Input/Display */}
+      {/* Title */}
       <div className="flex-1 min-w-0">
         {isEditing ? (
-          <input
-            autoFocus
-            type="text"
-            value={localValue}
-            onChange={(e) => setLocalValue(e.target.value)}
-            onBlur={handleSubmit}
-            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-            placeholder={placeholder}
-            className="w-full bg-zinc-100 dark:bg-zinc-900 border-none rounded-lg px-2 py-1.5 text-sm font-medium focus:ring-2 focus:ring-teal-500/30 text-zinc-900 dark:text-white"
-          />
+          <div className="flex flex-col gap-1">
+            <input
+              autoFocus
+              type="text"
+              value={localTitle}
+              onChange={(e) => setLocalTitle(e.target.value)}
+              onBlur={handleSubmit}
+              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+              placeholder={placeholder}
+              className="w-full bg-zinc-100 dark:bg-zinc-800 border-none rounded-md px-2 py-1 text-xs font-bold focus:ring-2 focus:ring-teal-500/30 text-zinc-900 dark:text-white"
+            />
+            <input
+              type="text"
+              value={localAuthor}
+              onChange={(e) => setLocalAuthor(e.target.value)}
+              onBlur={handleSubmit}
+              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+              placeholder="Author..."
+              className="w-full bg-zinc-50 dark:bg-zinc-900/50 border-none rounded-md px-2 py-0.5 text-[11px] font-black uppercase tracking-wider focus:ring-1 focus:ring-zinc-500/30 text-zinc-500 dark:text-zinc-400"
+            />
+          </div>
         ) : (
           <div 
             onClick={() => setIsEditing(true)}
-            className={`cursor-pointer text-sm font-bold truncate transition-colors min-h-[1.25rem] ${
-              value 
-                ? 'text-zinc-800 dark:text-zinc-200' 
-                : 'text-zinc-300 dark:text-zinc-700 italic font-normal text-xs'
-            }`}
+            className="cursor-pointer transition-colors"
           >
-            {value || placeholder}
+            <div className={`text-base font-black leading-tight truncate ${
+              book.title 
+                ? 'text-zinc-800 dark:text-zinc-200' 
+                : 'text-zinc-300 dark:text-zinc-700 italic font-normal'
+            }`}>
+              {book.title || placeholder}
+            </div>
+            {book.author && (
+              <div className="text-xs font-black uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mt-1 truncate">
+                {book.author}
+              </div>
+            )}
           </div>
         )}
       </div>
+
+      {/* Actions */}
+      <button 
+        onClick={onRemove}
+        className="opacity-0 group-hover/book:opacity-100 p-1 text-zinc-300 hover:text-rose-500 transition-all"
+      >
+        <Plus size={12} className="rotate-45" />
+      </button>
     </div>
   );
 }

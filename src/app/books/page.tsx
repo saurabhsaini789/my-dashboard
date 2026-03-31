@@ -22,6 +22,20 @@ export default function BooksPage() {
     setPromotedBook(book);
   };
 
+  const handleLogPromote = (name: string, author: string, language: 'English' | 'Hindi') => {
+    const dummyBook: Book = {
+      id: `log-${crypto.randomUUID()}`,
+      order: 0,
+      name,
+      author,
+      language,
+      category: 'Other',
+      status: 'Completed',
+      createdAt: new Date().toISOString()
+    };
+    setPromotedBook(dummyBook);
+  };
+
   const finalizePromotion = (completedDetails: CompletedBook) => {
     // 1. Add to Completed Books list
     const storedCompleted = localStorage.getItem(getPrefixedKey('os_books_completed'));
@@ -34,20 +48,22 @@ export default function BooksPage() {
     completedBooks = [completedDetails, ...completedBooks];
     setSyncedItem('os_books_completed', JSON.stringify(completedBooks));
 
-    // 2. Remove from Queue
-    const storedQueue = localStorage.getItem(getPrefixedKey('os_books_queue'));
-    if (storedQueue) {
-      try {
-        const queue: Book[] = JSON.parse(storedQueue);
-        const updatedQueue = queue.filter(b => b.id !== promotedBook?.id);
-        // Re-index
-        const reindexed = updatedQueue.map((b, i) => ({ ...b, order: i + 1 }));
-        setSyncedItem('os_books_queue', JSON.stringify(reindexed));
-      } catch (e) {}
+    // 2. Remove from Queue (only if it came from the queue)
+    if (promotedBook && !promotedBook.id.startsWith('log-')) {
+      const storedQueue = localStorage.getItem(getPrefixedKey('os_books_queue'));
+      if (storedQueue) {
+        try {
+          const queue: Book[] = JSON.parse(storedQueue);
+          const updatedQueue = queue.filter(b => b.id !== promotedBook?.id);
+          // Re-index
+          const reindexed = updatedQueue.map((b, i) => ({ ...b, order: i + 1 }));
+          setSyncedItem('os_books_queue', JSON.stringify(reindexed));
+        } catch (e) {}
+      }
+      window.dispatchEvent(new CustomEvent('local-storage-change', { detail: { key: 'os_books_queue' } }));
     }
 
     setPromotedBook(null);
-    window.dispatchEvent(new CustomEvent('local-storage-change', { detail: { key: 'os_books_queue' } }));
     window.dispatchEvent(new CustomEvent('local-storage-change', { detail: { key: 'os_books_completed' } }));
   };
 
@@ -59,28 +75,18 @@ export default function BooksPage() {
         {/* Header Section */}
         <header className="mb-20 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
           <div className="space-y-4">
-            <div className="flex items-center justify-center md:justify-start gap-2 text-teal-600 dark:text-teal-400 font-bold uppercase tracking-widest text-[10px]">
-              <Sparkles size={14} className="animate-pulse" />
-              Intellectual Growth
-            </div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight text-zinc-900 dark:text-white flex items-center justify-center md:justify-start gap-6">
-              <span className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 p-3 rounded-3xl shadow-2xl shadow-zinc-900/20 dark:shadow-white/10 rotate-[-2deg]">
-                <BookMarked size={48} />
-              </span>
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-zinc-900 dark:text-white">
               Books
             </h1>
-            <p className="text-xl text-zinc-500 dark:text-zinc-400 mt-6 font-medium max-w-xl leading-relaxed">Track your reading queue, log your yearly progress, and distill wisdom from completed gems.</p>
+            <p className="text-xl text-zinc-500 dark:text-zinc-400 mt-6 font-medium max-w-xl leading-relaxed">Track your reading journey, yearly progress, and distilled wisdom.</p>
           </div>
         </header>
 
         {/* Section 1: Reading Plan */}
         <section className="w-full relative fade-in">
-          <div className="flex items-center gap-3 mb-8 px-2">
-            <div className="w-10 h-10 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-xl shadow-sm">
-              📚
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
-              1. Reading Plan <span className="text-zinc-400 dark:text-zinc-500 font-medium ml-1">(Your Queue)</span>
+          <div className="mb-10 px-2">
+            <h2 className="text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
+              Reading Plan
             </h2>
           </div>
           
@@ -88,27 +94,21 @@ export default function BooksPage() {
         </section>
 
         {/* Section 2: Yearly Reading Log */}
-        <section className="w-full relative mt-24 fade-in">
-          <div className="flex items-center gap-3 mb-8 px-2">
-            <div className="w-10 h-10 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-xl shadow-sm">
-              📅
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
-              2. Yearly Reading Log <span className="text-zinc-400 dark:text-zinc-500 font-medium ml-1">(Main View)</span>
+        <section className="w-full relative mt-32 fade-in">
+          <div className="mb-10 px-2">
+            <h2 className="text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
+              Yearly Reading Log
             </h2>
           </div>
           
-          <YearlyReadingLog />
+          <YearlyReadingLog onPromote={handleLogPromote} />
         </section>
 
-        {/* Section 3: Completed Books + Notes */}
-        <section className="w-full relative mt-24 fade-in">
-          <div className="flex items-center gap-3 mb-8 px-2">
-            <div className="w-10 h-10 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-xl shadow-sm">
-              ✅
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
-              3. Completed Books + Notes <span className="text-zinc-400 dark:text-zinc-500 font-medium ml-1">(Most Valuable Section)</span>
+        {/* Section 3: Completed Books */}
+        <section className="w-full relative mt-32 fade-in">
+          <div className="mb-10 px-2">
+            <h2 className="text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
+              Completed Books
             </h2>
           </div>
           
@@ -130,6 +130,7 @@ export default function BooksPage() {
           book={{
             id: crypto.randomUUID(),
             name: promotedBook.name,
+            author: promotedBook.author,
             language: promotedBook.language,
             completionDate: new Date().toISOString().split('T')[0],
             rating: 5,

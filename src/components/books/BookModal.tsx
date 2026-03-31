@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import type { Book } from '@/types/books';
 import { BOOK_CATEGORIES } from '@/types/books';
-import { X, Save, Trash2, Star, Globe, BookOpen, Clock, CheckCircle2 } from 'lucide-react';
+import { X, Save, Trash2, Globe, BookOpen, Clock, CheckCircle2, User } from 'lucide-react';
 
 interface BookModalProps {
   book: Book;
@@ -15,6 +15,7 @@ interface BookModalProps {
 
 export function BookModal({ book, onClose, onUpdateBook, onDeleteBook, mode = 'edit' }: BookModalProps) {
   const [name, setName] = useState(book.name);
+  const [author, setAuthor] = useState(book.author || '');
   const [language, setLanguage] = useState<Book['language']>(book.language);
   const [category, setCategory] = useState(book.category);
   const [status, setStatus] = useState<Book['status']>(book.status);
@@ -26,6 +27,7 @@ export function BookModal({ book, onClose, onUpdateBook, onDeleteBook, mode = 'e
     onUpdateBook({
       ...book,
       name: name.trim(),
+      author: author.trim(),
       language,
       category,
       status,
@@ -71,6 +73,21 @@ export function BookModal({ book, onClose, onUpdateBook, onDeleteBook, mode = 'e
                   onChange={(e) => setName(e.target.value)}
                   className="w-full bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 font-medium"
                   required
+                />
+              </div>
+            </div>
+
+            {/* Author */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] uppercase font-bold text-zinc-500 tracking-wider">Author</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Enter author name..."
+                  value={author}
+                  onChange={(e) => setAuthor(e.target.value)}
+                  className="w-full bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl pl-10 pr-4 py-2.5 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500/50 font-medium"
                 />
               </div>
             </div>

@@ -12,7 +12,8 @@ import {
   ThumbsUp, 
   ThumbsDown,
   Globe,
-  BookOpen
+  BookOpen,
+  User
 } from 'lucide-react';
 
 interface CompletedBookModalProps {
@@ -25,6 +26,7 @@ interface CompletedBookModalProps {
 
 export function CompletedBookModal({ book, onClose, onUpdateBook, onDeleteBook, mode = 'edit' }: CompletedBookModalProps) {
   const [name, setName] = useState(book.name);
+  const [author, setAuthor] = useState(book.author || '');
   const [language, setLanguage] = useState<CompletedBook['language']>(book.language);
   const [completionDate, setCompletionDate] = useState(book.completionDate);
   const [rating, setRating] = useState(book.rating);
@@ -38,6 +40,7 @@ export function CompletedBookModal({ book, onClose, onUpdateBook, onDeleteBook, 
     onUpdateBook({
       ...book,
       name: name.trim(),
+      author: author.trim(),
       language,
       completionDate,
       rating,
@@ -90,6 +93,21 @@ export function CompletedBookModal({ book, onClose, onUpdateBook, onDeleteBook, 
                   onChange={(e) => setName(e.target.value)}
                   className="w-full bg-zinc-50 dark:bg-zinc-900/50 border-2 border-zinc-100 dark:border-zinc-800 rounded-2xl pl-12 pr-4 py-3.5 text-zinc-900 dark:text-white focus:outline-none focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/5 transition-all font-bold text-lg"
                   required
+                />
+              </div>
+            </div>
+
+            {/* Author */}
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase font-black text-zinc-400 tracking-[0.2em] ml-1">Author</label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Who wrote this book?"
+                  value={author}
+                  onChange={(e) => setAuthor(e.target.value)}
+                  className="w-full bg-zinc-50 dark:bg-zinc-900/50 border-2 border-zinc-100 dark:border-zinc-800 rounded-2xl pl-12 pr-4 py-3.5 text-zinc-900 dark:text-white focus:outline-none focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/5 transition-all font-bold"
                 />
               </div>
             </div>

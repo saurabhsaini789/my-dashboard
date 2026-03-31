@@ -39,7 +39,9 @@ export default function RootLayout({
           <SyncProvider>
             <SyncManager />
             <NavigationBar />
-            {children}
+            <div className="pb-32">
+              {children}
+            </div>
             <FloatingNavbar />
           </SyncProvider>
         </AuthGuard>
