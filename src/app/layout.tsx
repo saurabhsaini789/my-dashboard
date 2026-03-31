@@ -23,6 +23,7 @@ export const metadata: Metadata = {
 };
 
 import { SyncProvider } from "@/context/SyncContext";
+import { FloatingNavbar } from "@/components/FloatingNavbar";
 
 export default function RootLayout({
   children,
@@ -39,6 +40,7 @@ export default function RootLayout({
             <SyncManager />
             <NavigationBar />
             {children}
+            <FloatingNavbar />
           </SyncProvider>
         </AuthGuard>
       </body>

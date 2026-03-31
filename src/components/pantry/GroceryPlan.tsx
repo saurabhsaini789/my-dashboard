@@ -5,7 +5,7 @@ import { GroceryPlanItem, ExpenseRecord } from '@/types/finance';
 import { SYNC_KEYS } from '@/lib/sync-keys';
 import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
-import { convertToINR, getExchangeRate } from '@/lib/finances';
+import { convertToINR, convertToCAD, getExchangeRate } from '@/lib/finances';
 
 interface GroceryPlanProps {
   records: ExpenseRecord[];
@@ -133,7 +133,7 @@ export function GroceryPlan({ records }: GroceryPlanProps) {
     return map;
   }, [currentMonthRecords]);
 
-  const { plannedTotalINR, projectedTotalINR } = useMemo(() => {
+  const { plannedTotalINR, projectedTotalINR, plannedTotalCAD, projectedTotalCAD } = useMemo(() => {
     let planned = 0;
     let projected = 0;
     items.forEach(item => {
@@ -164,7 +164,12 @@ export function GroceryPlan({ records }: GroceryPlanProps) {
       }
     });
 
-    return { plannedTotalINR: planned, projectedTotalINR: projected };
+    return { 
+      plannedTotalINR: planned, 
+      projectedTotalINR: projected,
+      plannedTotalCAD: convertToCAD(planned),
+      projectedTotalCAD: convertToCAD(projected)
+    };
   }, [items, currentMonthRecords, loggedQuantitiesByName]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -238,12 +243,18 @@ export function GroceryPlan({ records }: GroceryPlanProps) {
          <div className="flex gap-4 md:gap-8 relative z-10">
             <div className="flex flex-col items-start md:items-end">
                <span className="text-xs uppercase tracking-widest text-zinc-500 font-bold">Planned Cost</span>
-               <span className="text-2xl md:text-3xl font-bold tracking-tight">₹{plannedTotalINR.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+               <span className="text-2xl md:text-3xl font-bold tracking-tight">
+                  ₹{plannedTotalINR.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                  <span className="text-sm md:text-lg opacity-40 ml-2 font-medium tracking-normal">(C${plannedTotalCAD.toLocaleString('en-CA', { maximumFractionDigits: 0 })})</span>
+               </span>
             </div>
             <div className="w-px h-12 bg-zinc-800 hidden md:block" />
             <div className="flex flex-col items-start md:items-end">
                <span className="text-xs uppercase tracking-widest text-teal-500/80 font-bold">Projected</span>
-               <span className="text-2xl md:text-3xl font-bold tracking-tight text-teal-400">₹{projectedTotalINR.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+               <span className="text-2xl md:text-3xl font-bold tracking-tight text-teal-400">
+                  ₹{projectedTotalINR.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                  <span className="text-sm md:text-lg opacity-60 ml-2 font-medium tracking-normal text-teal-500/50">(C${projectedTotalCAD.toLocaleString('en-CA', { maximumFractionDigits: 0 })})</span>
+               </span>
             </div>
          </div>
       </div>
@@ -390,10 +401,10 @@ export function GroceryPlan({ records }: GroceryPlanProps) {
                                     <td className="p-4 text-right">
                                        <div className="flex flex-col items-end gap-0.5">
                                           <span className="text-sm font-bold tracking-tight text-zinc-900 dark:text-white">
-                                             C${item.currency === 'CAD' ? localCost.toLocaleString('en-CA') : convertToINR(localCost, 'INR', 1 / getExchangeRate()).toLocaleString('en-CA', { maximumFractionDigits: 1 })}
+                                                 ₹{totalItemCostINR.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                                           </span>
                                           <span className="text-[10px] text-zinc-500 font-medium">
-                                             ₹{totalItemCostINR.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                                             (C${convertToCAD(totalItemCostINR).toLocaleString('en-CA', { maximumFractionDigits: 1 })})
                                           </span>
                                        </div>
                                     </td>

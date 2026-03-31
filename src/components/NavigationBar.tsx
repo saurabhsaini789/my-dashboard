@@ -39,6 +39,12 @@ export function NavigationBar() {
             Habits
           </Link>
           <Link 
+            href="/books" 
+            className={`text-sm font-semibold transition-colors ${pathname === '/books' ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
+          >
+            Books
+          </Link>
+          <Link 
             href="/finances" 
             className={`text-sm font-semibold transition-colors ${pathname === '/finances' ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
           >

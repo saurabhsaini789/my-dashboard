@@ -77,16 +77,7 @@ export const getProjectPriorityInfo = (p: Project) => {
     };
   }
 
-  if (urgency === 'upcoming') {
-    return {
-      label: 'Upcoming',
-      icon: '🟡',
-      color: 'yellow',
-      classes: 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 shadow-sm shadow-amber-500/5'
-    };
-  }
-
-  // On Track
+  // Priority to Important focus (Strategic)
   if (isImportant) {
     return {
       label: 'Strategic',
@@ -96,6 +87,16 @@ export const getProjectPriorityInfo = (p: Project) => {
     };
   }
 
+  if (urgency === 'upcoming') {
+    return {
+      label: 'Upcoming',
+      icon: '🟡',
+      color: 'yellow',
+      classes: 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 shadow-sm shadow-amber-500/5'
+    };
+  }
+
+  // On Track (Not Important, >21 days)
   return {
     label: 'On Track',
     icon: '🟢',

@@ -25,6 +25,15 @@ export const convertToINR = (amount: number, currency: 'INR' | 'CAD' = 'INR', ra
 };
 
 /**
+ * Converts an amount from INR to CAD.
+ */
+export const convertToCAD = (amount: number, currency: 'INR' | 'CAD' = 'INR', rate?: number): number => {
+  if (currency === 'CAD') return amount;
+  const currentRate = rate || getExchangeRate();
+  return amount / currentRate;
+};
+
+/**
  * Calculates the current balance of an asset considering its initial value,
  * contributions/withdrawals, and compound growth rate.
  */

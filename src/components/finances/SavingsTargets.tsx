@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
-import { getExchangeRate, convertToINR } from '@/lib/finances';
+import { getExchangeRate, convertToINR, convertToCAD } from '@/lib/finances';
 import { SYNC_KEYS } from '@/lib/sync-keys';
 
 interface Contribution {
@@ -303,7 +303,11 @@ export function SavingsTargets() {
                             <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mb-2 text-right">
                                 ₹{(currentTotal || 0).toLocaleString('en-IN')} / ₹{(goal.targetAmount || 0).toLocaleString('en-IN')}
                                 <br />
-                                <span className="text-zinc-500 dark:text-zinc-500">₹{(remaining || 0).toLocaleString('en-IN')} Left</span>
+                                <span className="text-[10px] text-zinc-500 lowercase tracking-tight font-medium">
+                                    (CAD ${(convertToCAD(currentTotal || 0)).toLocaleString('en-US', { maximumFractionDigits: 0 })} / ${(convertToCAD(goal.targetAmount || 0)).toLocaleString('en-US', { maximumFractionDigits: 0 })})
+                                </span>
+                                <br />
+                                <span className="text-zinc-500 dark:text-zinc-500">₹{(remaining || 0).toLocaleString('en-IN')} Left (CAD ${convertToCAD(remaining || 0).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
                             </span>
                         </div>
                         <div className="h-4 w-full bg-zinc-50 dark:bg-zinc-800/50 rounded-full overflow-hidden border border-zinc-100 dark:border-zinc-800/50 p-1">
@@ -331,6 +335,7 @@ export function SavingsTargets() {
                             <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest leading-tight">Required Monthly Contribution</span>
                             <span className="text-blue-500">
                                 ₹{(Math.ceil(requiredMonthly) || 0).toLocaleString('en-IN')}/mo
+                                <span className="text-[10px] ml-1 opacity-70">(CAD ${convertToCAD(requiredMonthly || 0).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
                             </span>
                         </div>
                     </div>
@@ -369,7 +374,7 @@ export function SavingsTargets() {
                             <div key={c.id} className="flex justify-between items-center p-3 bg-zinc-50 dark:bg-zinc-800/30 rounded-2xl border border-zinc-100 dark:border-zinc-800/50">
                                 <div className="flex flex-col">
                                     <span className="text-xs text-zinc-900 dark:text-zinc-100">
-                                        +{(c.currency === 'CAD' ? 'C$' : '₹')}{(c.amount || 0).toLocaleString('en-IN')}
+                                        {c.currency === 'CAD' ? `C$${(c.amount || 0).toLocaleString('en-IN')} (₹${convertToINR(c.amount, 'CAD').toLocaleString('en-IN', { maximumFractionDigits: 0 })})` : `₹${(c.amount || 0).toLocaleString('en-IN')} (CAD $${convertToCAD(c.amount).toLocaleString('en-US', { maximumFractionDigits: 0 })})`}
                                     </span>
                                     <span className="text-xs text-zinc-500 dark:text-zinc-400">{new Date(c.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: '2-digit' })}</span>
                                 </div>
@@ -513,34 +518,39 @@ export function SavingsTargets() {
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar">
-                <div className="flex flex-col gap-3">
-                  {(goals.find(g => g.id === historyGoalId)?.contributions || []).map(c => (
-                    <div key={c.id} className="flex justify-between items-center p-5 bg-zinc-50 dark:bg-zinc-800/30 rounded-3xl border border-zinc-100 dark:border-zinc-800/50 group">
-                      <div className="flex flex-col">
-                        <span className="text-lg text-zinc-900 dark:text-zinc-100">
-                            {c.currency === 'CAD' ? 'C$' : '₹'}{c.amount.toLocaleString('en-IN')}
-                        </span>
-                        <span className="text-xs text-zinc-600 uppercase tracking-widest">{new Date(c.date).toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-                      </div>
-                      <button onClick={() => deleteContribution(historyGoalId, c.id)} className="p-2 text-zinc-400 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                      </button>
-                    </div>
-                  ))}
-                  {goals.find(g => g.id === historyGoalId)?.initialAmount! > 0 && (
-                      <div className="flex justify-between items-center p-5 bg-blue-50/20 dark:bg-blue-500/5 rounded-3xl border border-blue-100/50 dark:border-blue-900/30">
-                        <div className="flex flex-col">
-                            <span className="text-lg text-blue-600 dark:text-blue-400">
-                                {goals.find(g => g.id === historyGoalId)?.initialCurrency === 'CAD' ? 'C$' : '₹'}
-                                {goals.find(g => g.id === historyGoalId)?.initialAmount.toLocaleString('en-IN')}
+               <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar">
+                {(() => {
+                  const goal = goals.find(g => g.id === historyGoalId);
+                  if (!goal) return null;
+                  return (
+                    <div className="flex flex-col gap-3">
+                      {(goal.contributions || []).map(c => (
+                        <div key={c.id} className="flex justify-between items-center p-5 bg-zinc-50 dark:bg-zinc-800/30 rounded-3xl border border-zinc-100 dark:border-zinc-800/50 group">
+                          <div className="flex flex-col">
+                            <span className="text-lg text-zinc-900 dark:text-zinc-100">
+                                {c.currency === 'CAD' ? `C$${c.amount.toLocaleString('en-IN')} (₹${convertToINR(c.amount, 'CAD').toLocaleString('en-IN', { maximumFractionDigits: 0 })})` : `₹${c.amount.toLocaleString('en-IN')} (CAD $${convertToCAD(c.amount).toLocaleString('en-US', { maximumFractionDigits: 0 })})`}
                             </span>
-                            <span className="text-xs text-blue-500/50 uppercase tracking-widest">Starting Balance</span>
+                            <span className="text-xs text-zinc-600 uppercase tracking-widest">{new Date(c.date).toLocaleDateString('en-IN', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                          </div>
+                          <button onClick={() => deleteContribution(historyGoalId, c.id)} className="p-2 text-zinc-400 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                          </button>
                         </div>
-                        <div className="text-xs text-blue-500/40 uppercase tracking-widest px-3 py-1.5 bg-blue-50/50 dark:bg-blue-500/10 rounded-xl">Init</div>
-                      </div>
-                  )}
-                </div>
+                      ))}
+                      {goal.initialAmount > 0 && (
+                          <div className="flex justify-between items-center p-5 bg-blue-50/20 dark:bg-blue-500/5 rounded-3xl border border-blue-100/50 dark:border-blue-900/30">
+                            <div className="flex flex-col">
+                                <span className="text-lg text-blue-600 dark:text-blue-400">
+                                    {goal.initialCurrency === 'CAD' ? `C$${goal.initialAmount.toLocaleString('en-IN')} (₹${convertToINR(goal.initialAmount, 'CAD').toLocaleString('en-IN', { maximumFractionDigits: 0 })})` : `₹${goal.initialAmount.toLocaleString('en-IN')} (CAD $${convertToCAD(goal.initialAmount).toLocaleString('en-US', { maximumFractionDigits: 0 })})`}
+                                </span>
+                                <span className="text-xs text-blue-500/50 uppercase tracking-widest">Starting Balance</span>
+                            </div>
+                            <div className="text-xs text-blue-500/40 uppercase tracking-widest px-3 py-1.5 bg-blue-50/50 dark:bg-blue-500/10 rounded-xl">Init</div>
+                          </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           </div>

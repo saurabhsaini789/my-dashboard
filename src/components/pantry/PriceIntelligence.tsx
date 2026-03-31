@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { ExpenseRecord, ExpenseItem } from '@/types/finance';
+import { convertToCAD } from '@/lib/finances';
 
 interface PriceIntelligenceProps {
   records: ExpenseRecord[];
@@ -257,6 +258,11 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
                          <span className="text-3xl font-bold tracking-tighter text-zinc-900 dark:text-white leading-none">
                            <span className="text-sm font-semibold tracking-normal text-zinc-400 mr-1">{stat.currency === 'CAD' ? 'C$' : '₹'}</span>
                            {stat.lastPurchase.price.toLocaleString(stat.currency === 'CAD' ? 'en-CA' : 'en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 2 })}
+                           {stat.currency === 'INR' && (
+                             <span className="text-lg opacity-40 ml-2 font-medium tracking-normal text-zinc-400">
+                               (C${convertToCAD(stat.lastPurchase.price, 'INR').toLocaleString('en-CA', { maximumFractionDigits: 1 })})
+                             </span>
+                           )}
                          </span>
                          <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mt-1 truncate max-w-[120px]" title={stat.lastPurchase.vendor}>
                             at {stat.lastPurchase.vendor}
@@ -271,6 +277,9 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
                         <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-[0.15em]">Average</span>
                         <span className="font-bold text-zinc-700 dark:text-zinc-300">
                           {stat.currency === 'CAD' ? 'C$' : '₹'}{stat.averagePrice.toLocaleString(undefined, {maximumFractionDigits:2})}
+                          {stat.currency === 'INR' && (
+                            <span className="text-[9px] opacity-60 ml-1 font-medium">(C${convertToCAD(stat.averagePrice, 'INR').toLocaleString('en-CA', { maximumFractionDigits: 1 })})</span>
+                          )}
                         </span>
                       </div>
                       <div className="w-px h-6 bg-zinc-200 dark:bg-zinc-800 my-auto" />
@@ -278,6 +287,9 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
                         <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-[0.15em]">Lowest</span>
                         <span className="font-bold text-teal-600 dark:text-teal-400">
                           {stat.currency === 'CAD' ? 'C$' : '₹'}{stat.lowestPrice.price.toLocaleString(undefined, {maximumFractionDigits:2})}
+                          {stat.currency === 'INR' && (
+                            <span className="text-[9px] opacity-60 ml-1 font-medium">(C${convertToCAD(stat.lowestPrice.price, 'INR').toLocaleString('en-CA', { maximumFractionDigits: 1 })})</span>
+                          )}
                         </span>
                       </div>
                    </div>

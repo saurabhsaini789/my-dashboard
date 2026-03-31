@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { ExpenseRecord } from '@/types/finance';
 import { PantryEntryModal } from './PantryEntryModal';
-import { convertToINR } from '@/lib/finances';
+import { convertToINR, convertToCAD } from '@/lib/finances';
 
 interface PantryCalendarProps {
   records: ExpenseRecord[];
@@ -79,6 +79,9 @@ export function PantryCalendar({ records, onUpdateRecords }: PantryCalendarProps
           <span className="text-xs uppercase tracking-[0.3em] opacity-60">Monthly Spend</span>
           <span className="text-4xl font-bold tracking-tighter">
             ₹{monthlyTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+            <span className="text-xl opacity-60 ml-2 font-medium tracking-normal">
+              (C${convertToCAD(monthlyTotal).toLocaleString('en-CA', { maximumFractionDigits: 1 })})
+            </span>
           </span>
         </div>
         <div className="flex items-center gap-4">
@@ -131,9 +134,14 @@ export function PantryCalendar({ records, onUpdateRecords }: PantryCalendarProps
                     {day}
                   </span>
                   {totalOnDay > 0 && (
-                    <span className="text-[10px] md:text-xs font-bold tracking-tight">
-                      ₹{totalOnDay.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    </span>
+                    <div className="flex flex-col items-end">
+                      <span className="text-[10px] md:text-xs font-bold tracking-tight">
+                        ₹{totalOnDay.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                      </span>
+                      <span className="text-[8px] md:text-[9px] opacity-60 font-medium -mt-0.5">
+                        (C${convertToCAD(totalOnDay).toLocaleString('en-CA', { maximumFractionDigits: 0 })})
+                      </span>
+                    </div>
                   )}
                 </div>
 

@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
-import { getExchangeRate, calculateLiabilityBalance, type Liability, type PaymentLog } from '@/lib/finances';
+import { getExchangeRate, calculateLiabilityBalance, type Liability, type PaymentLog, convertToCAD } from '@/lib/finances';
 import { SYNC_KEYS } from '@/lib/sync-keys';
 
 export type LiabilityType = 'Home Loan' | 'Car Loan' | 'Personal Loan' | 'Credit Card' | 'Education Loan' | 'Business Loan' | 'Other';
@@ -279,6 +279,7 @@ export function LiabilitiesSection() {
                 <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-[0.2em]">Total Outstanding Debt</span>
                 <span className="text-2xl text-zinc-900 dark:text-zinc-100 tracking-tight">
                     ₹{totalDebt.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    <span className="text-sm ml-2 text-zinc-500 font-medium">(CAD ${convertToCAD(totalDebt).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
                 </span>
                 <div className="absolute -right-2 -bottom-2 opacity-5 scale-150 rotate-12 group-hover:rotate-0 transition-transform duration-500">
                     <svg className="w-20 h-20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -289,6 +290,7 @@ export function LiabilitiesSection() {
                 <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-[0.2em]">Monthly EMI Burden</span>
                 <span className="text-2xl text-zinc-900 dark:text-zinc-100 tracking-tight">
                     ₹{totalEMI.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    <span className="text-sm ml-2 text-zinc-500 font-medium">(CAD ${convertToCAD(totalEMI).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
                 </span>
                 <div className="absolute -right-2 -bottom-2 opacity-5 scale-150 rotate-12 group-hover:rotate-0 transition-transform duration-500 text-rose-500">
                     <svg className="w-20 h-20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -368,6 +370,7 @@ export function LiabilitiesSection() {
                        <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Remaining</span>
                       <span className="text-lg text-zinc-900 dark:text-zinc-100 tracking-tight">
                           ₹{calculateLiabilityBalance(liability).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                          <span className="text-[10px] ml-1.5 text-zinc-500 font-medium">(CAD ${convertToCAD(calculateLiabilityBalance(liability)).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
                       </span>
                   </div>
                   <div className="flex flex-col gap-0.5 text-right">

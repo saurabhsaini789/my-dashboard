@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
-import { calculateAssetBalance, type Asset, type Contribution } from '@/lib/finances';
+import { calculateAssetBalance, type Asset, type Contribution, convertToCAD } from '@/lib/finances';
 import { SYNC_KEYS } from '@/lib/sync-keys';
 
 export type AssetType = 'Cash' | 'Bank Balance' | 'Property' | 'Business Value' | 'Vehicle' | 'Investment' | 'Metal' | 'Loans Given';
@@ -227,6 +227,7 @@ export function AssetsSection() {
             <div className="flex items-baseline gap-3">
               <span className="text-2xl md:text-3xl text-zinc-900 dark:text-zinc-100 tracking-tight">
                 ₹{totalPortfolioValue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                <span className="text-sm ml-2 text-zinc-500 font-medium">(CAD ${convertToCAD(totalPortfolioValue).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
               </span>
               <span className="text-xs text-emerald-500 uppercase tracking-widest mb-1">Live Net Assets</span>
             </div>
@@ -273,6 +274,7 @@ export function AssetsSection() {
                  <div className="flex items-baseline gap-2">
                     <span className="text-2xl text-zinc-900 dark:text-zinc-100 tracking-tight">
                         ₹{currentValue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                        <span className="text-[10px] ml-1.5 text-zinc-500 font-medium">(CAD ${convertToCAD(currentValue).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
                     </span>
                     {(asset.contributions || []).length > 0 && asset.growthRate !== 0 && (
                         <span className={`text-xs ${asset.growthRate > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>

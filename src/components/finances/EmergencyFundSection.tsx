@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
-import { getExchangeRate, convertToINR } from '@/lib/finances';
+import { getExchangeRate, convertToINR, convertToCAD } from '@/lib/finances';
 import { SYNC_KEYS } from '@/lib/sync-keys';
 
 interface Contribution {
@@ -215,10 +215,10 @@ export function EmergencyFundSection() {
 
             <div className="flex flex-col items-center gap-2">
                 <span className="text-2xl text-zinc-900 dark:text-white tracking-tighter">
-                    ₹{(totalSaved || 0).toLocaleString('en-IN')} Saved
+                    ₹{(totalSaved || 0).toLocaleString('en-IN')} Saved (CAD ${convertToCAD(totalSaved).toLocaleString('en-US', { maximumFractionDigits: 0 })})
                 </span>
                 <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-[0.2em]">
-                    Target: ₹{(data.targetAmount || 0).toLocaleString('en-IN')}
+                    Target: ₹{(data.targetAmount || 0).toLocaleString('en-IN')} (CAD ${convertToCAD(data.targetAmount).toLocaleString('en-US', { maximumFractionDigits: 0 })})
                 </span>
             </div>
           </div>
@@ -232,13 +232,14 @@ export function EmergencyFundSection() {
                     <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mb-3 block">Ideal Monthly Expense</span>
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl text-zinc-900 dark:text-white tracking-tighter">₹{(data.monthlyExpenses || 0).toLocaleString('en-IN')}</span>
-                        <span className="text-xs text-zinc-600 dark:text-zinc-400">/mo</span>
+                        <span className="text-xs text-zinc-600 dark:text-zinc-400"> (CAD ${convertToCAD(data.monthlyExpenses).toLocaleString('en-US', { maximumFractionDigits: 0 })}) /mo</span>
                     </div>
                 </div>
                 <div className="bg-zinc-50 dark:bg-zinc-800/30 rounded-3xl p-6 border border-zinc-100 dark:border-zinc-800/50">
                     <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest mb-3 block">Remaining Goal</span>
                     <div className="flex items-baseline gap-1">
                         <span className="text-2xl text-zinc-900 dark:text-white tracking-tighter">₹{(remaining || 0).toLocaleString('en-IN')}</span>
+                        <span className="text-xs text-zinc-600 dark:text-zinc-400"> (CAD ${convertToCAD(remaining).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
                     </div>
                 </div>
             </div>

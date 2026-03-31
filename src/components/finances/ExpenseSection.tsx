@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
-import { calculateAssetBalance } from '@/lib/finances';
+import { calculateAssetBalance, convertToCAD, convertToINR, getExchangeRate } from '@/lib/finances';
 import { ExpenseMetrics } from './ExpenseMetrics';
 import { MultiSelectDropdown } from '../ui/MultiSelectDropdown';
 import { MONTHS, YEARS } from '@/lib/constants';
@@ -430,13 +430,13 @@ export function ExpenseSection() {
                                   </td>
                                    <td className="px-4 py-5 text-right">
                                        <span className="text-base text-zinc-900 dark:text-zinc-100 tracking-tighter">
-                                           {record.currency === 'CAD' ? 'C$' : '₹'}{record.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                           {record.currency === 'CAD' ? `C${record.amount.toLocaleString('en-IN')}` : `₹${record.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`}
                                        </span>
-                                       {record.currency === 'CAD' && (
-                                           <div className="text-[10px] text-zinc-500 uppercase tracking-tighter">
-                                               CAD Record
-                                           </div>
-                                       )}
+                                       <span className="text-[10px] text-zinc-500 uppercase tracking-tighter block text-right">
+                                           {record.currency === 'CAD' 
+                                            ? `(₹${convertToINR(record.amount, 'CAD').toLocaleString('en-IN', { maximumFractionDigits: 0 })})` 
+                                            : `(CAD ${convertToCAD(record.amount).toLocaleString('en-US', { maximumFractionDigits: 0 })})`}
+                                       </span>
                                    </td>
                                   <td className="px-4 py-5 text-right">
                                       <button 

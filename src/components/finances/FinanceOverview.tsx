@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { getPrefixedKey } from '@/lib/keys';
 import { MultiSelectDropdown } from '../ui/MultiSelectDropdown';
 import { MONTHS, YEARS } from '@/lib/constants';
-import { getExchangeRate, convertToINR, calculateAssetBalance, calculateLiabilityBalance, type Asset, type Liability } from '@/lib/finances';
+import { getExchangeRate, convertToINR, convertToCAD, calculateAssetBalance, calculateLiabilityBalance, type Asset, type Liability } from '@/lib/finances';
 import { SYNC_KEYS } from '@/lib/sync-keys';
 
 interface MetricProps {
@@ -14,9 +14,10 @@ interface MetricProps {
   icon: React.ReactNode;
   color: 'teal' | 'emerald' | 'rose' | 'amber' | 'indigo' | 'blue';
   customBg?: string;
+  cadValue?: string;
 }
 
-function MetricCard({ label, value, subValue, icon, color, customBg }: MetricProps) {
+function MetricCard({ label, value, cadValue, subValue, icon, color, customBg }: MetricProps) {
   const iconClasses = {
     teal: "bg-teal-100 text-teal-600 dark:bg-teal-500/20 dark:text-teal-300",
     emerald: "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-teal-300",
@@ -50,13 +51,20 @@ function MetricCard({ label, value, subValue, icon, color, customBg }: MetricPro
         )}
       </div>
       
-      <div className="flex flex-col">
-        <span className="text-xs uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-400 mb-2">
+      <div className="flex flex-col gap-1">
+        <span className="text-xs uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-400 mb-1">
           {label}
         </span>
-        <span className={`text-2xl tracking-tight text-zinc-900 dark:text-zinc-100 leading-none`}>
-          {value}
-        </span>
+        <div className="flex flex-col">
+          <span className={`text-2xl tracking-tight text-zinc-900 dark:text-zinc-100 leading-none font-bold`}>
+            {value}
+          </span>
+          {cadValue && (
+            <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mt-1">
+              ({cadValue})
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -207,6 +215,7 @@ export function FinanceOverview() {
         <MetricCard 
           label="Net Worth"
           value={`₹${netWorth.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}
+          cadValue={`CAD $${convertToCAD(netWorth).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
           subValue={netWorth >= 0 ? "Positive Equity" : "Negative Equity"}
           color={netWorth >= 0 ? "emerald" : "rose"}
           customBg={netWorth >= 0 
@@ -223,6 +232,7 @@ export function FinanceOverview() {
         <MetricCard 
           label="Emergency Fund"
           value={`${emergencyFundMonths < 10 ? emergencyFundMonths.toFixed(1) : Math.floor(emergencyFundMonths)} Months`}
+          cadValue={`CAD $${convertToCAD(emergencyFundMonths * (expenses || 0)).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
           subValue={emergencyFundMonths >= 6 ? "Fully Funded" : emergencyFundMonths >= 3 ? "On Track" : "Focus Needed"}
           color={emergencyFundMonths >= 6 ? "emerald" : emergencyFundMonths >= 3 ? "amber" : "rose"}
           customBg={emergencyFundMonths >= 6 
@@ -241,6 +251,7 @@ export function FinanceOverview() {
         <MetricCard
           label="Monthly Income"
           value={`₹${income.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}
+          cadValue={`CAD $${convertToCAD(income).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
           subValue={selectedMonths.length === 1 && selectedYears.length === 1 ? MONTHS[selectedMonths[0]] : `${selectedMonths.length} Months`}
           color="emerald"
           icon={
@@ -253,6 +264,7 @@ export function FinanceOverview() {
         <MetricCard
           label="Monthly Expenses"
           value={`₹${expenses.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}
+          cadValue={`CAD $${convertToCAD(expenses).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
           subValue={`${income > 0 ? ((expenses / income) * 100).toFixed(0) : 0}% of Income`}
           color="rose"
           icon={

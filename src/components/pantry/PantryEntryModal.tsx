@@ -5,7 +5,7 @@ import { ExpenseRecord, ExpenseItem, ExpenseCategory, Asset, PaymentMethod, Entr
 import { getPrefixedKey } from '@/lib/keys';
 import { SYNC_KEYS } from '@/lib/sync-keys';
 import { setSyncedItem } from '@/lib/storage';
-import { calculateAssetBalance, updateAssetFromExpense, updateRecipientFromExpense, convertToINR, getExchangeRate } from '@/lib/finances';
+import { calculateAssetBalance, updateAssetFromExpense, updateRecipientFromExpense, convertToINR, convertToCAD, getExchangeRate } from '@/lib/finances';
 
 interface PantryEntryModalProps {
   isOpen: boolean;
@@ -257,8 +257,10 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                            </div>
                            <div className="flex flex-col items-end gap-1">
                               <span className="text-2xl font-bold tracking-tighter text-zinc-900 dark:text-white flex items-baseline gap-1">
-                                {record.currency === 'CAD' ? 'C$' : '₹'}{record.amount.toLocaleString(record.currency === 'CAD' ? 'en-CA' : 'en-IN')}
-                                {record.currency === 'CAD' && <span className="text-sm text-zinc-400 font-medium">(₹{convertToINR(record.amount, 'CAD', getExchangeRate()).toLocaleString('en-IN', { maximumFractionDigits: 0 })})</span>}
+                                 ₹{convertToINR(record.amount, record.currency, getExchangeRate()).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                                 <span className="text-sm text-zinc-400 font-medium ml-2">
+                                   (C${convertToCAD(record.amount, record.currency, 1/getExchangeRate()).toLocaleString('en-CA', { maximumFractionDigits: 1 })})
+                                 </span>
                               </span>
                               <span className={`text-[10px] uppercase font-bold tracking-widest ${record.type === 'need' ? 'text-emerald-500' : 'text-amber-500'}`}>{record.type}</span>
                            </div>
@@ -518,8 +520,10 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                   <div className="flex flex-col">
                      <span className="text-sm uppercase tracking-widest text-zinc-400 font-bold">Total Bill Amount</span>
                      <span className="text-3xl font-bold tracking-tighter text-zinc-900 dark:text-white flex items-baseline gap-2">
-                        {currency === 'CAD' ? 'C$' : '₹'}{totalAmount.toLocaleString(currency === 'CAD' ? 'en-CA' : 'en-IN')}
-                        {currency === 'CAD' && <span className="text-lg text-zinc-400 font-medium">(₹{convertToINR(totalAmount, 'CAD', getExchangeRate()).toLocaleString('en-IN', { maximumFractionDigits: 0 })})</span>}
+                        ₹{convertToINR(totalAmount, currency, getExchangeRate()).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                        <span className="text-lg text-zinc-400 font-medium ml-2">
+                          (C${convertToCAD(totalAmount, currency, 1/getExchangeRate()).toLocaleString('en-CA', { maximumFractionDigits: 1 })})
+                        </span>
                      </span>
                   </div>
                   <div className="flex gap-3">

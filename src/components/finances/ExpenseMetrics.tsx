@@ -2,7 +2,7 @@
 
 import { type ExpenseRecord } from '@/types/finance';
 import { MONTHS } from '@/lib/constants';
-import { getExchangeRate, convertToINR } from '@/lib/finances';
+import { getExchangeRate, convertToINR, convertToCAD } from '@/lib/finances';
 
 interface ExpenseMetricsProps {
   records: ExpenseRecord[];
@@ -13,12 +13,13 @@ interface ExpenseMetricsProps {
 interface MetricProps {
   label: string;
   value: string;
+  cadValue?: string;
   subValue?: string;
   icon: React.ReactNode;
   color: 'teal' | 'emerald' | 'amber' | 'indigo' | 'blue' | 'rose';
 }
 
-function MetricCard({ label, value, subValue, icon, color }: MetricProps) {
+function MetricCard({ label, value, cadValue, subValue, icon, color }: MetricProps) {
   const iconClasses = {
     teal: "bg-teal-100 text-teal-600 dark:bg-teal-500/20 dark:text-teal-300",
     emerald: "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-300",
@@ -34,11 +35,18 @@ function MetricCard({ label, value, subValue, icon, color }: MetricProps) {
         <div className={`p-3.5 rounded-2xl transition-colors ${iconClasses[color]}`}>
           {icon}
         </div>
-        {subValue && (
+        {(subValue || cadValue) && (
             <div className="flex flex-col items-end text-right">
-                <span className="text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/50 px-3 py-1.5 rounded-xl">
-                    {subValue}
-                </span>
+                {cadValue && (
+                    <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 mb-1">
+                        {cadValue}
+                    </span>
+                )}
+                {subValue && (
+                    <span className="text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/50 px-3 py-1.5 rounded-xl">
+                        {subValue}
+                    </span>
+                )}
             </div>
         )}
       </div>
@@ -120,6 +128,7 @@ export function ExpenseMetrics({ records, selectedMonths, selectedYears }: Expen
       <MetricCard 
         label="Total Expenses"
         value={`₹${totalExpenses.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}
+        cadValue={`CAD $${convertToCAD(totalExpenses).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
         subValue={selectionLabel}
         color="rose"
         icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 17h10m0 0V9m0 8l-8-8-4 4-6-6" /></svg>}
@@ -128,6 +137,7 @@ export function ExpenseMetrics({ records, selectedMonths, selectedYears }: Expen
       <MetricCard 
         label="Investment %"
         value={`${investmentPct.toFixed(1)}%`}
+        cadValue={`CAD $${convertToCAD(investmentAmt).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
         subValue={`₹${investmentAmt.toLocaleString('en-IN', { maximumFractionDigits: 0 })} Total`}
         color={investmentPct >= 20 ? "emerald" : investmentPct >= 10 ? "amber" : "rose"}
         icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>}
@@ -136,6 +146,7 @@ export function ExpenseMetrics({ records, selectedMonths, selectedYears }: Expen
       <MetricCard 
         label="Expense Change"
         value={changeStr}
+        cadValue={totalExpenses > 0 ? `CAD $${convertToCAD(totalExpenses).toLocaleString('en-US', { maximumFractionDigits: 0 })}` : undefined}
         subValue="vs Last Month"
         color={changeColor}
         icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18" /></svg>}
@@ -144,7 +155,8 @@ export function ExpenseMetrics({ records, selectedMonths, selectedYears }: Expen
       <MetricCard 
         label="Needs vs Wants %"
         value={`${needsPct.toFixed(0)}% Needs`}
-        subValue={`${(100 - needsPct).toFixed(0)}% Wants`}
+        cadValue={`${(100 - needsPct).toFixed(0)}% Wants`}
+        subValue={`Balance Analysis`}
         color="rose"
         icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V6a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>}
       />
@@ -152,6 +164,7 @@ export function ExpenseMetrics({ records, selectedMonths, selectedYears }: Expen
       <MetricCard 
         label="Top Category"
         value={topCategoryStr.charAt(0).toUpperCase() + topCategoryStr.slice(1)}
+        cadValue={`CAD $${convertToCAD(topCategoryVal).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
         subValue={`₹${topCategoryVal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}
         color="rose"
         icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>}
