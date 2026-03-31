@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { type Project } from './ProjectModal';
-import { getProjectPriorityInfo } from './Goals';
+import { type Project, getProjectPriorityInfo } from './ProjectModal';
+
 
 interface GanttViewProps {
   projects: Project[];
@@ -185,6 +185,7 @@ export function GanttView({ projects, buckets, onSelectProject }: GanttViewProps
             className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${isTodayVisible && new Date().getMonth() === currentMonthIdx && new Date().getFullYear() === currentYear
               ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-default' 
               : 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:opacity-90 shadow-sm'}`}
+
           >
             Go to Today
           </button>

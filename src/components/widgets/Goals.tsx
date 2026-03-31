@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { setSyncedItem } from '@/lib/storage';
 import { getPrefixedKey } from '@/lib/keys';
 
-import { ProjectModal, type Project, type Task } from './ProjectModal';
+import { ProjectModal, type Project, type Task, getProjectPriorityInfo } from './ProjectModal';
 import { GanttView } from './GanttView';
+
 
 const BUCKETS = [
   'Health', 'Income', 'Career',
@@ -14,85 +15,7 @@ const BUCKETS = [
 ];
 
 // --- Shared Priority & Status Logic ---
-export const getProjectPriorityInfo = (p: Project) => {
-  if (p.isCompleted || p.status === 'completed') {
-    return {
-      label: 'Completed',
-      color: 'teal',
-      icon: '✓',
-      classes: 'bg-teal-50 dark:bg-teal-500/5 text-teal-700 dark:text-teal-500 border border-teal-200/50 dark:border-teal-900/50 opacity-80'
-    };
-  }
 
-  if (!p.dueDate) {
-    return {
-      label: p.isImportant ? 'Strategic' : 'On Track',
-      color: 'green',
-      icon: p.isImportant ? '📌' : '🟢',
-      classes: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20 shadow-sm shadow-emerald-500/5'
-    };
-  }
-
-  const due = new Date(p.dueDate + 'T00:00:00');
-  due.setHours(0, 0, 0, 0);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diffTime = due.getTime() - today.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  const isImportant = p.isImportant;
-  
-  // Urgency Logic
-  let urgency: 'overdue' | 'soon' | 'upcoming' | 'on-track';
-  if (diffDays < 0) urgency = 'overdue';
-  else if (diffDays <= 7) urgency = 'soon';
-  else if (diffDays <= 21) urgency = 'upcoming';
-  else urgency = 'on-track';
-
-  // Combined Logic
-  if (urgency === 'overdue' || urgency === 'soon') {
-    if (isImportant) {
-      return {
-        label: 'Critical',
-        icon: '🔥',
-        color: 'red',
-        classes: 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20 shadow-sm shadow-rose-500/5'
-      };
-    }
-    return {
-      label: 'Time-sensitive',
-      icon: '⚠️',
-      color: 'red',
-      classes: 'bg-rose-50/50 dark:bg-rose-500/5 text-rose-600 dark:text-rose-400/80 border border-rose-100 dark:border-rose-500/10 shadow-sm shadow-rose-500/5'
-    };
-  }
-
-  if (urgency === 'upcoming') {
-    return {
-      label: 'Upcoming',
-      icon: '🟡',
-      color: 'yellow',
-      classes: 'bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20 shadow-sm shadow-amber-500/5'
-    };
-  }
-
-  // On Track
-  if (isImportant) {
-    return {
-      label: 'Strategic',
-      icon: '📌',
-      color: 'green',
-      classes: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20 shadow-sm shadow-emerald-500/5'
-    };
-  }
-
-  return {
-    label: 'On Track',
-    icon: '🟢',
-    color: 'green',
-    classes: 'bg-zinc-50 dark:bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-500/20 shadow-sm shadow-zinc-500/5'
-  };
-};
 
 export function Goals() {
   const [projects, setProjects] = useState<Project[]>([]);
