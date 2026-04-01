@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   ChevronLeft, 
   ChevronRight, 
+  ChevronDown,
+  ChevronUp,
   BookOpen, 
   CheckCircle2, 
   Clock, 
@@ -36,6 +38,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, aut
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
   const dataRef = React.useRef(data);
 
   useEffect(() => {
@@ -211,6 +214,14 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, aut
           >
             <ChevronRight size={20} />
           </button>
+          
+          {/* Mobile Collapse Toggle */}
+          <button 
+            onClick={() => setIsMobileExpanded(!isMobileExpanded)}
+            className="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-teal-500/10 text-teal-600 border border-teal-500/20 active:scale-95 transition-all"
+          >
+            {isMobileExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+          </button>
         </div>
 
         <div className="flex flex-1 items-center gap-4 w-full sm:max-w-md">
@@ -243,90 +254,185 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, aut
         </div>
       </div>
 
-      {/* Grid Header */}
-      <div className="grid grid-cols-12 border-b border-zinc-100 dark:border-zinc-800 text-[13px] uppercase font-black text-zinc-500 tracking-[0.2em] bg-zinc-50/30 dark:bg-zinc-900/10">
-        <div className="col-span-2 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 text-center">Month</div>
-        <div className="col-span-5 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-center justify-center gap-2">
-          English 📘
+      {/* Table View (Desktop) */}
+      <div className="hidden lg:block">
+        {/* Grid Header */}
+        <div className="grid grid-cols-12 border-b border-zinc-100 dark:border-zinc-800 text-[13px] uppercase font-black text-zinc-500 tracking-[0.2em] bg-zinc-50/30 dark:bg-zinc-900/10">
+          <div className="col-span-2 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 text-center">Month</div>
+          <div className="col-span-5 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-center justify-center gap-2">
+            English 📘
+          </div>
+          <div className="col-span-5 px-6 py-4 flex items-center justify-center gap-2">
+            Hindi 📗
+          </div>
         </div>
-        <div className="col-span-5 px-6 py-4 flex items-center justify-center gap-2">
-          Hindi 📗
+
+        {/* Grid Rows */}
+        <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+          {MONTHS.map((month) => {
+            const entry = yearData[month] || { englishBooks: [], hindiBooks: [] };
+            
+            const filterBooks = (books: LogBookEntry[]) => books.filter(b => 
+              b.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+              (b.author || '').toLowerCase().includes(searchQuery.toLowerCase())
+            );
+
+            const filteredEnglish = filterBooks(entry.englishBooks);
+            const filteredHindi = filterBooks(entry.hindiBooks);
+
+            if (searchQuery && filteredEnglish.length === 0 && filteredHindi.length === 0) return null;
+            
+            return (
+              <div key={month} className="grid grid-cols-12 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/20 transition-colors group/row min-h-[64px]">
+                <div className="col-span-2 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-center justify-center font-black text-zinc-400 dark:text-zinc-600 text-sm uppercase tracking-widest">
+                  {month.slice(0, 3)}
+                </div>
+
+                <div className="col-span-5 px-4 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-start gap-3">
+                  {!searchQuery && (
+                    <button 
+                      onClick={() => addBook(month, 'english')}
+                      className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300 hover:text-teal-500 hover:border-teal-500/30 hover:bg-teal-500/5 transition-all group/add"
+                      title="Add Book"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  )}
+                  <div className="flex-1 min-w-0 space-y-3">
+                    {filteredEnglish.map(book => (
+                      <EditableBookRow 
+                        key={book.id}
+                        book={book}
+                        onUpdate={(updates) => updateBook(month, 'english', book.id, updates)}
+                        onRemove={() => removeBook(month, 'english', book.id)}
+                        placeholder="English book name..."
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="col-span-5 px-4 py-4 flex items-start gap-3">
+                  {!searchQuery && (
+                    <button 
+                      onClick={() => addBook(month, 'hindi')}
+                      className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300 hover:text-rose-500 hover:border-rose-500/30 hover:bg-rose-500/5 transition-all group/add"
+                      title="Add Book"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  )}
+                  <div className="flex-1 min-w-0 space-y-3">
+                    {filteredHindi.map(book => (
+                      <EditableBookRow 
+                        key={book.id}
+                        book={book}
+                        onUpdate={(updates) => updateBook(month, 'hindi', book.id, updates)}
+                        onRemove={() => removeBook(month, 'hindi', book.id)}
+                        placeholder="Hindi book name..."
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* Grid Rows */}
-      <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
-        {MONTHS.map((month) => {
-          const entry = yearData[month] || { englishBooks: [], hindiBooks: [] };
-          
-          const filterBooks = (books: LogBookEntry[]) => books.filter(b => 
-            b.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-            b.author.toLowerCase().includes(searchQuery.toLowerCase())
-          );
+      {/* Card View (Mobile) */}
+      <div className={`block lg:hidden transition-all duration-500 ease-in-out overflow-hidden ${
+        (isMobileExpanded || searchQuery) ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+      }`}>
+        <div className="max-h-[520px] overflow-y-auto divide-y divide-zinc-100 dark:divide-zinc-800 scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800">
+          {MONTHS.map((month) => {
+            const entry = yearData[month] || { englishBooks: [], hindiBooks: [] };
+            
+            const filterBooks = (books: LogBookEntry[]) => books.filter(b => 
+              b.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+              (b.author || '').toLowerCase().includes(searchQuery.toLowerCase())
+            );
 
-          const filteredEnglish = filterBooks(entry.englishBooks);
-          const filteredHindi = filterBooks(entry.hindiBooks);
+            const filteredEnglish = filterBooks(entry.englishBooks);
+            const filteredHindi = filterBooks(entry.hindiBooks);
 
-          // Only skip row if search is active and both lists are empty
-          if (searchQuery && filteredEnglish.length === 0 && filteredHindi.length === 0) return null;
-          
-          return (
-            <div key={month} className="grid grid-cols-12 hover:bg-zinc-50/50 dark:hover:bg-zinc-900/20 transition-colors group/row min-h-[64px]">
-              {/* Month */}
-              <div className="col-span-2 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-center justify-center font-black text-zinc-400 dark:text-zinc-600 text-sm uppercase tracking-widest">
-                {month.slice(0, 3)}
-              </div>
+            if (searchQuery && filteredEnglish.length === 0 && filteredHindi.length === 0) return null;
 
-              {/* English Books */}
-              <div className="col-span-5 px-4 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-start gap-3">
-                {!searchQuery && (
-                  <button 
-                    onClick={() => addBook(month, 'english')}
-                    className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300 hover:text-teal-500 hover:border-teal-500/30 hover:bg-teal-500/5 transition-all group/add"
-                    title="Add Book"
-                  >
-                    <Plus size={14} />
-                  </button>
-                )}
-                <div className="flex-1 min-w-0 space-y-3">
-                  {filteredEnglish.map(book => (
-                    <EditableBookRow 
-                      key={book.id}
-                      book={book}
-                      onUpdate={(updates) => updateBook(month, 'english', book.id, updates)}
-                      onRemove={() => removeBook(month, 'english', book.id)}
-                      placeholder="English book name..."
-                    />
-                  ))}
+            return (
+              <div key={month} className="p-4 space-y-4 bg-white dark:bg-zinc-950">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-black text-zinc-500 uppercase tracking-widest">{month}</span>
+                </div>
+
+                <div className="space-y-6">
+                  {/* English Section */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">English 📘</span>
+                      {!searchQuery && (
+                        <button 
+                          onClick={() => addBook(month, 'english')}
+                          className="w-6 h-6 flex items-center justify-center rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300"
+                        >
+                          <Plus size={12} />
+                        </button>
+                      )}
+                    </div>
+                    <div className="space-y-3 pl-2 border-l-2 border-zinc-100 dark:border-zinc-800/50">
+                      {filteredEnglish.length > 0 ? filteredEnglish.map(book => (
+                        <EditableBookRow 
+                          key={book.id}
+                          book={book}
+                          onUpdate={(updates) => updateBook(month, 'english', book.id, updates)}
+                          onRemove={() => removeBook(month, 'english', book.id)}
+                          placeholder="Title..."
+                        />
+                      )) : (
+                        <span className="text-[10px] text-zinc-300 dark:text-zinc-700 italic">No entries</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Hindi Section */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Hindi 📗</span>
+                      {!searchQuery && (
+                        <button 
+                          onClick={() => addBook(month, 'hindi')}
+                          className="w-6 h-6 flex items-center justify-center rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300"
+                        >
+                          <Plus size={12} />
+                        </button>
+                      )}
+                    </div>
+                    <div className="space-y-3 pl-2 border-l-2 border-zinc-100 dark:border-zinc-800/50">
+                      {filteredHindi.length > 0 ? filteredHindi.map(book => (
+                        <EditableBookRow 
+                          key={book.id}
+                          book={book}
+                          onUpdate={(updates) => updateBook(month, 'hindi', book.id, updates)}
+                          onRemove={() => removeBook(month, 'hindi', book.id)}
+                          placeholder="Title..."
+                        />
+                      )) : (
+                        <span className="text-[10px] text-zinc-300 dark:text-zinc-700 italic">No entries</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              {/* Hindi Books */}
-              <div className="col-span-5 px-4 py-4 flex items-start gap-3">
-                {!searchQuery && (
-                  <button 
-                    onClick={() => addBook(month, 'hindi')}
-                    className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300 hover:text-rose-500 hover:border-rose-500/30 hover:bg-rose-500/5 transition-all group/add"
-                    title="Add Book"
-                  >
-                    <Plus size={14} />
-                  </button>
-                )}
-                <div className="flex-1 min-w-0 space-y-3">
-                  {filteredHindi.map(book => (
-                    <EditableBookRow 
-                      key={book.id}
-                      book={book}
-                      onUpdate={(updates) => updateBook(month, 'hindi', book.id, updates)}
-                      onRemove={() => removeBook(month, 'hindi', book.id)}
-                      placeholder="Hindi book name..."
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
+        
+        {/* Mobile View Indicators */}
+        <div className="px-6 py-3 bg-zinc-50/50 dark:bg-zinc-900/50 border-t border-zinc-100 dark:border-zinc-800 flex justify-center">
+            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                <div className="w-1 h-1 rounded-full bg-zinc-300"></div>
+                Scroll to see more months
+                <div className="w-1 h-1 rounded-full bg-zinc-300"></div>
+            </span>
+        </div>
       </div>
     </div>
   );

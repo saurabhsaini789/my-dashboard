@@ -35,29 +35,29 @@ function MetricCard({ label, value, cadValue, subValue, icon, color }: MetricPro
         <div className={`p-3.5 rounded-2xl transition-colors ${iconClasses[color]}`}>
           {icon}
         </div>
-        {(subValue || cadValue) && (
+        {subValue && (
             <div className="flex flex-col items-end text-right">
-                {cadValue && (
-                    <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 mb-1">
-                        {cadValue}
-                    </span>
-                )}
-                {subValue && (
-                    <span className="text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/50 px-3 py-1.5 rounded-xl">
-                        {subValue}
-                    </span>
-                )}
+                <span className="text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/50 px-3 py-1.5 rounded-xl">
+                    {subValue}
+                </span>
             </div>
         )}
       </div>
       
-      <div className="flex flex-col">
-        <span className="text-xs uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400 mb-2">
+      <div className="flex flex-col gap-1">
+        <span className="text-xs uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400 mb-1">
           {label}
         </span>
-        <span className="text-2xl tracking-tight text-zinc-900 dark:text-zinc-100 leading-none">
-          {value}
-        </span>
+        <div className="flex flex-col">
+          <span className="text-2xl tracking-tight text-zinc-900 dark:text-zinc-100 leading-none font-bold">
+            {value}
+          </span>
+          {cadValue && (
+            <span className="text-[10px] text-rose-600 dark:text-rose-400 font-medium uppercase tracking-wider mt-1">
+              ({cadValue})
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -124,7 +124,7 @@ export function ExpenseMetrics({ records, selectedMonths, selectedYears }: Expen
     : `${selectedMonths.length} Months`;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-6">
       <MetricCard 
         label="Total Expenses"
         value={`₹${totalExpenses.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}

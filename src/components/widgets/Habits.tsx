@@ -357,7 +357,7 @@ export function Habits() {
             <table className="w-full text-left min-w-max border-collapse">
               <thead>
                 <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/100">
-                  <th className="font-semibold text-xs uppercase tracking-wider text-zinc-500 py-4 px-6 rounded-tl-2xl select-none sticky left-0 z-20 bg-zinc-50 dark:bg-[#18181b] shadow-[1px_0_0_0_#e4e4e7] dark:shadow-[1px_0_0_0_#27272a]" rowSpan={2}>Habit</th>
+                  <th className="font-semibold text-xs uppercase tracking-wider text-zinc-500 py-4 px-4 sm:px-6 rounded-tl-2xl select-none sticky left-0 z-30 bg-zinc-50 dark:bg-[#18181b] shadow-[1px_0_0_0_#e4e4e7] dark:shadow-[1px_0_0_0_#27272a] whitespace-nowrap min-w-[120px] sm:min-w-[150px]" rowSpan={2}>Habit</th>
                   {datesOfMonth.map((d, index) => {
                     const isToday = isCurrentViewRealTodayMonth && index === todayDateIndex;
                     return (
@@ -408,7 +408,7 @@ export function Habits() {
                   
                   return (
                     <tr key={habit.id} className="group hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors">
-                      <td className="py-4 px-6 font-semibold text-zinc-900 dark:text-zinc-100 text-sm md:text-base sticky left-0 z-10 bg-white dark:bg-[#18181b] group-hover:bg-zinc-50 dark:group-hover:bg-[#202024] transition-colors shadow-[1px_0_0_0_#e4e4e7] dark:shadow-[1px_0_0_0_#27272a]">
+                      <td className="py-4 px-4 sm:px-6 font-semibold text-zinc-900 dark:text-zinc-100 text-sm md:text-base sticky left-0 z-20 bg-white dark:bg-[#18181b] group-hover:bg-zinc-50 dark:group-hover:bg-[#202024] transition-colors shadow-[1px_0_0_0_#e4e4e7] dark:shadow-[1px_0_0_0_#27272a] whitespace-nowrap min-w-[120px] sm:min-w-[150px]">
                         <div className="flex items-center justify-between gap-3">
                             <span className="truncate">{habit.name}</span>
                             <button 

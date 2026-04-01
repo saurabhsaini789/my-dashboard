@@ -19,48 +19,48 @@ interface MetricProps {
 
 function MetricCard({ label, value, cadValue, subValue, icon, color, customBg }: MetricProps) {
   const iconClasses = {
-    teal: "bg-teal-100 text-teal-600 dark:bg-teal-500/20 dark:text-teal-300",
-    emerald: "bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-teal-300",
-    rose: "bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-300",
-    amber: "bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-300",
-    indigo: "bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-300",
-    blue: "bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-300",
+    teal: "bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400",
+    emerald: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400",
+    rose: "bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400",
+    amber: "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400",
+    indigo: "bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400",
+    blue: "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400",
   };
 
   const borderClasses = {
-    teal: "border-teal-100 dark:border-teal-900/30",
-    emerald: "border-emerald-100 dark:border-emerald-900/30",
-    rose: "border-rose-100 dark:border-rose-900/30",
-    amber: "border-amber-100 dark:border-amber-900/30",
-    indigo: "border-indigo-100 dark:border-indigo-900/30",
-    blue: "border-blue-100 dark:border-blue-900/30",
+    teal: "border-teal-100/50 dark:border-teal-900/30",
+    emerald: "border-emerald-100/50 dark:border-emerald-900/30",
+    rose: "border-rose-100/50 dark:border-rose-900/30",
+    amber: "border-amber-100/50 dark:border-amber-900/30",
+    indigo: "border-indigo-100/50 dark:border-indigo-900/30",
+    blue: "border-blue-100/50 dark:border-blue-900/30",
   };
 
   return (
-    <div className={`flex flex-col p-6 rounded-3xl border transition-all hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none hover:-translate-y-1 group relative overflow-hidden h-full ${customBg || `bg-white dark:bg-zinc-900 ${borderClasses[color]}`}`}>
-      <div className="flex items-center justify-between mb-6">
-        <div className={`p-3.5 rounded-2xl transition-colors ${iconClasses[color]}`}>
-          {icon}
+    <div className={`flex flex-col p-4 md:p-6 rounded-[32px] border transition-all hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none hover:-translate-y-1 group relative overflow-hidden h-full ${customBg || `bg-white dark:bg-zinc-900/50 ${borderClasses[color]}`}`}>
+      <div className="flex items-center justify-between mb-4 md:mb-6">
+        <div className={`p-2.5 md:p-3.5 rounded-2xl transition-colors ${iconClasses[color]}`}>
+          {React.cloneElement(icon as React.ReactElement<any>, { className: "w-5 h-5 md:w-6 md:h-6" })}
         </div>
         {subValue && (
             <div className="flex flex-col items-end">
-                <span className="text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/50 px-3 py-1.5 rounded-xl text-right">
+                <span className="text-[10px] uppercase tracking-widest text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/50 px-2.5 py-1 rounded-full text-right leading-none">
                     {subValue}
                 </span>
             </div>
         )}
       </div>
       
-      <div className="flex flex-col gap-1">
-        <span className="text-xs uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-400 mb-1">
+      <div className="flex flex-col gap-0.5">
+        <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400 mb-0.5">
           {label}
         </span>
         <div className="flex flex-col">
-          <span className={`text-2xl tracking-tight text-zinc-900 dark:text-zinc-100 leading-none font-bold`}>
+          <span className={`text-xl md:text-2xl tracking-tighter text-zinc-900 dark:text-zinc-100 leading-none font-bold`}>
             {value}
           </span>
           {cadValue && (
-            <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mt-1">
+            <span className="text-[9px] md:text-[10px] text-zinc-500 font-medium uppercase tracking-wider mt-1 opacity-80">
               ({cadValue})
             </span>
           )}
@@ -189,13 +189,13 @@ export function FinanceOverview() {
   const savingsRate = income > 0 ? ((income - expenses) / income) * 100 : 0;
 
   return (
-    <div className="w-full flex flex-col gap-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
-        <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
+    <div className="w-full flex flex-col gap-6 md:gap-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 px-1 md:px-2">
+        <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
           Overview
         </h2>
 
-        <div className="flex gap-3">
+        <div className="flex gap-2 md:gap-3">
           <MultiSelectDropdown
             label="Month"
             options={MONTHS}
@@ -211,7 +211,7 @@ export function FinanceOverview() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
         <MetricCard 
           label="Net Worth"
           value={`₹${netWorth.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}

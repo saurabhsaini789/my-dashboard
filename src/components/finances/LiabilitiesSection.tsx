@@ -18,6 +18,11 @@ export function LiabilitiesSection() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLiability, setEditingLiability] = useState<Liability | null>(null);
+  const [expandedLiabilities, setExpandedLiabilities] = useState<Record<string, boolean>>({});
+
+  const toggleExpand = (id: string) => {
+    setExpandedLiabilities(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   // Repayment modal state
   const [isRepayModalOpen, setIsRepayModalOpen] = useState(false);
@@ -258,64 +263,63 @@ export function LiabilitiesSection() {
   if (!isLoaded) return null;
 
   return (
-    <div className="flex flex-col gap-8 w-full animate-in fade-in slide-in-from-bottom-6 duration-700">
+    <div className="flex flex-col gap-6 md:gap-8 w-full animate-in fade-in slide-in-from-bottom-6 duration-700">
       {/* Heading & Top Summary Metrics */}
-      <div className="flex flex-col gap-6 px-2">
+      <div className="flex flex-col gap-4 md:gap-6 px-1 md:px-2">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
+          <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
             Liabilities
           </h2>
           <button 
             onClick={openAddModal}
-            className="bg-rose-600 text-white uppercase tracking-widest text-xs px-6 py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg h-[46px]"
+            className="bg-rose-600 text-white uppercase tracking-widest text-[10px] md:text-xs px-5 md:px-6 py-2.5 md:py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg md:h-[46px] w-fit"
           >
             Add Liability
           </button>
         </div>
 
         {/* Global Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100 dark:border-rose-900/30 rounded-3xl p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative">
-                <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-[0.2em]">Total Outstanding Debt</span>
-                <span className="text-2xl text-zinc-900 dark:text-zinc-100 tracking-tight">
-                    ₹{totalDebt.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    <span className="text-sm ml-2 text-zinc-500 font-medium">(CAD ${convertToCAD(totalDebt).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
-                </span>
-                <div className="absolute -right-2 -bottom-2 opacity-5 scale-150 rotate-12 group-hover:rotate-0 transition-transform duration-500">
-                    <svg className="w-20 h-20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
+            <div className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative">
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-[0.2em]">Total Debt</span>
+                <div className="flex flex-col">
+                  <span className="text-xl md:text-2xl text-zinc-900 dark:text-zinc-100 tracking-tighter font-bold">
+                      ₹{totalDebt.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                  </span>
+                  <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-tight opacity-70">
+                      (CAD ${convertToCAD(totalDebt).toLocaleString('en-US', { maximumFractionDigits: 0 })})
+                  </span>
                 </div>
             </div>
 
-            <div className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100 dark:border-rose-900/30 rounded-3xl p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative">
-                <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-[0.2em]">Monthly EMI Burden</span>
-                <span className="text-2xl text-zinc-900 dark:text-zinc-100 tracking-tight">
-                    ₹{totalEMI.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                    <span className="text-sm ml-2 text-zinc-500 font-medium">(CAD ${convertToCAD(totalEMI).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
-                </span>
-                <div className="absolute -right-2 -bottom-2 opacity-5 scale-150 rotate-12 group-hover:rotate-0 transition-transform duration-500 text-rose-500">
-                    <svg className="w-20 h-20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            <div className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative">
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-[0.2em]">EMI Burden</span>
+                <div className="flex flex-col">
+                  <span className="text-xl md:text-2xl text-zinc-900 dark:text-zinc-100 tracking-tighter font-bold">
+                      ₹{totalEMI.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                  </span>
+                  <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-tight opacity-70">
+                      (CAD ${convertToCAD(totalEMI).toLocaleString('en-US', { maximumFractionDigits: 0 })})
+                  </span>
                 </div>
             </div>
 
-            <div className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100 dark:border-rose-900/30 rounded-3xl p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative">
-                <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-[0.2em]">Debt-to-Income Ratio (DTI)</span>
+            <div className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative col-span-2 lg:col-span-1">
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-[0.2em]">DTI Ratio</span>
                 <div className="flex items-baseline gap-2">
-                    <span className={`text-2xl tracking-tight ${dti > 40 ? 'text-rose-500' : dti > 25 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                    <span className={`text-xl md:text-2xl tracking-tighter font-bold ${dti > 40 ? 'text-rose-500' : dti > 25 ? 'text-amber-500' : 'text-emerald-500'}`}>
                         {dti.toFixed(1)}%
                     </span>
-                    <span className={`text-xs uppercase tracking-widest ${dti > 40 ? 'text-rose-500' : dti > 25 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                    <span className={`text-[10px] uppercase tracking-widest font-bold ${dti > 40 ? 'text-rose-500' : dti > 25 ? 'text-amber-500' : 'text-emerald-500'}`}>
                         {dti > 40 ? 'Critical' : dti > 25 ? 'Moderate' : 'Healthy'}
                     </span>
-                </div>
-                <div className="absolute -right-2 -bottom-2 opacity-5 scale-150 rotate-12 group-hover:rotate-0 transition-transform duration-500 text-rose-500">
-                    <svg className="w-20 h-20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" /></svg>
                 </div>
             </div>
         </div>
       </div>
 
       {/* Liabilities Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 px-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 px-1 md:px-2">
         {liabilities.map(liability => {
           const payoffProgress = ((liability.totalAmount - liability.remainingBalance) / liability.totalAmount) * 100;
           const isHighInterest = liability.interestRate >= 10;
@@ -323,96 +327,140 @@ export function LiabilitiesSection() {
           return (
             <div 
               key={liability.id} 
-              className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100 dark:border-rose-900/30 rounded-3xl p-6 flex flex-col gap-6 group hover:shadow-lg transition-all relative overflow-hidden"
+              className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-5 group hover:shadow-lg transition-all relative overflow-hidden"
             >
               {/* Card Header */}
               <div className="flex justify-between items-start gap-4">
-                <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs uppercase tracking-widest px-1.5 py-0.5 rounded border border-rose-100 bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-900/30 w-fit">
+                <div className="flex flex-col flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <span className="text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-rose-100/50 bg-rose-50/50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-900/30 w-fit leading-none whitespace-nowrap font-bold">
                         {liability.type}
                     </span>
                     {isHighInterest && (
-                        <span className="bg-rose-500 text-white text-xs uppercase tracking-[0.1em] px-1.5 py-0.5 rounded-full animate-pulse">
-                            High Interest
+                        <span className="bg-rose-500 text-white text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.1em] px-2 py-0.5 rounded-full animate-pulse leading-none whitespace-nowrap">
+                            High interest
                         </span>
                     )}
                   </div>
-                  <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight break-words">
+                  <h3 className="text-base md:text-lg font-bold text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
                     {liability.name}
                   </h3>
                 </div>
-                <button 
-                  onClick={() => openEditModal(liability)}
-                  className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                </button>
-              </div>
-
-              {/* Progress Bar */}
-              <div className="flex flex-col gap-2">
-                <div className="flex justify-between text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">
-                    <span>Payoff Progress</span>
-                    <span>{payoffProgress.toFixed(0)}%</span>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                    <button 
+                        onClick={() => openEditModal(liability)}
+                        className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                        title="Edit Liability"
+                    >
+                        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                    </button>
+                    <button 
+                        onClick={() => toggleExpand(liability.id)}
+                        className="sm:hidden p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all"
+                    >
+                        <svg 
+                            className={`w-5 h-5 transition-transform duration-300 ${expandedLiabilities[liability.id] ? 'rotate-180' : ''}`} 
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
                 </div>
-                <div className="w-full h-2 bg-zinc-50 dark:bg-zinc-800 rounded-full overflow-hidden">
-                    <div 
-                        className={`h-full transition-all duration-1000 bg-rose-500`} 
-                        style={{ width: `${payoffProgress}%` }}
-                    />
+              </div>
+
+              <div className="flex flex-col gap-4">
+                {/* Progress Bar (Always visible for better hierarchy) */}
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex justify-between text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold">
+                      <span>Payoff progress</span>
+                      <span>{payoffProgress.toFixed(0)}%</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                      <div 
+                          className={`h-full transition-all duration-1000 bg-rose-500`} 
+                          style={{ width: `${payoffProgress}%` }}
+                      />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col">
+                        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-medium">Outstanding Bal</span>
+                        <span className="text-lg md:text-xl text-zinc-900 dark:text-zinc-100 tracking-tighter font-bold">
+                            ₹{calculateLiabilityBalance(liability).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                        </span>
+                        <span className="text-[9px] text-zinc-500 uppercase tracking-widest font-medium opacity-70">
+                            (CAD ${convertToCAD(calculateLiabilityBalance(liability)).toLocaleString('en-US', { maximumFractionDigits: 0 })})
+                        </span>
+                    </div>
                 </div>
               </div>
 
-              {/* Loan Details */}
-               <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-0.5">
-                       <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Remaining</span>
-                      <span className="text-lg text-zinc-900 dark:text-zinc-100 tracking-tight">
-                          ₹{calculateLiabilityBalance(liability).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-                          <span className="text-[10px] ml-1.5 text-zinc-500 font-medium">(CAD ${convertToCAD(calculateLiabilityBalance(liability)).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
-                      </span>
+              <div className={`sm:flex flex-col gap-5 w-full ${expandedLiabilities[liability.id] ? 'flex' : 'hidden'}`}>
+                {/* Progress Bar */}
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-between text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">
+                      <span>Payoff Progress</span>
+                      <span>{payoffProgress.toFixed(0)}%</span>
                   </div>
-                  <div className="flex flex-col gap-0.5 text-right">
-                       <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Interest Rate</span>
-                      <span className={`text-lg tracking-tight ${isHighInterest ? 'text-rose-500' : liability.interestRate < 5 ? 'text-emerald-500' : 'text-zinc-900 dark:text-zinc-100'}`}>
-                          {liability.interestRate}%
-                      </span>
+                  <div className="w-full h-2 bg-zinc-50 dark:bg-zinc-800 rounded-full overflow-hidden">
+                      <div 
+                          className={`h-full transition-all duration-1000 bg-rose-500`} 
+                          style={{ width: `${payoffProgress}%` }}
+                      />
                   </div>
-              </div>
+                </div>
 
-              {/* Action Buttons */}
-              <div className="grid grid-cols-2 gap-2">
-                  <button 
-                    onClick={() => {
-                        setActiveLiabilityId(liability.id);
-                        setRepayType('Regular EMI');
-                        setRepayAmount(liability.emi.toString());
-                        setIsRepayModalOpen(true);
-                    }}
-                    className="flex items-center justify-center gap-2 py-2.5 rounded-xl border border-zinc-100 dark:border-zinc-800 text-xs uppercase tracking-widest hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all"
-                  >
-                    Repay
-                  </button>
-                   <button 
-                    onClick={() => {
-                        setActiveLiabilityId(liability.id);
-                        setIsSimModalOpen(true);
-                    }}
-                    className="flex items-center justify-center gap-2 py-2.5 rounded-xl border border-rose-500/10 text-rose-600 dark:text-rose-400 text-xs uppercase tracking-widest hover:bg-rose-50 dark:hover:bg-rose-500/5 transition-all"
-                  >
-                    Preview Payoff
-                  </button>
-              </div>
+                {/* Loan Details */}
+                 <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-0.5">
+                         <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Remaining</span>
+                        <span className="text-lg text-zinc-900 dark:text-zinc-100 tracking-tight">
+                            ₹{calculateLiabilityBalance(liability).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                            <span className="text-[10px] ml-1.5 text-zinc-500 font-medium">(CAD ${convertToCAD(calculateLiabilityBalance(liability)).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
+                        </span>
+                    </div>
+                    <div className="flex flex-col gap-0.5 text-right">
+                         <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Interest Rate</span>
+                        <span className={`text-lg tracking-tight ${isHighInterest ? 'text-rose-500' : liability.interestRate < 5 ? 'text-emerald-500' : 'text-zinc-900 dark:text-zinc-100'}`}>
+                            {liability.interestRate}%
+                        </span>
+                    </div>
+                </div>
 
-              {/* Footer Meta */}
-              <div className="flex flex-col gap-1.5 mt-auto border-t border-zinc-50 dark:border-zinc-800/50 pt-4">
-                   <div className="flex items-center justify-between">
-                     <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Tenure Left</span>
-                     <span className="text-xs text-zinc-600 dark:text-zinc-300">
-                         {liability.tenureRemaining} Months
-                     </span>
-                   </div>
+                {/* Action Buttons */}
+                <div className="grid grid-cols-2 gap-2">
+                    <button 
+                      onClick={() => {
+                          setActiveLiabilityId(liability.id);
+                          setRepayType('Regular EMI');
+                          setRepayAmount(liability.emi.toString());
+                          setIsRepayModalOpen(true);
+                      }}
+                      className="flex items-center justify-center gap-2 py-2.5 rounded-xl border border-zinc-100 dark:border-zinc-800 text-xs uppercase tracking-widest hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all"
+                    >
+                      Repay
+                    </button>
+                     <button 
+                      onClick={() => {
+                          setActiveLiabilityId(liability.id);
+                          setIsSimModalOpen(true);
+                      }}
+                      className="flex items-center justify-center gap-2 py-2.5 rounded-xl border border-rose-500/10 text-rose-600 dark:text-rose-400 text-xs uppercase tracking-widest hover:bg-rose-50 dark:hover:bg-rose-500/5 transition-all"
+                    >
+                      Preview Payoff
+                    </button>
+                </div>
+
+                {/* Footer Meta */}
+                <div className="flex flex-col gap-1.5 mt-auto border-t border-zinc-50 dark:border-zinc-800/50 pt-4">
+                     <div className="flex items-center justify-between">
+                       <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Tenure Left</span>
+                       <span className="text-xs text-zinc-600 dark:text-zinc-300">
+                           {liability.tenureRemaining} Months
+                       </span>
+                     </div>
+                </div>
               </div>
             </div>
           );
@@ -422,14 +470,14 @@ export function LiabilitiesSection() {
       {/* Add/Edit Liability Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-900/40 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-white dark:bg-zinc-900 rounded-[40px] w-full max-w-xl shadow-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 animate-in zoom-in duration-300">
-            <div className="p-10">
-              <div className="flex justify-between items-center mb-10">
-                <h3 className="text-3xl font-bold text-zinc-900 dark:text-white uppercase tracking-tighter">
+          <div className="bg-white dark:bg-zinc-900 rounded-[32px] w-full max-w-xl shadow-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 animate-in zoom-in duration-300">
+            <div className="p-8 md:p-10">
+              <div className="flex justify-between items-center mb-8 md:mb-10">
+                <h3 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white uppercase tracking-tighter">
                   {editingLiability ? 'Modify Liability' : 'New Liability'}
                 </h3>
-                <button onClick={() => setIsModalOpen(false)} className="text-zinc-600 hover:text-zinc-900 dark:hover:text-white transition-colors">
-                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                <button onClick={() => setIsModalOpen(false)} className="text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors">
+                  <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
               </div>
 
@@ -542,15 +590,15 @@ export function LiabilitiesSection() {
 
                 <div className="flex gap-4 pt-6">
                   {editingLiability && (
-                    <button type="button" onClick={() => deleteLiability(editingLiability.id)} className="px-6 py-4 rounded-2xl bg-rose-50 text-rose-500 text-xs uppercase hover:bg-rose-100 transition-all">
+                    <button type="button" onClick={() => deleteLiability(editingLiability.id)} className="px-5 py-4 rounded-2xl bg-rose-50 dark:bg-rose-500/10 text-rose-500 text-[10px] uppercase tracking-widest font-bold hover:bg-rose-100 transition-all">
                         Delete
                     </button>
                   )}
-                  <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-8 py-5 rounded-3xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 hover:text-zinc-900 transition-all">
+                  <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-6 py-4 md:py-5 rounded-2xl md:rounded-3xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 transition-all font-bold">
                     Cancel
                   </button>
-                  <button type="submit" className="flex-1 px-8 py-5 rounded-3xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-105 transition-all uppercase tracking-widest text-xs">
-                    {editingLiability ? 'Update Loan' : 'Save Loan'}
+                  <button type="submit" className="flex-1 px-6 py-4 md:py-5 rounded-2xl md:rounded-3xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-105 transition-all uppercase tracking-widest text-[10px] sm:text-xs font-bold">
+                    {editingLiability ? 'Update' : 'Save'}
                   </button>
                 </div>
               </form>
@@ -562,9 +610,9 @@ export function LiabilitiesSection() {
       {/* Repay Modal */}
       {isRepayModalOpen && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-zinc-900/40 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-white dark:bg-zinc-900 rounded-[40px] w-full max-w-sm shadow-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 animate-in zoom-in duration-300">
-            <div className="p-10">
-              <h3 className="text-2xl font-bold text-zinc-900 dark:text-white uppercase tracking-tighter mb-8 text-center">Record Repayment</h3>
+          <div className="bg-white dark:bg-zinc-900 rounded-[32px] w-full max-w-sm shadow-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 animate-in zoom-in duration-300">
+            <div className="p-8 md:p-10">
+              <h3 className="text-2xl font-bold text-zinc-900 dark:text-white uppercase tracking-tighter mb-8 text-center text-rose-500">Log Payment</h3>
               <form onSubmit={handleRepaySubmit} className="space-y-6">
                 <div className="flex gap-2 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-xl mb-4">
                     <button 
@@ -610,11 +658,11 @@ export function LiabilitiesSection() {
                         />
                     </div>
                 </div>
-                <button type="submit" className="w-full px-8 py-5 rounded-3xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-105 transition-all uppercase tracking-widest text-xs">
-                    Confirm Payment
+                <button type="submit" className="w-full px-8 py-5 rounded-3xl bg-rose-500 text-white hover:scale-105 transition-all uppercase tracking-widest text-[10px] sm:text-xs font-bold shadow-xl shadow-rose-200/50 dark:shadow-none">
+                    Log payment
                 </button>
-                <button type="button" onClick={() => setIsRepayModalOpen(false)} className="w-full py-2 text-[10px] text-zinc-600 hover:text-zinc-900 uppercase">
-                    Cancel
+                <button type="button" onClick={() => setIsRepayModalOpen(false)} className="w-full py-2 text-[10px] text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-400 uppercase tracking-widest font-medium">
+                    Nevermind
                 </button>
               </form>
             </div>
@@ -625,10 +673,10 @@ export function LiabilitiesSection() {
       {/* Simulation Modal */}
       {isSimModalOpen && activeLiabilityId && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-zinc-900/40 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-white dark:bg-zinc-900 rounded-[40px] w-full max-w-lg shadow-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 animate-in zoom-in duration-300">
-            <div className="p-10">
-              <h3 className="text-2xl font-bold text-zinc-900 dark:text-white uppercase tracking-tighter mb-2 text-center">Prepayment Impact</h3>
-              <p className="text-xs text-zinc-600 text-center uppercase tracking-widest mb-10">
+          <div className="bg-white dark:bg-zinc-900 rounded-[32px] w-full max-w-lg shadow-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 animate-in zoom-in duration-300 max-h-[90vh] flex flex-col">
+            <div className="p-8 md:p-10 flex flex-col h-full overflow-hidden">
+              <h3 className="text-2xl font-bold text-zinc-900 dark:text-white uppercase tracking-tighter mb-2 text-center">Payoff Impact</h3>
+              <p className="text-[10px] text-zinc-500 text-center uppercase tracking-widest mb-10 font-medium">
                 Visualize how much time and interest you save with an extra payment.
               </p>
               
@@ -654,8 +702,12 @@ export function LiabilitiesSection() {
                     </div>
                 )}
 
-                <button type="button" onClick={() => setIsSimModalOpen(false)} className="w-full px-8 py-5 rounded-3xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-105 transition-all uppercase tracking-widest text-xs">
-                    Close Preview
+                <button 
+                    type="button" 
+                    onClick={() => setIsSimModalOpen(false)} 
+                    className="w-full px-8 py-5 rounded-3xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black hover:scale-105 transition-all uppercase tracking-widest text-[10px] sm:text-xs font-bold"
+                >
+                    Done
                 </button>
               </div>
             </div>

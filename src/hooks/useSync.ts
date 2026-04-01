@@ -8,8 +8,9 @@ import { ALL_SYNC_KEYS, LEGACY_KEY_MIGRATION } from '@/lib/sync-keys';
 export function useSync() {
   const [isReady, setIsReady] = useState(false);
   const [session, setSession] = useState<any>(null);
-  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'error' | 'unauthenticated' | 'connected' | 'initializing'>('initializing');
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'error' | 'unauthenticated' | 'connected' | 'initializing' | 'local'>('initializing');
   const isSyncingFromRemote = useRef(false);
+  const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
   // Diagnostic Log (Runs once)
   useEffect(() => {
@@ -49,6 +50,13 @@ export function useSync() {
     if (!value) return;
     if (!session) {
       // Don't log error here as it might be normal on localhost
+      return;
+    }
+
+    if (isLocalhost) {
+      console.log(`[Sync] Localhost: Skipping push for ${key} to protect cloud data.`);
+      setSyncStatus('local');
+      setTimeout(() => setSyncStatus('idle'), 2000);
       return;
     }
 
@@ -160,7 +168,7 @@ export function useSync() {
       }
 
       // b) Push local data that isn't on remote yet (Migration)
-      if (session) {
+      if (session && !isLocalhost) {
         for (const baseKey of ALL_SYNC_KEYS) {
           const prefixedKey = getPrefixedKey(baseKey);
           if (!remoteKeysMap.has(prefixedKey)) {
@@ -171,6 +179,8 @@ export function useSync() {
             }
           }
         }
+      } else if (session && isLocalhost) {
+        console.log('[Sync] Localhost detected: Initial push/migrations skipped to protect cloud data.');
       }
 
       setIsReady(true);
@@ -273,5 +283,5 @@ export function useSync() {
     };
   }, [session]);
 
-  return { isReady, syncStatus };
+  return { isReady, syncStatus, isLocalhost };
 }

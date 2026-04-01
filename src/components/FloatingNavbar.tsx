@@ -9,7 +9,8 @@ import {
   CircleDollarSign, 
   ShoppingBasket,
   BookMarked,
-  Rocket
+  Rocket,
+  ChevronUp
 } from 'lucide-react';
 
 export function FloatingNavbar() {
@@ -67,6 +68,13 @@ export function FloatingNavbar() {
     { name: 'Pantry', href: '/pantry', icon: ShoppingBasket },
   ];
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   return (
     <div 
       className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-[999] transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${
@@ -75,7 +83,7 @@ export function FloatingNavbar() {
           : 'opacity-0 translate-y-12 scale-90 pointer-events-none'
       }`}
     >
-      <nav className="flex items-center gap-1.5 p-2 bg-white/70 dark:bg-zinc-900/80 backdrop-blur-2xl border border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+      <nav className="flex items-center gap-1 p-1.5 bg-white/70 dark:bg-zinc-900/80 backdrop-blur-2xl border border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
         {navItems.map((item) => {
           // Handle trailing slashes and potential basePath differences
           const normalizedPathname = pathname?.replace(/\/$/, '') || '/';
@@ -88,7 +96,7 @@ export function FloatingNavbar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex items-center justify-center p-3 rounded-xl transition-all duration-300 group ${
+              className={`relative flex items-center justify-center p-2.5 rounded-xl transition-all duration-300 group ${
                 isActive 
                   ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-xl shadow-zinc-900/20 dark:shadow-white/10' 
                   : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800'
@@ -103,6 +111,16 @@ export function FloatingNavbar() {
             </Link>
           );
         })}
+
+        {/* Scroll to Top Button */}
+        <div className="w-px h-6 bg-zinc-200/50 dark:bg-zinc-800/50 mx-0.5" />
+        <button
+          onClick={scrollToTop}
+          className="flex items-center justify-center p-2.5 rounded-xl text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all duration-300 group"
+          aria-label="Scroll to top"
+        >
+          <ChevronUp size={22} className="group-hover:-translate-y-1 transition-transform duration-300" />
+        </button>
       </nav>
     </div>
   );

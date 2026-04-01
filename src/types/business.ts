@@ -7,6 +7,7 @@ export interface BusinessChannel {
   lastPostedDate: string; // ISO date
   postingFrequency: number; // in days
   nextPostDueDate: string; // ISO date
+  rowColor?: string;
 }
 
 export interface ContentIdea {

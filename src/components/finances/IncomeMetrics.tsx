@@ -96,7 +96,7 @@ export function IncomeMetrics({ records, selectedMonths, selectedYears }: Income
   const selectionLabel = selectedMonths.length === 1 && selectedYears.length === 1 ? MONTHS[selectedMonths[0]] : `${selectedMonths.length} Months`;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-6">
       <MetricCard 
         label="Total Income"
         value={`₹${totalIncome.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`}

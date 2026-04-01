@@ -96,7 +96,7 @@ export function TodayActions() {
             {dueToday.map(channel => (
               <div 
                 key={channel.id} 
-                className="group relative bg-zinc-50 dark:bg-zinc-800/30 border border-zinc-100 dark:border-zinc-800 rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300"
+                className={`group relative border border-zinc-100 dark:border-zinc-800 rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 ${channel.rowColor || 'bg-zinc-50 dark:bg-zinc-800/30'}`}
               >
                 <div className="flex flex-col gap-4">
                   <div className="flex justify-between items-start">

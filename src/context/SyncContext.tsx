@@ -5,7 +5,8 @@ import { useSync } from '@/hooks/useSync';
 
 interface SyncContextType {
   isReady: boolean;
-  syncStatus: 'idle' | 'syncing' | 'error' | 'unauthenticated' | 'connected' | 'initializing';
+  syncStatus: 'idle' | 'syncing' | 'error' | 'unauthenticated' | 'connected' | 'initializing' | 'local';
+  isLocalhost: boolean;
 }
 
 const SyncContext = createContext<SyncContextType | undefined>(undefined);

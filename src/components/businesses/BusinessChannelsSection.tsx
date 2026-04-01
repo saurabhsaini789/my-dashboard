@@ -39,8 +39,20 @@ export function BusinessChannelsSection() {
     customContentType: '',
     status: 'Active' as 'Active' | 'Paused' | 'Idea',
     postingFrequency: 1,
-    lastPostedDate: new Date().toISOString().split('T')[0]
+    lastPostedDate: new Date().toISOString().split('T')[0],
+    rowColor: ''
   });
+
+  const LIGHT_COLORS = [
+    { name: 'Default', value: '' },
+    { name: 'Rose', value: 'bg-rose-50/50 dark:bg-rose-500/5' },
+    { name: 'Amber', value: 'bg-amber-50/50 dark:bg-amber-500/5' },
+    { name: 'Emerald', value: 'bg-emerald-50/50 dark:bg-emerald-500/5' },
+    { name: 'Sky', value: 'bg-sky-50/50 dark:bg-sky-500/5' },
+    { name: 'Indigo', value: 'bg-indigo-50/50 dark:bg-indigo-500/5' },
+    { name: 'Violet', value: 'bg-violet-50/50 dark:bg-violet-500/5' },
+    { name: 'Zinc', value: 'bg-zinc-50/50 dark:bg-zinc-500/5' },
+  ];
 
 
   const channelsRef = useRef(channels);
@@ -94,7 +106,8 @@ export function BusinessChannelsSection() {
       customContentType: '',
       status: 'Active',
       postingFrequency: 1,
-      lastPostedDate: new Date().toISOString().split('T')[0]
+      lastPostedDate: new Date().toISOString().split('T')[0],
+      rowColor: ''
     });
     setIsModalOpen(true);
   };
@@ -110,7 +123,8 @@ export function BusinessChannelsSection() {
       customContentType: CONTENT_TYPES.includes(channel.contentType || '') ? '' : (channel.contentType || ''),
       status: channel.status,
       postingFrequency: channel.postingFrequency,
-      lastPostedDate: channel.lastPostedDate
+      lastPostedDate: channel.lastPostedDate,
+      rowColor: channel.rowColor || ''
     });
     setIsModalOpen(true);
   };
@@ -133,7 +147,8 @@ export function BusinessChannelsSection() {
       status: formData.status,
       postingFrequency: formData.postingFrequency,
       lastPostedDate: formData.lastPostedDate,
-      nextPostDueDate: nextDueDate.toISOString().split('T')[0]
+      nextPostDueDate: nextDueDate.toISOString().split('T')[0],
+      rowColor: formData.rowColor
     };
 
     let updatedChannels;
@@ -258,7 +273,8 @@ export function BusinessChannelsSection() {
         </button>
       </div>
 
-      <div className="bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-[40px] overflow-hidden shadow-sm">
+      {/* Table View (Desktop) */}
+      <div className="hidden lg:block bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-[40px] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -272,7 +288,6 @@ export function BusinessChannelsSection() {
                 <th className="px-6 py-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-black text-right">Next Due</th>
                 <th className="px-6 py-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-black"></th>
               </tr>
-
             </thead>
             <tbody>
               {sortedChannels.length > 0 ? sortedChannels.map(channel => {
@@ -283,7 +298,7 @@ export function BusinessChannelsSection() {
                 const daysSince = Math.floor((today.getTime() - lastPosted.getTime()) / (1000 * 60 * 60 * 24));
 
                 return (
-                  <tr key={channel.id} className={`group hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors border-b border-zinc-100 dark:border-zinc-800 last:border-0 ${indicator.label === 'Overdue' ? 'bg-rose-500/[0.02]' : ''}`}>
+                  <tr key={channel.id} className={`group hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors border-b border-zinc-100 dark:border-zinc-800 last:border-0 ${channel.rowColor || (indicator.label === 'Overdue' ? 'bg-rose-500/[0.02]' : '')}`}>
                     <td className="px-6 py-6">
                       <div className="flex flex-col gap-1">
                         <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
@@ -364,7 +379,7 @@ export function BusinessChannelsSection() {
                 );
               }) : (
                 <tr>
-                  <td colSpan={6} className="px-8 py-20 text-center">
+                  <td colSpan={8} className="px-8 py-20 text-center">
                     <div className="flex flex-col items-center gap-2">
                       <Info size={32} className="text-zinc-300" />
                       <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em]">No channels found. Add your first platform!</span>
@@ -375,6 +390,94 @@ export function BusinessChannelsSection() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Card View (Mobile) */}
+      <div className="lg:hidden space-y-4">
+        {sortedChannels.length > 0 ? sortedChannels.map(channel => {
+          const indicator = getStatusIndicator(channel);
+          const lastPosted = new Date(channel.lastPostedDate);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const daysSince = Math.floor((today.getTime() - lastPosted.getTime()) / (1000 * 60 * 60 * 24));
+
+          return (
+            <div key={channel.id} className={`p-6 rounded-[32px] border border-zinc-200 dark:border-zinc-800 ${channel.rowColor || (indicator.label === 'Overdue' ? 'bg-rose-500/[0.02]' : 'bg-white dark:bg-zinc-900/30')} space-y-4`}>
+              <div className="flex justify-between items-start">
+                <div className="flex flex-col gap-2">
+                  <span className="text-lg font-bold text-zinc-900 dark:text-white uppercase tracking-tight leading-tight">
+                    {channel.name}
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 px-2 py-0.5 rounded-full">
+                      {channel.platform}
+                    </span>
+                    <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 px-2 py-0.5 rounded-full">
+                      {channel.contentType || 'Mixed'}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                    channel.status === 'Active' 
+                      ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
+                      : channel.status === 'Paused'
+                      ? 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'
+                      : 'bg-zinc-100 text-zinc-500 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-500 dark:border-zinc-700'
+                  }`}>
+                    {channel.status}
+                  </span>
+                  {channel.status === 'Active' && (
+                    <span className={`text-[9px] font-bold ${indicator.color}`}>
+                      {indicator.icon} {indicator.label}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Freq</span>
+                  <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{channel.postingFrequency}d</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Last</span>
+                  <span className={`text-sm font-bold ${daysSince > channel.postingFrequency ? 'text-rose-500' : 'text-zinc-700 dark:text-zinc-300'}`}>{daysSince}d</span>
+                </div>
+                <div className="flex flex-col items-end">
+                  <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Next Due</span>
+                  <span className={`text-sm font-bold ${indicator.label === 'Overdue' ? 'text-rose-500' : 'text-zinc-700 dark:text-zinc-300'}`}>
+                    {channel.nextPostDueDate ? new Date(channel.nextPostDueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '-'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button 
+                  onClick={() => openEditModal(channel)}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500 bg-zinc-100 dark:bg-zinc-800 rounded-2xl"
+                >
+                  <Edit2 size={14} />
+                  Edit
+                </button>
+                {channel.status === 'Active' && (
+                  <button
+                    onClick={() => markAsPosted(channel.id)}
+                    className="flex-[2] flex items-center justify-center gap-2 py-3 text-[10px] font-black uppercase tracking-widest bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-2xl shadow-lg"
+                  >
+                    <CheckCircle2 size={14} />
+                    Mark Posted
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        }) : (
+          <div className="p-12 text-center bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-[32px]">
+            <Info size={32} className="mx-auto text-zinc-300 mb-2" />
+            <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">No channels found</span>
+          </div>
+        )}
       </div>
 
       {/* Modal Integration */}
@@ -505,6 +608,31 @@ export function BusinessChannelsSection() {
                           }`}
                         >
                           {status}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3 bg-zinc-50 dark:bg-zinc-800/30 p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                    <label className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] ml-2">Row Color (Light)</label>
+                    <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+                      {LIGHT_COLORS.map((color) => (
+                        <button
+                          key={color.name}
+                          type="button"
+                          onClick={() => setFormData({...formData, rowColor: color.value})}
+                          className={`w-full aspect-square rounded-xl border transition-all flex items-center justify-center ${
+                            color.value ? color.value.split(' ')[0] : 'bg-white dark:bg-zinc-900'
+                          } ${
+                            formData.rowColor === color.value
+                              ? 'ring-2 ring-zinc-900 dark:ring-white border-transparent'
+                              : 'border-zinc-200 dark:border-zinc-700'
+                          }`}
+                          title={color.name}
+                        >
+                          {formData.rowColor === color.value && (
+                            <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 dark:bg-white" />
+                          )}
                         </button>
                       ))}
                     </div>

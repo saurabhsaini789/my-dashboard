@@ -20,8 +20,8 @@ export default function FinancesPage() {
   if (!mounted) return null;
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] text-zinc-900 selection:bg-teal-500/10 p-6 md:p-10 lg:p-12 relative overflow-hidden">
-      <div className="mx-auto w-full max-w-7xl flex flex-col gap-8 md:gap-10 pt-4 relative z-10">
+    <main className="min-h-screen bg-[#fcfcfc] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/10 p-4 md:p-10 lg:p-12 relative overflow-hidden">
+      <div className="mx-auto w-full max-w-7xl flex flex-col gap-6 md:gap-10 pt-4 relative z-10">
 
         {/* Page Title & Strategic Description */}
         <div className="flex flex-col gap-6 items-center">
