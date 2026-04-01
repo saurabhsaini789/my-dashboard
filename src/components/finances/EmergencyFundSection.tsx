@@ -101,8 +101,8 @@ export function EmergencyFundSection() {
 
   const openSettings = () => {
     setTempData({
-      targetAmount: data.targetAmount.toString(),
-      monthlyExpenses: data.monthlyExpenses.toString()
+      targetAmount: data.targetAmount?.toString() || '',
+      monthlyExpenses: data.monthlyExpenses?.toString() || ''
     });
     setIsTargetModalOpen(true);
   };
@@ -190,32 +190,33 @@ export function EmergencyFundSection() {
             </div>
         </div>
 
-        <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 relative z-10 sm:grid ${isCollapsed ? 'hidden' : 'grid'}`}>
-          <div className="lg:col-span-5 flex flex-col items-center justify-center gap-6 sm:gap-10 border-b lg:border-b-0 lg:border-r border-zinc-100 dark:border-zinc-800/50 pb-8 sm:pb-0 lg:pr-12">
-            <div className="relative w-40 h-40 sm:w-80 sm:h-80">
-                <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 200 200">
-                    <circle cx="100" cy="100" r={radius} fill="none" stroke="currentColor" strokeWidth="12" className="text-zinc-50 dark:text-zinc-900/50" />
-                    <circle cx="100" cy="100" r={radius} fill="none" stroke="currentColor" strokeWidth="14" strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" className={`${monthsCovered >= 6 ? 'text-emerald-500' : monthsCovered >= 3 ? 'text-amber-500' : 'text-rose-500'} transition-all duration-[1500ms] ease-out`} />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <span className={`text-[10px] sm:text-xs uppercase tracking-[0.2em] mb-1 sm:mb-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full ${monthsCovered >= 6 ? 'text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10' : monthsCovered >= 3 ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' : 'text-rose-500 bg-rose-50 dark:bg-rose-500/10'} font-bold`}>
-                        {progressPercent.toFixed(0)}%
+        <div className={`flex flex-col gap-8 lg:gap-10 relative z-10 sm:flex ${isCollapsed ? 'hidden' : 'flex'}`}>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-2">
+                <div className="flex flex-col">
+                    <span className="text-3xl md:text-4xl text-zinc-900 dark:text-white tracking-tighter font-bold">
+                        {monthsCovered < 10 ? monthsCovered.toFixed(1) : Math.floor(monthsCovered)} <span className="text-lg md:text-xl text-zinc-500 dark:text-zinc-400 font-medium tracking-tight">Months Safety</span>
                     </span>
-                    <span className="text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.3em] mb-0 leading-none">Safety</span>
-                    <span className="text-4xl sm:text-6xl text-zinc-900 dark:text-white tracking-tighter leading-none font-bold">
-                        {monthsCovered < 10 ? monthsCovered.toFixed(1) : Math.floor(monthsCovered)}
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-widest mt-1">
+                        ₹{(totalSaved || 0).toLocaleString('en-IN')} / ₹{(data.targetAmount || 0).toLocaleString('en-IN')} Saved
                     </span>
-                    <span className="text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mt-1 leading-none">{monthsCovered === 1 ? 'Month' : 'Months'}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className={`text-[10px] sm:text-xs uppercase tracking-[0.2em] px-3 py-1 rounded-full ${monthsCovered >= 6 ? 'text-emerald-500 bg-emerald-50 dark:bg-emerald-500/10' : monthsCovered >= 3 ? 'text-amber-500 bg-amber-50 dark:bg-amber-500/10' : 'text-rose-500 bg-rose-50 dark:bg-rose-500/10'} font-bold`}>
+                        {progressPercent.toFixed(0)}% Funded
+                    </span>
                 </div>
             </div>
-            <div className="flex flex-col items-center gap-1.5 text-center">
-                <span className="text-xl sm:text-2xl text-zinc-900 dark:text-white tracking-tighter font-bold">₹{(totalSaved || 0).toLocaleString('en-IN')} Saved</span>
-                <span className="text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] font-medium opacity-70">(CAD ${convertToCAD(totalSaved).toLocaleString('en-US', { maximumFractionDigits: 0 })})</span>
-                <span className="text-[10px] sm:text-xs text-zinc-500 uppercase tracking-[0.2em] mt-2 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full font-bold">Target: ₹{(data.targetAmount || 0).toLocaleString('en-IN')}</span>
+
+            <div className="h-4 w-full bg-zinc-100 dark:bg-zinc-800/50 rounded-full overflow-hidden border border-zinc-200/50 dark:border-zinc-800/50">
+                <div 
+                    className={`h-full transition-all duration-1000 ease-out ${monthsCovered >= 6 ? 'bg-emerald-500' : monthsCovered >= 3 ? 'bg-amber-500' : 'bg-rose-500'}`}
+                    style={{ width: `${progressPercent}%` }}
+                />
             </div>
           </div>
 
-          <div className="lg:col-span-7 flex flex-col gap-8 lg:gap-10">
+          <div className="flex flex-col gap-8 lg:gap-10">
             <div className="grid grid-cols-2 gap-4 lg:gap-6">
                 <div className="bg-zinc-50 dark:bg-zinc-800/30 rounded-3xl p-5 lg:p-6 border border-zinc-100 dark:border-zinc-800/50">
                     <span className="text-[10px] lg:text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-2 lg:mb-3 block font-bold">Monthly Expense</span>

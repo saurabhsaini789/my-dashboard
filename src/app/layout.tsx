@@ -24,6 +24,8 @@ export const metadata: Metadata = {
 
 import { SyncProvider } from "@/context/SyncContext";
 import { FloatingNavbar } from "@/components/FloatingNavbar";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function RootLayout({
   children,
@@ -31,20 +33,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans`}
+        suppressHydrationWarning
       >
-        <AuthGuard>
-          <SyncProvider>
-            <SyncManager />
-            <NavigationBar />
-            <div className="pb-32">
-              {children}
-            </div>
-            <FloatingNavbar />
-          </SyncProvider>
-        </AuthGuard>
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthGuard>
+            <SyncProvider>
+              <SyncManager />
+              <NavigationBar />
+              <div className="pb-32">
+                {children}
+              </div>
+              <FloatingNavbar />
+              
+              <footer className="w-full flex justify-center pb-40 pt-8 border-t border-zinc-200/50 dark:border-zinc-800/50 mt-auto">
+                <ThemeToggle />
+              </footer>
+            </SyncProvider>
+          </AuthGuard>
+        </ThemeProvider>
       </body>
     </html>
   );

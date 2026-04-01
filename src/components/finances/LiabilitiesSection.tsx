@@ -149,14 +149,14 @@ export function LiabilitiesSection() {
     setFormData({
       name: liability.name,
       type: liability.type as LiabilityType,
-      totalAmount: liability.totalAmount.toString(),
+      totalAmount: liability.totalAmount?.toString() || '',
       totalAmountCurrency: liability.totalAmountCurrency || 'INR',
-      remainingBalance: liability.remainingBalance.toString(),
+      remainingBalance: liability.remainingBalance?.toString() || '',
       remainingBalanceCurrency: liability.remainingBalanceCurrency || 'INR',
-      interestRate: liability.interestRate.toString(),
-      emi: liability.emi.toString(),
+      interestRate: liability.interestRate?.toString() || '',
+      emi: liability.emi?.toString() || '',
       emiCurrency: liability.emiCurrency || 'INR',
-      tenureRemaining: liability.tenureRemaining.toString()
+      tenureRemaining: liability.tenureRemaining?.toString() || ''
     });
     setIsModalOpen(true);
   };
@@ -470,7 +470,7 @@ export function LiabilitiesSection() {
       {/* Add/Edit Liability Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-900/40 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-white dark:bg-zinc-900 rounded-[32px] w-full max-w-xl shadow-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 animate-in zoom-in duration-300">
+          <div className="bg-white dark:bg-zinc-900 rounded-[32px] w-full max-w-2xl shadow-2xl overflow-hidden border border-zinc-100 dark:border-zinc-800 animate-in zoom-in duration-300">
             <div className="p-8 md:p-10">
               <div className="flex justify-between items-center mb-8 md:mb-10">
                 <h3 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white uppercase tracking-tighter">
@@ -492,7 +492,7 @@ export function LiabilitiesSection() {
                     />
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex flex-col gap-2">
                         <label className="text-xs text-zinc-600 uppercase tracking-[0.2em] ml-2">Loan Type</label>
                         <select 
@@ -507,42 +507,42 @@ export function LiabilitiesSection() {
                     </div>
                      <div className="flex flex-col gap-2">
                         <label className="text-xs text-zinc-600 uppercase tracking-[0.2em] ml-2">Total Amount</label>
-                        <div className="flex gap-2">
+                        <div className="relative w-full">
                             <select 
                                 value={formData.totalAmountCurrency}
                                 onChange={e => setFormData({...formData, totalAmountCurrency: e.target.value as 'INR' | 'CAD'})}
-                                className="bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 rounded-2xl px-4 py-4 text-zinc-900 dark:text-white outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all text-sm font-bold w-24"
+                                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl px-2 py-1 text-[10px] font-bold text-zinc-600 outline-none cursor-pointer z-10"
                             >
-                                <option value="INR">₹ INR</option>
-                                <option value="CAD">C$ CAD</option>
+                                <option value="INR">INR (₹)</option>
+                                <option value="CAD">CAD (C$)</option>
                             </select>
                             <input 
                                 required type="number" step="0.01" value={formData.totalAmount} 
                                 onChange={e => setFormData({...formData, totalAmount: e.target.value})} 
                                 placeholder="0.00"
-                                className="flex-1 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 rounded-2xl px-6 py-4 text-zinc-900 dark:text-white outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all" 
+                                className="w-full min-w-0 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 rounded-2xl pl-24 pr-6 py-4 text-zinc-900 dark:text-white outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all text-xl" 
                             />
                         </div>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex flex-col gap-2">
                         <label className="text-xs text-zinc-600 uppercase tracking-[0.2em] ml-2">Remaining Balance</label>
-                        <div className="flex gap-2">
+                        <div className="relative w-full">
                             <select 
                                 value={formData.remainingBalanceCurrency}
                                 onChange={e => setFormData({...formData, remainingBalanceCurrency: e.target.value as 'INR' | 'CAD'})}
-                                className="bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 rounded-2xl px-4 py-4 text-zinc-900 dark:text-white outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all text-sm font-bold w-24"
+                                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl px-2 py-1 text-[10px] font-bold text-zinc-600 outline-none cursor-pointer z-10"
                             >
-                                <option value="INR">₹ INR</option>
-                                <option value="CAD">C$ CAD</option>
+                                <option value="INR">INR (₹)</option>
+                                <option value="CAD">CAD (C$)</option>
                             </select>
                             <input 
                                 required type="number" step="0.01" value={formData.remainingBalance} 
                                 onChange={e => setFormData({...formData, remainingBalance: e.target.value})} 
                                 placeholder="0.00"
-                                className="flex-1 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 rounded-2xl px-6 py-4 text-zinc-900 dark:text-white outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all" 
+                                className="w-full min-w-0 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 rounded-2xl pl-24 pr-6 py-4 text-zinc-900 dark:text-white outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all" 
                             />
                         </div>
                     </div>
@@ -557,23 +557,23 @@ export function LiabilitiesSection() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex flex-col gap-2">
                         <label className="text-xs text-zinc-600 uppercase tracking-[0.2em] ml-2">Monthly EMI</label>
-                        <div className="flex gap-2">
+                        <div className="relative w-full">
                             <select 
                                 value={formData.emiCurrency}
                                 onChange={e => setFormData({...formData, emiCurrency: e.target.value as 'INR' | 'CAD'})}
-                                className="bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 rounded-2xl px-4 py-4 text-zinc-900 dark:text-white outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all text-sm font-bold w-24"
+                                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl px-2 py-1 text-[10px] font-bold text-zinc-600 outline-none cursor-pointer z-10"
                             >
-                                <option value="INR">₹ INR</option>
-                                <option value="CAD">C$ CAD</option>
+                                <option value="INR">INR (₹)</option>
+                                <option value="CAD">CAD (C$)</option>
                             </select>
                             <input 
                                 required type="number" step="0.01" value={formData.emi} 
                                 onChange={e => setFormData({...formData, emi: e.target.value})} 
                                 placeholder="0.00"
-                                className="flex-1 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 rounded-2xl px-6 py-4 text-zinc-900 dark:text-white outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all" 
+                                className="w-full min-w-0 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 rounded-2xl pl-24 pr-6 py-4 text-zinc-900 dark:text-white outline-none focus:ring-4 focus:ring-zinc-900/5 transition-all" 
                             />
                         </div>
                     </div>

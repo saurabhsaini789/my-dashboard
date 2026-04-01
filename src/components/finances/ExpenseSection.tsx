@@ -475,7 +475,7 @@ export function ExpenseSection() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex flex-col gap-2">
                         <label className="text-[10px] text-zinc-600 uppercase tracking-[0.2em] ml-2">Category</label>
                         <select 
@@ -512,8 +512,8 @@ export function ExpenseSection() {
                     />
                 </div>
 
-                <div className="grid grid-cols-3 gap-6">
-                    <div className="flex flex-col gap-2 col-span-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="flex flex-col gap-2 md:col-span-2">
                         <label className="text-[10px] text-zinc-600 uppercase tracking-[0.2em] ml-2">Amount</label>
                         <div className="relative">
                             <select 
@@ -542,7 +542,7 @@ export function ExpenseSection() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex flex-col gap-2">
                         <label className="text-[10px] text-zinc-600 uppercase tracking-[0.2em] ml-2">Paid From (Source Account)</label>
                         <select 
