@@ -261,7 +261,7 @@ export function AssetsSection() {
                 <div className="h-px flex-1 bg-zinc-100 dark:bg-zinc-800/30" />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
                 {typeAssets.map(asset => {
                   const currentValue = calculateAssetBalance(asset);
                   return (

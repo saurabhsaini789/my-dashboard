@@ -40,6 +40,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, aut
   const [isLoaded, setIsLoaded] = useState(false);
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
   const dataRef = React.useRef(data);
+  const [modalState, setModalState] = useState<{ isOpen: boolean; month: string; type: 'english' | 'hindi' } | null>(null);
 
   useEffect(() => {
     dataRef.current = data;
@@ -159,7 +160,14 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, aut
     });
   };
 
-  const addBook = (month: string, type: 'english' | 'hindi') => {
+  const openAddModal = (month: string, type: 'english' | 'hindi') => {
+    setModalState({ isOpen: true, month, type });
+  };
+
+  const handleModalSave = (title: string, author: string, status: Status) => {
+    if (!modalState) return;
+    const { month, type } = modalState;
+    
     setData(prev => {
       const yearData = { ...(prev[currentYear] || {}) };
       const monthData = { ...(yearData[month] || { englishBooks: [], hindiBooks: [] }) };
@@ -167,15 +175,16 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, aut
       
       const newBook: LogBookEntry = {
         id: crypto.randomUUID(),
-        title: '',
-        author: '',
-        status: 'None'
+        title,
+        author,
+        status
       };
       
       monthData[key] = [...monthData[key], newBook];
       yearData[month] = monthData;
       return { ...prev, [currentYear]: yearData };
     });
+    setModalState(null);
   };
 
   const removeBook = (month: string, type: 'english' | 'hindi', bookId: string) => {
@@ -291,7 +300,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, aut
                 <div className="col-span-5 px-4 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-start gap-3">
                   {!searchQuery && (
                     <button 
-                      onClick={() => addBook(month, 'english')}
+                      onClick={() => openAddModal(month, 'english')}
                       className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300 hover:text-teal-500 hover:border-teal-500/30 hover:bg-teal-500/5 transition-all group/add"
                       title="Add Book"
                     >
@@ -314,7 +323,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, aut
                 <div className="col-span-5 px-4 py-4 flex items-start gap-3">
                   {!searchQuery && (
                     <button 
-                      onClick={() => addBook(month, 'hindi')}
+                      onClick={() => openAddModal(month, 'hindi')}
                       className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300 hover:text-rose-500 hover:border-rose-500/30 hover:bg-rose-500/5 transition-all group/add"
                       title="Add Book"
                     >
@@ -370,7 +379,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, aut
                       <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">English 📘</span>
                       {!searchQuery && (
                         <button 
-                          onClick={() => addBook(month, 'english')}
+                          onClick={() => openAddModal(month, 'english')}
                           className="w-6 h-6 flex items-center justify-center rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300"
                         >
                           <Plus size={12} />
@@ -398,7 +407,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, aut
                       <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Hindi 📗</span>
                       {!searchQuery && (
                         <button 
-                          onClick={() => addBook(month, 'hindi')}
+                          onClick={() => openAddModal(month, 'hindi')}
                           className="w-6 h-6 flex items-center justify-center rounded-lg border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-300"
                         >
                           <Plus size={12} />
@@ -434,6 +443,15 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (name: string, aut
             </span>
         </div>
       </div>
+      
+      {modalState && modalState.isOpen && (
+        <AddLogBookModal
+          month={modalState.month}
+          type={modalState.type}
+          onClose={() => setModalState(null)}
+          onSave={handleModalSave}
+        />
+      )}
     </div>
   );
 }
@@ -544,6 +562,116 @@ function EditableBookRow({ book, onUpdate, onRemove, placeholder }: {
       >
         <Plus size={12} className="rotate-45" />
       </button>
+    </div>
+  );
+}
+
+function AddLogBookModal({
+  month,
+  type,
+  onClose,
+  onSave
+}: {
+  month: string;
+  type: 'english' | 'hindi';
+  onClose: () => void;
+  onSave: (title: string, author: string, status: Status) => void;
+}) {
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [status, setStatus] = useState<Status>('Planned');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return;
+    onSave(title.trim(), author.trim(), status);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-zinc-900/40 dark:bg-zinc-950/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white dark:bg-zinc-900 rounded-3xl w-full max-w-md shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight">Add Book details</h3>
+              <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mt-1">
+                {month} • {type === 'english' ? 'English' : 'Hindi'}
+              </p>
+            </div>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+            >
+              <Plus size={16} className="rotate-45" />
+            </button>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                Book Name
+              </label>
+              <input
+                autoFocus
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Atomic Habits..."
+                className="w-full bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-teal-500/50 text-zinc-900 dark:text-white transition-all placeholder:font-normal placeholder:opacity-50"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                Author Name
+              </label>
+              <input
+                type="text"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                placeholder="James Clear..."
+                className="w-full bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-teal-500/50 text-zinc-900 dark:text-white transition-all placeholder:font-normal placeholder:opacity-50"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-zinc-500 mb-2">
+                Phase
+              </label>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {STATUS_OPTIONS.map((opt) => (
+                  <button
+                    key={opt}
+                    type="button"
+                    onClick={() => setStatus(opt)}
+                    className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border transition-all ${
+                      status === opt
+                        ? 'bg-zinc-100 dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600 shadow-sm scale-100'
+                        : 'bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 text-zinc-500 scale-95 opacity-70'
+                    }`}
+                  >
+                    {STATUS_ICONS[opt] || <div className="w-4 h-4 rounded-full border border-current"></div>}
+                    <span className={`text-[10px] font-black uppercase ${status === opt ? 'text-zinc-900 dark:text-white' : 'text-zinc-500'}`}>
+                      {opt === 'None' ? 'TBD' : opt}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-4 mt-6 border-t border-zinc-100 dark:border-zinc-800">
+              <button
+                type="submit"
+                disabled={!title.trim()}
+                className="w-full flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-6 py-3.5 rounded-xl text-sm font-black hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:pointer-events-none"
+              >
+                Save to Log
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

@@ -162,18 +162,20 @@ export function CompletedBooks() {
           </button>
         </div>
       ) : (
-        <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
-          {filteredBooks.map((book) => (
-            <BookCard 
-              key={book.id} 
-              book={book} 
-              viewMode={viewMode}
-              onEdit={() => setSelectedBook(book)} 
-            />
-          ))}
-          {filteredBooks.length === 0 && (
-            <p className="col-span-full text-center py-10 text-zinc-500 italic opacity-50 font-medium">No completed books match your search.</p>
-          )}
+        <div className="max-h-[600px] lg:max-h-[800px] overflow-y-auto pr-2 pb-4 -mr-2 custom-scrollbar">
+          <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+            {filteredBooks.map((book) => (
+              <BookCard 
+                key={book.id} 
+                book={book} 
+                viewMode={viewMode}
+                onEdit={() => setSelectedBook(book)} 
+              />
+            ))}
+            {filteredBooks.length === 0 && (
+              <p className="col-span-full text-center py-10 text-zinc-500 italic opacity-50 font-medium">No completed books match your search.</p>
+            )}
+          </div>
         </div>
       )}
 
