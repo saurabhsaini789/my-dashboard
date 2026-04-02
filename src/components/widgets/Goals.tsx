@@ -175,11 +175,9 @@ export function Goals() {
                         
                         <div className="flex justify-between items-start gap-2 w-full">
                           <div className="flex flex-col gap-1 flex-1 min-w-0">
-                            <div className="flex items-center gap-1.5 mb-1.5">
                               <span className="text-[11px] uppercase font-bold tracking-widest opacity-80">
-                                {priority.icon} {priority.label}
+                                {priority.label}
                               </span>
-                            </div>
                             <h4 className="font-bold text-[17px] leading-tight break-words flex items-center gap-2">
                               {project.title}
                               {project.isImportant && (
