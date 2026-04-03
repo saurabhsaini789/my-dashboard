@@ -6,16 +6,18 @@ export type EntryType = 'Bill' | 'Quick';
 export interface ExpenseItem {
   id: string;
   name: string;
+  category: string; // Grocery, Clothing, Transport, Dining, Bills, Others
+  type: 'need' | 'want';
   quantity: string;
   unitPrice: number;
   totalPrice: number;
+  size?: string;
   brand?: string;
   notes?: string;
   
   // Clothing extras (supporting multi-item clothing bills)
   itemType?: string; 
   color?: string;
-  size?: string;
   person?: string;
   quality?: string;
 }
