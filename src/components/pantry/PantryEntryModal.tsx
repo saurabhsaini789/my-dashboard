@@ -271,10 +271,6 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                   <div className="flex items-center gap-4 px-2">
                      <span className="text-sm font-black text-zinc-800 dark:text-zinc-200 tracking-widest uppercase">Itemized Content</span>
                      <span className="flex-1 border-t border-zinc-100 dark:border-zinc-800" />
-                     <button type="button" onClick={handleAddItem} className="px-6 py-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 rounded-full text-xs uppercase font-black tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl shadow-zinc-200 dark:shadow-none inline-flex items-center gap-2">
-                        <span>Add Item</span>
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4"/></svg>
-                     </button>
                   </div>
 
                   <div className="space-y-6">
@@ -338,6 +334,15 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                             ))
                           )}
                        </div>
+
+                        {items.length > 0 && (
+                          <div className="flex justify-center pt-4">
+                             <button type="button" onClick={handleAddItem} className="px-8 py-4 bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 rounded-full text-sm uppercase font-black tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl shadow-zinc-200 dark:shadow-none inline-flex items-center gap-2">
+                                <span>Add Another Item</span>
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4"/></svg>
+                             </button>
+                          </div>
+                        )}
                     </div>
                </div>
 
