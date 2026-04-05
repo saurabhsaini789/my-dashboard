@@ -22,11 +22,10 @@ export const metadata: Metadata = {
   description: "Personal OS and Productivity Dashboard",
 };
 
-import { SyncProvider } from "@/context/SyncContext";
-import { FloatingNavbar } from "@/components/FloatingNavbar";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { AIAssistant } from "@/components/AIAssistant";
+import { Providers } from "@/components/Providers";
+import { FloatingNavbar } from "@/components/FloatingNavbar";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function RootLayout({
   children,
@@ -39,28 +38,23 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans`}
         suppressHydrationWarning
       >
-        <ThemeProvider
-          attribute="data-theme"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           <AuthGuard>
-            <SyncProvider>
-              <SyncManager />
-              <NavigationBar />
-              <div className="pb-32">
-                {children}
-              </div>
-              <FloatingNavbar />
-              <AIAssistant />
-              
-              <footer className="w-full flex justify-center pb-40 pt-8 border-t border-zinc-200/50 dark:border-zinc-800/50 mt-auto">
-                <ThemeToggle />
-              </footer>
-            </SyncProvider>
+            <SyncManager />
+            <NavigationBar />
+            <div className="pb-32">
+              {children}
+            </div>
+            <FloatingNavbar />
+            <AIAssistant />
+            
+            <footer className="w-full flex justify-center pb-40 pt-8 border-t border-zinc-200/50 dark:border-zinc-800/50 mt-auto">
+              {/* Note: ThemeToggle needs to be inside Providers if it uses theme context */}
+              {/* @ts-ignore */}
+              <ThemeToggle />
+            </footer>
           </AuthGuard>
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

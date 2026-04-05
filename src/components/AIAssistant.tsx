@@ -1188,7 +1188,7 @@ export function AIAssistant() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-[100px] sm:bottom-6 right-6 z-50">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-16 h-16 bg-zinc-900 dark:bg-zinc-100 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all text-white dark:text-black group relative overflow-hidden"
@@ -1198,7 +1198,7 @@ export function AIAssistant() {
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-20 right-0 w-[400px] h-[600px] bg-white dark:bg-zinc-900 rounded-[32px] shadow-2xl border border-zinc-100 dark:border-zinc-800 flex flex-col overflow-hidden animate-in slide-in-from-bottom-6 duration-300">
+        <div className="absolute bottom-20 right-0 w-[calc(100vw-48px)] sm:w-[400px] h-[500px] max-h-[70vh] sm:h-[600px] bg-white dark:bg-zinc-900 rounded-[32px] shadow-2xl border border-zinc-100 dark:border-zinc-800 flex flex-col overflow-hidden animate-in slide-in-from-bottom-6 duration-300">
           <div className="p-6 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-zinc-900 dark:bg-zinc-100 rounded-2xl flex items-center justify-center">

@@ -4,6 +4,7 @@ import { Quotes } from '@/components/widgets/Quotes';
 import { GoalsSummary } from '@/components/widgets/GoalsSummary';
 import { TasksCalendar } from '@/components/widgets/TasksCalendar';
 import { HabitsOverview } from '@/components/widgets/HabitsOverview';
+import { OneNoteJournal } from '@/components/widgets/OneNoteJournal';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -42,8 +43,13 @@ export default function Home() {
         </section>
 
         {/* Bottom Section */}
-        <section className="w-full fade-in pb-12" style={{ animationDelay: '200ms' }}>
-          <HabitsOverview />
+        <section className="w-full flex flex-col xl:flex-row gap-6 fade-in pb-12" style={{ animationDelay: '200ms' }}>
+          <div className="w-full xl:w-1/2">
+            <HabitsOverview />
+          </div>
+          <div className="w-full xl:w-1/2">
+            <OneNoteJournal />
+          </div>
         </section>
         
       </div>

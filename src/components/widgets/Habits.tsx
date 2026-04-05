@@ -361,7 +361,7 @@ export function Habits() {
                   {datesOfMonth.map((d, index) => {
                     const isToday = isCurrentViewRealTodayMonth && index === todayDateIndex;
                     return (
-                      <th className={`font-semibold text-[10px] uppercase tracking-wider pt-3 pb-1 px-2 text-center w-20 min-w-[3rem] select-none transition-colors ${isToday ? 'text-teal-600 dark:text-teal-400 bg-teal-50/50 dark:bg-teal-500/10' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                      <th key={`day-name-${index}`} className={`font-semibold text-[10px] uppercase tracking-wider pt-3 pb-1 px-2 text-center w-20 min-w-[3rem] select-none transition-colors ${isToday ? 'text-teal-600 dark:text-teal-400 bg-teal-50/50 dark:bg-teal-500/10' : 'text-zinc-500 dark:text-zinc-400'}`}>
                         {d.dayName}
                       </th>
                     );
