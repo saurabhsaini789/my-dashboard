@@ -133,7 +133,7 @@ export function OneNoteJournal() {
                   <div className="flex flex-col gap-1 items-start animate-in fade-in slide-in-from-left-2 transition-all">
                     <div className="flex items-center gap-2 text-teal-600 dark:text-teal-400">
                       <CheckCircle2 className="w-5 h-5" />
-                      <span className="text-sm font-medium">Synced to OneNote!</span>
+                      <span className="text-sm font-medium">Synced!</span>
                     </div>
                     {lastPageUrl && (
                       <a 
@@ -142,7 +142,7 @@ export function OneNoteJournal() {
                         rel="noopener noreferrer"
                         className="text-xs text-teal-500 hover:text-teal-600 underline ml-7"
                       >
-                        View in OneNote
+                        View!
                       </a>
                     )}
                   </div>
@@ -187,7 +187,7 @@ export function OneNoteJournal() {
                   ) : (
                     <>
                       <CloudUpload className="w-5 h-5" />
-                      Sync to OneNote
+                      Sync
                     </>
                   )}
                 </button>
