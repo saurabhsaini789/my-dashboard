@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { updateAssetFromExpense, updateRecipientFromExpense, updateAssetFromIncome, updateLiabilityFromExpense } from "@/lib/finances";
 import { getPrefixedKey } from "@/lib/keys";
 import { setSyncedItem } from "@/lib/storage";
+import { sendMessageToEva } from "@/lib/ai";
 
 
 interface Message {
@@ -1151,24 +1152,13 @@ export function AIAssistant() {
       const firstUserIndex = rawSlice.findIndex(m => m.role === 'user');
       const messageWindow = firstUserIndex !== -1 ? rawSlice.slice(firstUserIndex) : rawSlice;
 
-      const response = await fetch("/my-dashboard/api/chat/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: messageWindow.map(m => ({ 
-            id: m.id, 
-            role: m.role, 
-            content: m.content,
-            toolCalls: m.toolCalls,
-            functionResponse: m.functionResponse
-          })),
-          pathname,
-          context
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Failed to send message");
+      const data = await sendMessageToEva(messageWindow.map(m => ({ 
+        id: m.id, 
+        role: m.role, 
+        content: m.content,
+        toolCalls: m.toolCalls,
+        functionResponse: m.functionResponse
+      })), pathname, context);
 
       await processResponse(data, updatedMessages);
       

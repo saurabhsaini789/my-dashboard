@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // output: 'export', // Disabled because API routes require a Node.js server
+  output: 'export',
   basePath: '/my-dashboard',
   trailingSlash: true,
   images: {
