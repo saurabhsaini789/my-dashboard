@@ -80,13 +80,13 @@ export function FloatingNavbar() {
 
   return (
     <div 
-      className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-[999] w-max max-w-[92vw] transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${
+      className={`fixed bottom-8 left-0 right-0 mx-auto z-[999] w-max max-w-[92vw] transition-all duration-500 cubic-bezier(0.4, 0, 0.2, 1) ${
         isVisible && !isModalOpen 
           ? 'opacity-100 translate-y-0 scale-100' 
           : 'opacity-0 translate-y-12 scale-90 pointer-events-none'
       }`}
     >
-      <nav className="flex items-center gap-1 p-1.5 bg-white/70 dark:bg-zinc-900/80 backdrop-blur-2xl border border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+      <nav className="flex items-center gap-1 p-2 px-4 bg-white/70 dark:bg-zinc-900/80 backdrop-blur-2xl border border-zinc-200/50 dark:border-zinc-800/50 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
         {navItems.map((item) => {
           // Handle trailing slashes and potential basePath differences
           const normalizedPathname = pathname?.replace(/\/$/, '') || '/';

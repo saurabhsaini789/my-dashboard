@@ -241,25 +241,19 @@ export function OneNoteAdvanced() {
 
   return (
     <div className="w-full flex flex-col gap-8 max-w-7xl mx-auto px-4">
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <div className="p-4 bg-teal-500/10 rounded-[1.5rem] border border-teal-500/20 shadow-inner">
-            <BookOpen className="w-8 h-8 text-teal-600 dark:text-teal-400" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">
-              OneNote
-            </h1>
-            <p className="text-zinc-500 dark:text-zinc-400 font-medium italic">Full precision journaling & cloud sync</p>
-          </div>
+      <div className="flex flex-col items-center justify-center gap-6 border-b border-zinc-100 dark:border-zinc-800 pb-8">
+        <div className="text-center">
+          <h1 className="text-4xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-[0.2em] uppercase">
+            OneNote
+          </h1>
         </div>
 
         <AuthenticatedTemplate>
-          <div className="flex items-center gap-4">
-             <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
-                <div className="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse" />
-                <span className="text-sm font-bold text-zinc-600 dark:text-zinc-300">
-                  {activeAccount?.name} ({activeAccount?.username})
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+             <div className="flex items-center gap-3 px-4 py-2 bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+                <div className="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse shrink-0" />
+                <span className="text-[10px] sm:text-xs font-bold text-zinc-600 dark:text-zinc-300 break-all text-center">
+                  {activeAccount?.name} <span className="text-zinc-400 dark:text-zinc-500 font-medium opacity-70">({activeAccount?.username})</span>
                 </span>
              </div>
              <button 
@@ -267,8 +261,8 @@ export function OneNoteAdvanced() {
               disabled={isInteractionInProgress}
               className="group flex items-center gap-2 px-6 py-3 text-zinc-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-2xl transition-all duration-300 border border-transparent hover:border-red-200"
             >
-              <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-              <span className="font-bold text-sm">Logout</span>
+              <LogOut className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              <span className="font-bold text-xs uppercase tracking-wider">Logout</span>
             </button>
           </div>
         </AuthenticatedTemplate>
@@ -439,14 +433,14 @@ export function OneNoteAdvanced() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-6 w-full sm:w-auto justify-end">
+                <div className="flex items-center gap-4 w-full sm:w-auto justify-end">
                   <button
                     onClick={() => {
                       setContent('');
                       setSaveStatus('idle');
                     }}
                     disabled={isSaving || !content || content === '<p></p>'}
-                    className="px-8 py-4 rounded-2xl font-black text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all duration-300 disabled:opacity-30 disabled:grayscale"
+                    className="px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all duration-300 disabled:opacity-30 disabled:grayscale border border-transparent hover:border-red-200"
                   >
                     Clear
                   </button>
@@ -455,22 +449,22 @@ export function OneNoteAdvanced() {
                     onClick={handleSave}
                     disabled={isSaving || !content || content === '<p></p>' || !selectedSectionId}
                     className={`
-                      flex items-center justify-center gap-4 px-12 py-5 rounded-[2rem] font-black text-lg transition-all duration-500
+                      flex items-center justify-center gap-3 px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all duration-500
                       ${isSaving 
-                        ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed border-zinc-200 dark:border-zinc-700'
-                        : 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:scale-[1.03] hover:-translate-y-1 active:scale-95 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_40px_-12px_rgba(255,255,255,0.05)]'
+                        ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed'
+                        : 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:scale-[1.03] active:scale-95 shadow-lg shadow-zinc-900/20 dark:shadow-white/5 border border-zinc-900 dark:border-white'
                       }
                       disabled:opacity-50 disabled:grayscale
                     `}
                   >
                     {isSaving ? (
                       <>
-                        <Loader2 className="w-6 h-6 animate-spin text-teal-500" />
-                        Synchronizing...
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Syncing...
                       </>
                     ) : (
                       <>
-                        <CloudUpload className="w-6 h-6" />
+                        <CloudUpload className="w-4 h-4" />
                         Sync
                       </>
                     )}
