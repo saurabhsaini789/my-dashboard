@@ -248,7 +248,7 @@ export function OneNoteAdvanced() {
           </div>
           <div>
             <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">
-              OneNote Workspace
+              OneNote
             </h1>
             <p className="text-zinc-500 dark:text-zinc-400 font-medium italic">Full precision journaling & cloud sync</p>
           </div>
