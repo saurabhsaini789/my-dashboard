@@ -11,7 +11,8 @@ import {
   BookMarked,
   Rocket,
   ChevronUp,
-  FileText
+  FileText,
+  Shirt
 } from 'lucide-react';
 
 export function FloatingNavbar() {
@@ -67,7 +68,7 @@ export function FloatingNavbar() {
     { name: 'Finances', href: '/finances', icon: CircleDollarSign },
     { name: 'Businesses', href: '/businesses', icon: Rocket },
     { name: 'Expenses', href: '/pantry', icon: ShoppingBasket },
-    { name: 'OneNote', href: '/onenote', icon: FileText },
+    { name: 'Wardrobe', href: '/wardrobe', icon: Shirt },
   ];
 
 

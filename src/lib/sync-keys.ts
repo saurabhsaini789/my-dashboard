@@ -23,6 +23,9 @@ export const SYNC_KEYS = {
   FINANCES_GROCERY_PLAN: 'finances_grocery_plan',
   FINANCES_INVENTORY: 'finances_inventory',
   
+  // Wardrobe
+  WARDROBE_INVENTORY: 'os_wardrobe',
+  
   // Books
   BOOKS_QUEUE: 'os_books_queue',
   BOOKS_YEARLY_LOG: 'os_books_yearly_log',

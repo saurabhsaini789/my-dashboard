@@ -20,7 +20,7 @@ export function NavigationBar() {
     { name: 'Finances', path: '/finances' },
     { name: 'Businesses', path: '/businesses' },
     { name: 'Expenses', path: '/pantry' },
-    { name: 'OneNote', path: '/onenote' },
+    { name: 'Wardrobe', path: '/wardrobe' },
   ];
 
   return (

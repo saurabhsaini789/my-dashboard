@@ -210,7 +210,7 @@ export function FinanceOverview() {
       <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
         <MetricCard 
           label="Net Worth"
-          value={`${netWorth.toLocaleString("en-CA", { maximumFractionDigits: 0 })}`}
+          value={`$${netWorth.toLocaleString("en-CA", { maximumFractionDigits: 0 })}`}
           
           subValue={netWorth >= 0 ? "Positive Equity" : "Negative Equity"}
           color={netWorth >= 0 ? "emerald" : "rose"}
@@ -246,7 +246,7 @@ export function FinanceOverview() {
 
         <MetricCard
           label="Monthly Income"
-          value={`${income.toLocaleString("en-CA", { maximumFractionDigits: 0 })}`}
+          value={`$${income.toLocaleString("en-CA", { maximumFractionDigits: 0 })}`}
           
           subValue={selectedMonths.length === 1 && selectedYears.length === 1 ? MONTHS[selectedMonths[0]] : `${selectedMonths.length} Months`}
           color="emerald"
@@ -259,7 +259,7 @@ export function FinanceOverview() {
 
         <MetricCard
           label="Monthly Expenses"
-          value={`${expenses.toLocaleString("en-CA", { maximumFractionDigits: 0 })}`}
+          value={`$${expenses.toLocaleString("en-CA", { maximumFractionDigits: 0 })}`}
           
           subValue={`${income > 0 ? ((expenses / income) * 100).toFixed(0) : 0}% of Income`}
           color="rose"
