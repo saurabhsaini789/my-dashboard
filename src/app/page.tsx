@@ -21,9 +21,9 @@ export default function Home() {
         
 
         {/* Page Title */}
-        <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-zinc-900/80 dark:text-zinc-100/80 text-center uppercase fade-in">
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900/80 dark:text-zinc-100/80 text-center fade-in">
           Remember Your Why
-        </h2>
+        </h1>
 
         {/* Top Section: Goals Summary and Quotes */}
         <section className="w-full flex flex-col lg:flex-row gap-6 fade-in">

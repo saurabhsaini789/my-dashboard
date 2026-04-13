@@ -30,7 +30,7 @@ export const FormSection: React.FC<FormSectionProps> = ({ title, children, isAdv
         className={`flex items-center justify-between mb-3 ${isAdvanced ? 'cursor-pointer select-none group' : ''}`}
         onClick={() => isAdvanced && setIsExpanded(!isExpanded)}
       >
-        <h3 className={`text-sm font-bold uppercase tracking-wide transition-colors ${colors.text} ${isAdvanced ? colors.hover : ''}`}>
+        <h3 className={`text-lg font-semibold transition-colors ${colors.text} ${isAdvanced ? colors.hover : ''}`}>
           {title}
         </h3>
         {isAdvanced && (

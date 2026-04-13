@@ -86,7 +86,7 @@ export function WardrobeFormModal({ isOpen, onClose, onSave, initialData }: Ward
   const sections: FormSchemaSection[] = [
     {
       id: 'basicInfo',
-      title: 'Basic Info',
+      title: 'Basic info',
       fields: [
         { name: 'itemName', label: 'Item Name', type: 'text', fullWidth: true, required: true, placeholder: "e.g., Black Levi's 501" },
         { name: 'category', label: 'Category', type: 'select', options: WARDROBE_CATEGORIES },
@@ -95,7 +95,7 @@ export function WardrobeFormModal({ isOpen, onClose, onSave, initialData }: Ward
     },
     {
       id: 'appearance',
-      title: 'Appearance & Fit',
+      title: 'Appearance & fit',
       fields: [
         { name: 'colour', label: 'Colour', type: 'select', options: WARDROBE_COLOURS },
         { name: 'fit', label: 'Fit', type: 'select', options: WARDROBE_FITS },
@@ -116,7 +116,7 @@ export function WardrobeFormModal({ isOpen, onClose, onSave, initialData }: Ward
     },
     {
       id: 'purchase',
-      title: 'Purchase Info',
+      title: 'Purchase info',
       isAdvanced: true, // Example of the collapsible advanced requirement
       fields: [
         { name: 'cost', label: 'Cost ($)', type: 'number', min: 0, step: 0.01 },
@@ -138,7 +138,7 @@ export function WardrobeFormModal({ isOpen, onClose, onSave, initialData }: Ward
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={initialData ? 'Edit Wardrobe Item' : 'Add New Item'}
+      title={initialData ? 'Edit wardrobe item' : 'Add new item'}
       onSubmit={handleSubmit}
       submitText={initialData ? 'Save Changes' : 'Add Item'}
       accentColor="zinc"

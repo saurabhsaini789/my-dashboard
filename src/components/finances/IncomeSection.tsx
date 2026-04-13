@@ -230,7 +230,7 @@ export function IncomeSection() {
     <div className="flex flex-col gap-8 w-full">
       {/* Integrated Heading, Filters & Global Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
-        <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
+        <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
             Income
         </h2>
         
@@ -251,7 +251,7 @@ export function IncomeSection() {
             </div>
             <button 
                 onClick={openAddModal}
-                className="bg-emerald-600 text-white uppercase tracking-widest text-xs px-8 py-4 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald-200/50 dark:shadow-none h-[54px]"
+                className="bg-emerald-600 text-white tracking-widest text-xs px-8 py-4 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald-200/50 dark:shadow-none h-[54px]"
             >
                 Add Record
             </button>
@@ -263,29 +263,29 @@ export function IncomeSection() {
           <IncomeMetrics records={records} selectedMonths={selectedMonths} selectedYears={selectedYears} />
 
           {/* Table Section */}
-          <div className="bg-emerald-50/20 dark:bg-emerald-500/5 border border-emerald-100 dark:border-emerald-900/30 rounded-[40px] p-2 overflow-hidden hover:shadow-2xl transition-all flex flex-col pt-8">
+          <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-900/30 rounded-[40px] p-2 overflow-hidden hover:shadow-2xl transition-all flex flex-col pt-8">
               <div className="flex items-center justify-between px-8 mb-8">
-                  <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-[0.3em]">Detailed Records</span>
+                  <span className="text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-[0.3em]">Detailed Records</span>
               </div>
 
               <div className="overflow-x-auto px-4">
-                  <table className="w-full text-left border-collapse">
+                  <table className="w-full text-left border-collapse min-w-[700px]">
                       <thead>
                           <tr className="border-b border-zinc-50 dark:border-zinc-800/50">
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Date</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Source</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Type</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Account</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Notes</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400 text-right">Amount</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400"></th>
+                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Date</th>
+                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Source</th>
+                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Type</th>
+                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Account</th>
+                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Notes</th>
+                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300 text-right">Amount</th>
+                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300"></th>
                           </tr>
                       </thead>
                       <tbody>
                           {filteredRecords.length > 0 ? filteredRecords.map(record => (
                               <tr key={record.id} className="group hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors border-b border-zinc-50 dark:border-zinc-800/20 last:border-0">
                                   <td className="px-4 py-5">
-                                      <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                      <span className="text-xs text-zinc-500 dark:text-zinc-300">
                                           {new Date(record.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
                                       </span>
                                   </td>
@@ -300,12 +300,12 @@ export function IncomeSection() {
                                       </span>
                                   </td>
                                   <td className="px-4 py-5">
-                                      <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                                      <span className="text-sm text-zinc-500 dark:text-zinc-300">
                                           {assets.find(a => a.id === record.assetId)?.name || '-'}
                                       </span>
                                   </td>
                                   <td className="px-4 py-5 max-w-[150px]">
-                                      <span className="text-xs text-zinc-500 dark:text-zinc-400 truncate block">
+                                      <span className="text-xs text-zinc-500 dark:text-zinc-300 truncate block">
                                           {record.notes || '-'}
                                       </span>
                                   </td>
@@ -324,7 +324,7 @@ export function IncomeSection() {
                           )) : (
                               <tr>
                                   <td colSpan={7} className="px-8 py-20 text-center">
-                                      <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em]">No income recorded for this period</span>
+                                      <span className="text-xs text-zinc-500 dark:text-zinc-300 uppercase tracking-[0.2em]">No income recorded for this period</span>
                                   </td>
                               </tr>
                           )}
@@ -338,7 +338,7 @@ export function IncomeSection() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingRecord ? 'Edit Income' : 'Add Income'}
+        title={editingRecord ? 'Edit income' : 'Add income'}
         onSubmit={handleSubmit}
         submitText={editingRecord ? 'Update Record' : 'Save Record'}
         accentColor="emerald"
@@ -347,7 +347,7 @@ export function IncomeSection() {
           sections={[
             {
               id: 'basic',
-              title: 'Income Basics',
+              title: 'Income basics',
               fields: [
                 { 
                   name: 'source', 
@@ -372,7 +372,7 @@ export function IncomeSection() {
             },
             {
               id: 'amount_date',
-              title: 'Amount & Date',
+              title: 'Amount & date',
               fields: [
                 { name: 'amount', label: 'Amount ($)', type: 'number', required: true, step: "0.01", placeholder: "0.00", fullWidth: true },
                 { name: 'date', label: 'Date', type: 'date', required: true, fullWidth: true }
@@ -411,7 +411,7 @@ export function IncomeSection() {
             },
             {
               id: 'notes',
-              title: 'Additional Info',
+              title: 'Additional info',
               isAdvanced: true,
               fields: [
                 { name: 'notes', label: 'Quick Notes', type: 'textarea', fullWidth: true, placeholder: "Any additional details or context..." }

@@ -40,8 +40,8 @@ export function MultiSelectDropdown({ label, options, selected, onChange }: Mult
                 className="flex items-center justify-between gap-4 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 px-6 py-3 rounded-2xl min-w-[160px] hover:shadow-lg transition-all group h-[54px]"
             >
                 <div className="flex flex-col items-start px-1">
-                    <span className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none mb-1">{label}</span>
-                    <span className="text-xs font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">{displayText}</span>
+                    <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest leading-none mb-1">{label}</span>
+                    <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">{displayText}</span>
                 </div>
                 <svg className={`w-4 h-4 text-zinc-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
@@ -62,7 +62,7 @@ export function MultiSelectDropdown({ label, options, selected, onChange }: Mult
                                     onClick={() => toggleOption(val)}
                                     className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all ${isSelected ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-black shadow-lg shadow-zinc-200/50' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50 text-zinc-500'}`}
                                 >
-                                    <span className="text-[10px] font-black uppercase tracking-widest">{labelStr}</span>
+                                    <span className="text-xs font-bold uppercase tracking-widest">{labelStr}</span>
                                     {isSelected && (
                                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />

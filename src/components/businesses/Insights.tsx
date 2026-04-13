@@ -148,10 +148,10 @@ export function Insights() {
   return (
     <section className="w-full">
       <div className="flex flex-col mb-6 px-2">
-        <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight flex items-center gap-2">
+        <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
           Insights
         </h2>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 uppercase tracking-widest">
+        <p className="text-xs text-zinc-500 dark:text-zinc-300 mt-1 uppercase tracking-widest">
           Quick, actionable guidance for your content activity
         </p>
       </div>
@@ -162,10 +162,10 @@ export function Insights() {
             key={idx}
             className={`flex items-start gap-4 p-5 rounded-[24px] border transition-all hover:shadow-lg dark:hover:shadow-zinc-900/50 ${
               insight.type === 'urgent'
-                ? 'bg-rose-50/50 dark:bg-rose-500/5 border-rose-100 dark:border-rose-500/20'
+                ? 'bg-rose-50 dark:bg-rose-500/10 border-rose-100 dark:border-rose-500/20'
                 : insight.type === 'warning'
-                ? 'bg-amber-50/50 dark:bg-amber-500/5 border-amber-100 dark:border-amber-500/20'
-                : 'bg-emerald-50/50 dark:bg-emerald-500/5 border-emerald-100 dark:border-emerald-500/20'
+                ? 'bg-amber-50 dark:bg-amber-500/10 border-amber-100 dark:border-amber-500/20'
+                : 'bg-emerald-50 dark:bg-emerald-500/10 border-emerald-100 dark:border-emerald-500/20'
             }`}
           >
             <div className={`mt-1 p-2 rounded-xl ${
@@ -176,7 +176,7 @@ export function Insights() {
               {insight.icon}
             </div>
             <div className="flex flex-col gap-0.5 mt-1">
-              <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${
+              <span className={`text-[10px] font-bold tracking-[0.15em] ${
                 insight.type === 'urgent' ? 'text-rose-500' : 
                 insight.type === 'warning' ? 'text-amber-500' : 
                 'text-emerald-500'

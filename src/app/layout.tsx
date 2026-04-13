@@ -42,7 +42,7 @@ export default function RootLayout({
           <AuthGuard>
             <SyncManager />
             <NavigationBar />
-            <div className="pb-32">
+            <div className="pb-24 md:pb-32">
               {children}
             </div>
             <FloatingNavbar />

@@ -91,10 +91,10 @@ export function OneNoteJournal() {
               <BookOpen className="w-6 h-6 text-teal-600 dark:text-teal-400" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+              <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                 OneNote Journal
                 <Sparkles className="w-4 h-4 text-amber-400" />
-              </h3>
+              </h2>
               <p className="text-sm text-zinc-500 dark:text-zinc-400">Capture your thoughts, sync to the cloud</p>
             </div>
           </div>
@@ -202,7 +202,7 @@ export function OneNoteJournal() {
               <BookOpen className="w-10 h-10 text-teal-600 dark:text-teal-400" />
             </div>
             <div className="max-w-xs">
-              <h4 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-2">Connect Your OneNote</h4>
+              <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">Connect Your OneNote</h3>
               <p className="text-zinc-500 dark:text-zinc-400 text-sm">
                 Sign in with your Microsoft account to securely sync your journals directly to your OneNote notebooks.
               </p>

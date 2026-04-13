@@ -90,11 +90,11 @@ export default function PantryPage() {
       <div className="mx-auto w-full max-w-7xl flex flex-col gap-8 md:gap-10 pt-4 relative z-10">
 
         {/* Page Title */}
-        <div className="flex flex-col gap-6 items-center">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-zinc-900 dark:text-zinc-100 text-center uppercase tracking-wider drop-shadow-sm leading-tight">
+        <div className="flex flex-col gap-6 items-start">
+          <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight drop-shadow-sm leading-tight">
             Pantry
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 uppercase tracking-widest text-center max-w-lg">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest text-left max-w-lg">
             Calendar-based Expense Tracker & Bill Management
           </p>
         </div>
@@ -103,19 +103,19 @@ export default function PantryPage() {
         {Object.keys(categoryTotals).length > 0 && (
           <div className="flex flex-col gap-5 fade-in animate-in slide-in-from-bottom-4 duration-700 delay-100">
              <div className="flex items-center justify-between px-2">
-                 <span className="text-xs text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-[0.2em]">{viewingDate.toLocaleString('default', { month: 'long', year: 'numeric' })} Breakdown</span>
-                 <span className="text-xs text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-[0.2em]">Total: ${(totalNeed + totalWant).toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                 <span className="text-xs text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest">{viewingDate.toLocaleString('default', { month: 'long', year: 'numeric' })} Breakdown</span>
+                 <span className="text-xs text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest">Total: ${(totalNeed + totalWant).toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
              </div>
 
              {/* Need vs Want visualization */}
              <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-3xl p-6 shadow-sm flex flex-col gap-5">
                <div className="flex justify-between items-center px-1">
                  <div className="flex flex-col">
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Essential Needs</span>
+                    <span className="text-xs uppercase font-bold tracking-widest text-zinc-400">Essential Needs</span>
                     <span className="text-xl font-bold tracking-tighter text-teal-600 dark:text-teal-400">${totalNeed.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                  </div>
                  <div className="flex flex-col items-end">
-                    <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Discretionary Wants</span>
+                    <span className="text-xs uppercase font-bold tracking-widest text-zinc-400">Discretionary Wants</span>
                     <span className="text-xl font-bold tracking-tighter text-rose-500 dark:text-rose-400">${totalWant.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                  </div>
                </div>
@@ -125,10 +125,10 @@ export default function PantryPage() {
                </div>
              </div>
 
-             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                {Object.entries(categoryTotals).sort((a,b) => b[1] - a[1]).map(([cat, total]) => (
                   <div key={cat} className="flex flex-col p-4 bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-100 dark:border-zinc-800 shadow-sm hover:-translate-y-1 transition-transform duration-300">
-                     <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-500 truncate">{cat}</span>
+                     <span className="text-xs uppercase font-bold tracking-widest text-zinc-500 truncate">{cat}</span>
                      <span className="text-xl font-bold text-teal-600 dark:text-teal-400">${total.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                ))}

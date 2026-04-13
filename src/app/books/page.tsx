@@ -77,20 +77,20 @@ export default function BooksPage() {
     <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/30 font-sans p-4 md:p-8 xl:p-12 transition-colors duration-200">
       <div className="mx-auto w-full max-w-6xl">
         {/* Header Section */}
-        <header className="mb-20 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
+        <header className="mb-20 text-left flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
           <div className="space-y-4">
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight text-zinc-900 dark:text-white">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
               Books
             </h1>
-            <p className="text-xl text-zinc-500 dark:text-zinc-400 mt-6 font-medium max-w-xl leading-relaxed">Track your reading journey, yearly progress, and distilled wisdom.</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-6 max-w-xl leading-relaxed">Track your reading journey, yearly progress, and distilled wisdom.</p>
           </div>
         </header>
 
         {/* Section 1: Reading Plan */}
         <section className="w-full relative fade-in">
           <div className="mb-10 px-2">
-            <h2 className="text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
-              Reading Plan
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              Reading plan
             </h2>
           </div>
           
@@ -100,8 +100,8 @@ export default function BooksPage() {
         {/* Section 2: Yearly Reading Log */}
         <section className="w-full relative mt-32 fade-in">
           <div className="mb-10 px-2">
-            <h2 className="text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
-              Yearly Reading Log
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              Yearly reading log
             </h2>
           </div>
           
@@ -111,8 +111,8 @@ export default function BooksPage() {
         {/* Section 3: Completed Books */}
         <section className="w-full relative mt-32 fade-in">
           <div className="mb-10 px-2">
-            <h2 className="text-4xl font-black tracking-tight text-zinc-900 dark:text-white">
-              Completed Books
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              Completed books
             </h2>
           </div>
           
@@ -121,7 +121,7 @@ export default function BooksPage() {
 
         {/* Footer */}
         <div className="mt-24 pt-12 border-t border-dashed border-zinc-200 dark:border-zinc-800 opacity-40">
-          <p className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400">
+          <p className="text-center text-xs font-bold uppercase tracking-widest text-zinc-400">
             End of Library Dashboard
           </p>
         </div>

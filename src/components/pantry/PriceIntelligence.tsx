@@ -216,7 +216,7 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
       
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 md:p-8 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[40px] shadow-xl relative overflow-hidden">
-         <div className="absolute top-0 left-0 w-64 h-64 bg-amber-500/10 dark:bg-amber-500/5 rounded-full blur-3xl -ml-10 -mt-20 pointer-events-none" />
+         <div className="absolute top-0 left-0 w-64 h-64 bg-amber-500/15 dark:bg-amber-500/10 rounded-full blur-3xl -ml-10 -mt-20 pointer-events-none" />
          
          <div className="flex flex-col gap-2 relative z-10">
             <h2 className="text-2xl font-bold uppercase tracking-[0.2em] text-zinc-900 dark:text-white">Price Intelligence</h2>
@@ -254,7 +254,7 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
                    <div className="flex justify-between items-start mb-4">
                       <div className="flex flex-col gap-1 max-w-[70%]">
                         <h4 className="font-bold text-[17px] text-zinc-900 dark:text-zinc-100 truncate" title={stat.name}>{stat.name}</h4>
-                        <span className="text-[11px] uppercase font-bold tracking-widest text-zinc-400">{stat.history.length} Logs</span>
+                        <span className="text-[11px] uppercase font-bold tracking-widest text-zinc-500 dark:text-zinc-400">{stat.history.length} Logs</span>
                       </div>
                       <div className={`px-2 py-1 rounded-lg text-xs font-bold whitespace-nowrap ${
                          stat.priceTrend > 3 ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400' 
@@ -272,7 +272,7 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
                            <span className="text-base font-semibold tracking-normal text-zinc-400 mr-1">$</span>{stat.lastPurchase.price.toLocaleString("en-CA", { minimumFractionDigits: 1, maximumFractionDigits: 3 })}
                            <span className="text-sm font-semibold text-zinc-400 ml-1">/ {stat.lastPurchase.size || 'unit'}</span>
                          </span>
-                         <span className="text-xs text-zinc-500 uppercase tracking-widest font-bold mt-1 truncate max-w-[150px]" title={stat.lastPurchase.vendor}>
+                         <span className="text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest font-bold mt-1 truncate max-w-[150px]" title={stat.lastPurchase.vendor}>
                             at {stat.lastPurchase.vendor} {stat.lastPurchase.brand ? `(${stat.lastPurchase.brand})` : ''}
                          </span>
                       </div>
@@ -282,14 +282,14 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
                    {/* Avg vs Lowest Tracker */}
                    <div className="flex justify-between text-sm mb-4 p-4 bg-zinc-50 dark:bg-zinc-950/40 rounded-2xl border border-zinc-100 dark:border-zinc-800/50">
                       <div className="flex flex-col gap-1.5">
-                        <span className="text-[11px] text-zinc-400 font-bold uppercase tracking-[0.15em]">Average</span>
-                        <span className="font-bold text-zinc-700 dark:text-zinc-300 text-sm">
+                        <span className="text-[11px] text-zinc-600 dark:text-zinc-300 font-bold uppercase tracking-[0.15em]">Average</span>
+                        <span className="font-bold text-zinc-800 dark:text-zinc-200 text-sm">
                           ${stat.averagePrice.toLocaleString("en-CA", {maximumFractionDigits:2})}
                         </span>
                       </div>
                       <div className="w-px h-8 bg-zinc-200 dark:bg-zinc-800 my-auto" />
                       <div className="flex flex-col gap-1.5 text-right">
-                        <span className="text-[11px] text-zinc-400 font-bold uppercase tracking-[0.15em]">Lowest</span>
+                        <span className="text-[11px] text-zinc-600 dark:text-zinc-300 font-bold uppercase tracking-[0.15em]">Lowest</span>
                         <span className="font-bold text-teal-600 dark:text-teal-400 text-sm">
                           ${stat.lowestPrice.price.toLocaleString("en-CA", {maximumFractionDigits:2})}
                         </span>
@@ -378,10 +378,10 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
                      <table className="w-full text-left">
                         <thead className="bg-zinc-50 dark:bg-zinc-950/50 border-b border-zinc-100 dark:border-zinc-800">
                            <tr>
-                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Date</th>
-                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-400 font-bold">Store</th>
-                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-400 font-bold text-right">Details</th>
-                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-400 font-bold text-right">Unit Price</th>
+                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold">Date</th>
+                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold">Store</th>
+                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold text-right">Details</th>
+                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold text-right">Unit Price</th>
                            </tr>
                         </thead>
                         <tbody>

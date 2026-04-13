@@ -271,12 +271,12 @@ export function LiabilitiesSection() {
       {/* Heading & Top Summary Metrics */}
       <div className="flex flex-col gap-4 md:gap-6 px-1 md:px-2">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
+          <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
             Liabilities
           </h2>
           <button 
             onClick={openAddModal}
-            className="bg-rose-600 text-white uppercase tracking-widest text-[10px] md:text-xs px-5 md:px-6 py-2.5 md:py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg md:h-[46px] w-fit"
+            className="bg-rose-600 text-white tracking-widest text-[10px] md:text-xs px-5 md:px-6 py-2.5 md:py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg md:h-[46px] w-fit"
           >
             Add Liability
           </button>
@@ -284,8 +284,8 @@ export function LiabilitiesSection() {
 
         {/* Global Summary Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
-            <div className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative">
-                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-[0.2em]">Total Debt</span>
+            <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative">
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-300 font-medium uppercase tracking-[0.2em]">Total Debt</span>
                 <div className="flex flex-col">
                   <span className="text-xl md:text-2xl text-zinc-900 dark:text-zinc-100 tracking-tighter font-bold">
                       ${totalDebt.toLocaleString("en-CA", { maximumFractionDigits: 0 })}
@@ -294,8 +294,8 @@ export function LiabilitiesSection() {
                 </div>
             </div>
 
-            <div className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative">
-                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-[0.2em]">EMI Burden</span>
+            <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative">
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-300 font-medium uppercase tracking-[0.2em]">EMI Burden</span>
                 <div className="flex flex-col">
                   <span className="text-xl md:text-2xl text-zinc-900 dark:text-zinc-100 tracking-tighter font-bold">
                       ${totalEMI.toLocaleString("en-CA", { maximumFractionDigits: 0 })}
@@ -304,8 +304,8 @@ export function LiabilitiesSection() {
                 </div>
             </div>
 
-            <div className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative col-span-2 lg:col-span-1">
-                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium uppercase tracking-[0.2em]">DTI Ratio</span>
+            <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative col-span-2 lg:col-span-1">
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-300 font-medium uppercase tracking-[0.2em]">DTI Ratio</span>
                 <div className="flex items-baseline gap-2">
                     <span className={`text-xl md:text-2xl tracking-tighter font-bold ${dti > 40 ? 'text-rose-500' : dti > 25 ? 'text-amber-500' : 'text-emerald-500'}`}>
                         {dti.toFixed(1)}%
@@ -319,16 +319,16 @@ export function LiabilitiesSection() {
       </div>
 
       {/* Liabilities Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 px-1 md:px-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 px-1 md:px-2">
         {liabilities.map(liability => {
           const payoffProgress = ((liability.totalAmount - liability.remainingBalance) / liability.totalAmount) * 100;
           const isHighInterest = liability.interestRate >= 10;
           
           return (
-            <div 
-              key={liability.id} 
-              className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-5 group hover:shadow-lg transition-all relative overflow-hidden"
-            >
+              <div 
+                key={liability.id} 
+                className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-5 group hover:shadow-lg transition-all relative overflow-hidden"
+              >
               {/* Card Header */}
               <div className="flex justify-between items-start gap-4">
                 <div className="flex flex-col flex-1 min-w-0">
@@ -371,7 +371,7 @@ export function LiabilitiesSection() {
               <div className="flex flex-col gap-4">
                 {/* Progress Bar (Always visible for better hierarchy) */}
                 <div className="flex flex-col gap-1.5">
-                  <div className="flex justify-between text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold">
+                  <div className="flex justify-between text-[10px] text-zinc-600 dark:text-zinc-300 uppercase tracking-widest font-bold">
                       <span>Payoff progress</span>
                       <span>{payoffProgress.toFixed(0)}%</span>
                   </div>
@@ -385,7 +385,7 @@ export function LiabilitiesSection() {
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col">
-                        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-medium">Outstanding Bal</span>
+                        <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest font-medium">Outstanding Bal</span>
                         <span className="text-lg md:text-xl text-zinc-900 dark:text-zinc-100 tracking-tighter font-bold">
                             ${calculateLiabilityBalance(liability).toLocaleString("en-CA", { maximumFractionDigits: 0 })}
                         </span>
@@ -397,7 +397,7 @@ export function LiabilitiesSection() {
               <div className={`sm:flex flex-col gap-5 w-full ${expandedLiabilities[liability.id] ? 'flex' : 'hidden'}`}>
                 {/* Progress Bar */}
                 <div className="flex flex-col gap-2">
-                  <div className="flex justify-between text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">
+                  <div className="flex justify-between text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest">
                       <span>Payoff Progress</span>
                       <span>{payoffProgress.toFixed(0)}%</span>
                   </div>
@@ -412,13 +412,13 @@ export function LiabilitiesSection() {
                 {/* Loan Details */}
                  <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-0.5">
-                         <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Remaining</span>
+                         <span className="text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest">Remaining</span>
                         <span className="text-lg text-zinc-900 dark:text-zinc-100 tracking-tight">
                             ${calculateLiabilityBalance(liability).toLocaleString("en-CA", { maximumFractionDigits: 0 })}
                         </span>
                     </div>
                     <div className="flex flex-col gap-0.5 text-right">
-                         <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Interest Rate</span>
+                         <span className="text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest">Interest Rate</span>
                         <span className={`text-lg tracking-tight ${isHighInterest ? 'text-rose-500' : liability.interestRate < 5 ? 'text-emerald-500' : 'text-zinc-900 dark:text-zinc-100'}`}>
                             {liability.interestRate}%
                         </span>
@@ -452,7 +452,7 @@ export function LiabilitiesSection() {
                 {/* Footer Meta */}
                 <div className="flex flex-col gap-1.5 mt-auto border-t border-zinc-50 dark:border-zinc-800/50 pt-4">
                      <div className="flex items-center justify-between">
-                       <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Tenure Left</span>
+                       <span className="text-xs text-zinc-500 dark:text-zinc-300 uppercase tracking-widest">Tenure Left</span>
                        <span className="text-xs text-zinc-600 dark:text-zinc-300">
                            {liability.tenureRemaining} Months
                        </span>
@@ -468,7 +468,7 @@ export function LiabilitiesSection() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingLiability ? 'Modify Liability' : 'New Liability'}
+        title={editingLiability ? 'Modify liability' : 'New liability'}
         onSubmit={handleSubmit}
         submitText={editingLiability ? 'Update' : 'Save'}
         accentColor="rose"
@@ -477,7 +477,7 @@ export function LiabilitiesSection() {
           sections={[
             {
               id: 'basic',
-              title: 'Liability Profile',
+              title: 'Liability profile',
               fields: [
                 { name: 'name', label: 'Liability Name', type: 'text', required: true, fullWidth: true, placeholder: 'e.g. Home Mortgage...' },
                 { 
@@ -515,7 +515,7 @@ export function LiabilitiesSection() {
       <Modal
         isOpen={isRepayModalOpen}
         onClose={() => setIsRepayModalOpen(false)}
-        title="Log Payment"
+        title="Log payment"
         onSubmit={handleRepaySubmit}
         submitText="Log Payment"
       >
@@ -523,7 +523,7 @@ export function LiabilitiesSection() {
           sections={[
             {
               id: 'repay',
-              title: 'Payment Details',
+              title: 'Payment details',
               fields: [
                 {
                   name: 'repayType',
@@ -564,7 +564,7 @@ export function LiabilitiesSection() {
       <Modal
         isOpen={isSimModalOpen}
         onClose={() => setIsSimModalOpen(false)}
-        title="Payoff Impact"
+        title="Payoff impact"
         onSubmit={(e) => { e.preventDefault(); setIsSimModalOpen(false); }}
         submitText="Done"
       >
@@ -587,7 +587,7 @@ export function LiabilitiesSection() {
         {simExtraPayment && activeLiabilityId && (
             <div className="mt-6 grid grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
                 <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 rounded-3xl p-6 flex flex-col gap-1 items-center text-center">
-                    <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Interest Saved</span>
+                    <span className="text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest">Interest Saved</span>
                     <span className="text-2xl text-indigo-700 dark:text-indigo-300 tracking-tighter">
                         {calculateSim(liabilities.find(l => l.id === activeLiabilityId)!, parseFloat(simExtraPayment)).monthsSaved} Months
                     </span>

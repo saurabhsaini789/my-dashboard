@@ -85,8 +85,8 @@ export function TodayActions() {
   return (
     <section className="w-full mb-12">
       <div className="flex items-center gap-3 mb-6">
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white uppercase tracking-tight flex items-center gap-2">
-          Today&apos;s Actions
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-2">
+          Today&apos;s actions
         </h2>
       </div>
 
@@ -96,20 +96,20 @@ export function TodayActions() {
             {dueToday.map(channel => (
               <div 
                 key={channel.id} 
-                className={`group relative border border-zinc-100 dark:border-zinc-800 rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 ${channel.rowColor || 'bg-zinc-50 dark:bg-zinc-800/30'}`}
+                className={`group relative border border-zinc-200 dark:border-zinc-800/50 rounded-2xl p-6 hover:scale-[1.02] transition-all duration-300 ${channel.rowColor || 'bg-zinc-100 dark:bg-zinc-800/50'}`}
               >
                 <div className="flex flex-col gap-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-bold text-lg text-zinc-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                      <h3 className="font-semibold text-lg text-zinc-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                         {channel.name}
                       </h3>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">
                           {channel.platform}
                         </span>
                         {channel.contentType && (
-                          <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest border border-zinc-200 dark:border-zinc-700 px-1.5 rounded">
+                          <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest border border-zinc-200 dark:border-zinc-700 px-1.5 rounded">
                             {channel.contentType}
                           </span>
                         )}
@@ -121,7 +121,7 @@ export function TodayActions() {
                   </div>
 
                   <div className="flex items-center justify-between mt-2 pt-4 border-t border-zinc-200/50 dark:border-zinc-700/50">
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-600 dark:text-teal-400 animate-pulse">
+                    <span className="text-xs font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400 animate-pulse">
                       Post Today
                     </span>
                     <button
@@ -144,7 +144,7 @@ export function TodayActions() {
             <p className="text-xl font-bold text-zinc-900 dark:text-white">
               No posts due today — you&apos;re on track
             </p>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+            <p className="text-sm text-zinc-500 dark:text-zinc-300 mt-2">
               Enjoy your free time or prepare for upcoming content.
             </p>
           </div>

@@ -235,12 +235,12 @@ export function HabitsOverview() {
   return (
     <div className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-8 flex flex-col h-full shadow-sm">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-        <h3 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
           <span className="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-500/10 text-rose-500 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
           </span>
           Habits Overview
-        </h3>
+        </h2>
         <div className="flex flex-wrap gap-2 items-center">
           {filter === 'Custom Month' && (
             <div className="flex gap-2">
@@ -286,18 +286,18 @@ export function HabitsOverview() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
           <div className="bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-100/50 dark:border-emerald-500/10 rounded-2xl p-5 flex flex-col justify-center items-center text-center">
             <span className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">{completed}</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700/60 dark:text-emerald-500/70">Completed</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-emerald-700/60 dark:text-emerald-500/70">Completed</span>
           </div>
 
           <div className="bg-zinc-50 dark:bg-white/5 border border-zinc-100 dark:border-white/10 rounded-2xl p-5 flex flex-col justify-center items-center text-center relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-tr from-teal-500/5 to-rose-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <span className="text-4xl font-black text-zinc-900 dark:text-white mb-1 z-10">{successRate}%</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 z-10">Success Rate</span>
+            <span className="text-4xl font-bold text-zinc-900 dark:text-white mb-1 z-10">{successRate}%</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 z-10">Success Rate</span>
           </div>
 
           <div className="bg-rose-50 dark:bg-rose-500/5 border border-rose-100/50 dark:border-rose-500/10 rounded-2xl p-5 flex flex-col justify-center items-center text-center">
             <span className="text-3xl font-bold text-rose-600 dark:text-rose-400 mb-1">{missed}</span>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-rose-700/60 dark:text-rose-500/70">Missed</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-rose-700/60 dark:text-rose-500/70">Missed</span>
           </div>
         </div>
 
@@ -306,11 +306,11 @@ export function HabitsOverview() {
           <div className="bg-orange-50/50 dark:bg-orange-500/5 border border-orange-100/50 dark:border-orange-500/10 rounded-2xl p-6 flex flex-col gap-4">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xl">🔥</span>
-              <h4 className="text-sm font-bold text-orange-800 dark:text-orange-400 uppercase tracking-tight">Best Streak</h4>
+              <h3 className="text-sm font-bold text-orange-800 dark:text-orange-400 tracking-widest">Best streak</h3>
             </div>
             {bestStreak ? (
               <div className="flex flex-col">
-                <span className="text-2xl font-black text-orange-600 dark:text-orange-400">{bestStreak.value} Days</span>
+                <span className="text-2xl font-bold text-orange-600 dark:text-orange-400">{bestStreak.value} Days</span>
                 <span className="text-sm font-medium text-orange-900/60 dark:text-orange-300/60 truncate">{bestStreak.name}</span>
               </div>
             ) : (
@@ -322,13 +322,13 @@ export function HabitsOverview() {
           <div className="bg-blue-50/50 dark:bg-blue-500/5 border border-blue-100/50 dark:border-blue-500/10 rounded-2xl p-6 flex flex-col gap-4">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xl">🏆</span>
-              <h4 className="text-sm font-bold text-blue-800 dark:text-blue-400 uppercase tracking-tight">Top Consistent</h4>
+              <h3 className="text-sm font-bold text-blue-800 dark:text-blue-400 tracking-widest">Top consistent</h3>
             </div>
             <div className="flex flex-col gap-3">
               {topHabits.length > 0 ? topHabits.map((h, i) => (
                 <div key={i} className="flex justify-between items-center group/item hover:translate-x-1 transition-transform">
                   <span className="text-sm font-semibold text-blue-900 dark:text-blue-200 truncate pr-2">{h.name}</span>
-                  <span className="text-sm font-black text-blue-600 dark:text-blue-400 tabular-nums">{h.value}</span>
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 tabular-nums">{h.value}</span>
                 </div>
               )) : (
                 <span className="text-zinc-400 dark:text-zinc-600 text-sm font-medium italic">No data yet</span>
@@ -340,13 +340,13 @@ export function HabitsOverview() {
           <div className="bg-red-50/50 dark:bg-red-500/5 border border-red-100/50 dark:border-red-500/10 rounded-2xl p-6 flex flex-col gap-4">
             <div className="flex items-center gap-2 mb-1">
               <span className="text-xl">⚠️</span>
-              <h4 className="text-sm font-bold text-red-800 dark:text-red-400 uppercase tracking-tight">Needs Attention</h4>
+              <h3 className="text-sm font-bold text-red-800 dark:text-red-400 tracking-widest">Needs attention</h3>
             </div>
             <div className="flex flex-col gap-3">
               {bottomHabits.length > 0 ? bottomHabits.map((h, i) => (
                 <div key={i} className="flex justify-between items-center group/item hover:translate-x-1 transition-transform">
                   <span className="text-sm font-semibold text-red-900 dark:text-red-200 truncate pr-2">{h.name}</span>
-                  <span className="text-sm font-black text-red-600 dark:text-red-400 tabular-nums">{h.value}</span>
+                  <span className="text-sm font-bold text-red-600 dark:text-red-400 tabular-nums">{h.value}</span>
                 </div>
               )) : (
                 <span className="text-zinc-400 dark:text-zinc-600 text-sm font-medium italic">Doing great!</span>

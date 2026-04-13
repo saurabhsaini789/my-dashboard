@@ -187,7 +187,7 @@ export function FinanceOverview() {
   return (
     <div className="w-full flex flex-col gap-6 md:gap-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 px-1 md:px-2">
-        <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
+        <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
           Overview
         </h2>
 
@@ -207,7 +207,7 @@ export function FinanceOverview() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
         <MetricCard 
           label="Net Worth"
           value={`$${netWorth.toLocaleString("en-CA", { maximumFractionDigits: 0 })}`}

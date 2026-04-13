@@ -257,8 +257,8 @@ export function BusinessChannelsSection() {
     <section className="w-full">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 px-2">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight flex items-center gap-2">
-            Channels / Businesses
+          <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
+            Channels / businesses
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 uppercase tracking-widest">
             The central database and control layer of your content empire
@@ -268,7 +268,7 @@ export function BusinessChannelsSection() {
         
         <button 
           onClick={openAddModal}
-          className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 uppercase tracking-widest text-[10px] font-black px-6 py-4 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-zinc-900/10 h-[54px] flex items-center gap-2"
+          className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 tracking-widest text-[10px] font-bold px-6 py-4 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-zinc-900/10 h-[54px] flex items-center gap-2"
         >
           <Plus size={16} />
           New Channel
@@ -322,7 +322,7 @@ export function BusinessChannelsSection() {
                     </td>
                     <td className="px-6 py-6">
                       <div className="flex flex-col">
-                        <span className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-tight">
+                        <span className="text-sm font-bold text-zinc-900 dark:text-white tracking-tight">
                           {channel.name}
                         </span>
                       </div>
@@ -407,7 +407,7 @@ export function BusinessChannelsSection() {
             <div key={channel.id} className={`p-6 rounded-[32px] border border-zinc-200 dark:border-zinc-800 ${channel.rowColor || (indicator.label === 'Overdue' ? 'bg-rose-500/[0.02]' : 'bg-white dark:bg-zinc-900/30')} space-y-4`}>
               <div className="flex justify-between items-start">
                 <div className="flex flex-col gap-2">
-                  <span className="text-lg font-bold text-zinc-900 dark:text-white uppercase tracking-tight leading-tight">
+                  <span className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight leading-tight">
                     {channel.name}
                   </span>
                   <div className="flex flex-wrap gap-2">
@@ -486,7 +486,7 @@ export function BusinessChannelsSection() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingChannel ? 'Edit Channel' : 'New Channel'}
+        title={editingChannel ? 'Edit channel' : 'New channel'}
         onSubmit={handleSubmit}
         submitText={editingChannel ? 'Update Channel' : 'Create Channel'}
         accentColor="purple"
@@ -579,7 +579,7 @@ export function BusinessChannelsSection() {
       <Modal
         isOpen={isIdeaModalOpen && !!selectedChannelForPost}
         onClose={() => setIsIdeaModalOpen(false)}
-        title="Select Idea Used"
+        title="Select idea used"
       >
         <div className="pb-4">
           <p className="text-sm font-bold text-zinc-500 dark:text-zinc-400 mb-6">

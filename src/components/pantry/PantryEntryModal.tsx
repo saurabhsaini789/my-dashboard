@@ -237,7 +237,7 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
   const footerControls = (
     <>
       <div className="flex flex-col">
-          <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-black mb-1">Total Bill Amount</span>
+          <span className="text-xs uppercase tracking-widest text-zinc-400 font-bold mb-1">Total Bill Amount</span>
           <span className="text-3xl font-black tracking-tighter text-teal-600 dark:text-teal-400 flex items-baseline gap-2 leading-none">
             ${totalAmount.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
@@ -279,7 +279,9 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                               <div className="flex flex-col gap-1">
                                  <div className="flex items-center gap-3">
                                    <span className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">{record.vendor || record.subcategory}</span>
-                                   <span className="px-2 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-400 text-[10px] uppercase font-bold tracking-widest">{record.entryType}</span>
+                                   <span className="px-2 py-0.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-400 text-xs uppercase font-bold tracking-widest">
+                                     {record.entryType}
+                                   </span>
                                  </div>
                                  <span className="text-sm uppercase tracking-widest text-zinc-400 font-bold">{record.paymentMethod} • {assets.find(a => a.id === record.assetId)?.name || 'Direct'}</span>
                               </div>
@@ -303,11 +305,11 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                </div>               {/* Section A: Basic Details */}
                <FormSection title="Basic Details" accentColor="teal">
                   <div className="flex flex-col gap-2">
-                     <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Shop / Vendor Name</label>
+                     <label className="text-xs uppercase font-bold tracking-widest text-zinc-400 ml-2">Shop / Vendor Name</label>
                      <input type="text" required value={vendor} onChange={e => setVendor(e.target.value)} placeholder="e.g. Walmart, Zara" className="bg-zinc-50 dark:bg-zinc-900 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full" />
                   </div>
                   <div className="flex flex-col gap-2">
-                     <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Paid From (Account)</label>
+                     <label className="text-xs uppercase font-bold tracking-widest text-zinc-400 ml-2">Paid From (Account)</label>
                      <select value={paidFromId} onChange={e => setPaidFromId(e.target.value)} className="bg-zinc-50 dark:bg-zinc-900 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full appearance-none cursor-pointer">
                         <option value="">Manual Entry (No Account)</option>
                         {assets.map(a => <option key={a.id} value={a.id}>{a.name} (${calculateAssetBalance(a).toLocaleString('en-CA', { maximumFractionDigits: 0 })})</option>)}
@@ -337,7 +339,7 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                                <div key={item.id} className="flex flex-col gap-4 p-5 bg-zinc-50/50 dark:bg-zinc-900/30 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm relative group animate-in slide-in-from-right-4 duration-300">
                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                        <div className="flex flex-col gap-2">
-                                          <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Item Name</label>
+                                          <label className="text-xs uppercase font-bold tracking-widest text-zinc-400 ml-2">Item Name</label>
                                           <input type="text" placeholder="e.g. Milk 3%" value={item.name} onChange={e => updateItem(item.id, 'name', e.target.value)} className="bg-white dark:bg-zinc-950 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full shadow-sm" />
                                        </div>
                                        <div className="flex flex-col gap-2">
@@ -350,7 +352,7 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
 
                                        {item.category === 'Others' && (
                                           <div className="flex flex-col gap-2 md:col-span-2">
-                                            <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Custom Cat</label>
+                                            <label className="text-xs uppercase font-bold tracking-widest text-zinc-400 ml-2">Custom Cat</label>
                                             <input type="text" placeholder="e.g. Hobby" value={item.quality} onChange={e => updateItem(item.id, 'quality', e.target.value)} className="bg-white dark:bg-zinc-950 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full shadow-sm" />
                                          </div>
                                        )}
@@ -407,7 +409,7 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                <div className="mt-8">
                   <FormSection title="Tax Apportionment (Optional)" accentColor="teal" isAdvanced>
                      <div className="flex flex-col gap-2">
-                        <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">SGST / State Tax</label>
+                        <label className="text-xs uppercase font-bold tracking-widest text-zinc-400 ml-2">SGST / State Tax</label>
                         <input type="number" step="0.01" value={sgst} onChange={e => setSgst(e.target.value)} placeholder="0.00" className="bg-zinc-50 dark:bg-zinc-900 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full" />
                      </div>
                      <div className="flex flex-col gap-2">

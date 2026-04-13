@@ -131,8 +131,8 @@ export function EmergencyFundSection() {
     <div className="flex flex-col gap-6 md:gap-8 w-full transition-all duration-700 animate-in fade-in slide-in-from-bottom-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 md:gap-6 px-1 md:px-2">
         <div className="flex items-center justify-between w-full sm:w-auto">
-            <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
-                Emergency Fund
+            <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
+                Emergency fund
             </h2>
             <button 
                 onClick={() => setIsCollapsed(!isCollapsed)}
@@ -155,19 +155,19 @@ export function EmergencyFundSection() {
             </button>
             <button 
                 onClick={() => setIsContributionModalOpen(true)}
-                className="bg-amber-500 text-white uppercase tracking-widest text-[9px] sm:text-xs px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber-200/50 dark:shadow-none font-bold"
+                className="bg-amber-500 text-white tracking-widest text-[9px] sm:text-xs px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber-200/50 dark:shadow-none font-bold"
             >
                 Log
             </button>
         </div>
       </div>
 
-      <div className="bg-amber-50/20 dark:bg-amber-500/5 border border-amber-100/50 dark:border-amber-900/30 rounded-[28px] sm:rounded-[36px] p-4 sm:p-6 lg:p-8 shadow-sm hover:shadow-2xl transition-all duration-500 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-50/30 dark:bg-amber-500/10 rounded-full blur-3xl -mr-48 -mt-48 transition-all group-hover:scale-110" />
+      <div className="bg-amber-50 dark:bg-amber-500/10 border border-amber-100/50 dark:border-amber-900/30 rounded-[28px] sm:rounded-[36px] p-4 sm:p-6 lg:p-8 shadow-sm hover:shadow-2xl transition-all duration-500 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-100/20 dark:bg-amber-500/15 rounded-full blur-3xl -mr-48 -mt-48 transition-all group-hover:scale-110" />
 
         <div className={`sm:hidden flex items-center justify-between relative z-10 mb-4 ${isCollapsed ? 'flex' : 'hidden'}`}>
             <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-medium">Coverage</span>
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest font-medium">Coverage</span>
                 <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tighter">
                      {monthsCovered < 10 ? monthsCovered.toFixed(1) : Math.floor(monthsCovered)} / {targetMonths < 10 && targetMonths > 0 ? targetMonths.toFixed(1) : Math.floor(targetMonths)} Months Saved
                 </span>
@@ -182,7 +182,7 @@ export function EmergencyFundSection() {
 
         <div className={`grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10 sm:grid ${isCollapsed ? 'hidden' : 'grid'}`}>
           {/* Left 1/3: Progress */}
-          <div className="flex flex-col gap-4 justify-between bg-white/50 dark:bg-zinc-800/30 rounded-3xl p-5 border border-white dark:border-zinc-800/50 shadow-sm">
+          <div className="flex flex-col gap-4 justify-between bg-white/70 dark:bg-zinc-800/50 rounded-3xl p-5 border border-white dark:border-zinc-800/50 shadow-sm">
             <div className="flex flex-col gap-1">
                 <span className="text-xl md:text-2xl text-zinc-900 dark:text-white tracking-tighter font-bold">
                     {monthsCovered < 10 ? monthsCovered.toFixed(1) : Math.floor(monthsCovered)} / {targetMonths < 10 && targetMonths > 0 ? targetMonths.toFixed(1) : Math.floor(targetMonths)} Months Saved
@@ -194,7 +194,7 @@ export function EmergencyFundSection() {
             
             <div className="flex flex-col gap-3">
                 <div className="flex justify-between items-end">
-                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-widest">Progress</span>
+                    <span className="text-[10px] text-zinc-600 dark:text-zinc-300 font-bold uppercase tracking-widest">Progress</span>
                     <span className={`text-[10px] sm:text-xs uppercase tracking-[0.2em] px-3 py-1 rounded-full ${monthsCovered >= 6 ? 'text-orange-600 bg-orange-100 dark:text-orange-400 dark:bg-orange-500/20' : monthsCovered >= 3 ? 'text-amber-600 bg-amber-100 dark:text-amber-400 dark:bg-amber-500/20' : 'text-rose-600 bg-rose-100 dark:text-rose-400 dark:bg-rose-500/20'} font-bold`}>
                         {progressPercent.toFixed(0)}% Funded
                     </span>
@@ -211,13 +211,13 @@ export function EmergencyFundSection() {
           {/* Middle 1/3: Stats */}
           <div className="flex flex-col gap-4">
               <div className="flex-1 bg-white/40 dark:bg-zinc-800/20 shadow-sm rounded-3xl p-5 border border-white dark:border-zinc-800/50 flex flex-col justify-center transition-all hover:bg-white/60 dark:hover:bg-zinc-800/40">
-                  <span className="text-[10px] lg:text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1 block font-bold">Monthly Expense</span>
+                  <span className="text-[10px] lg:text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest mb-1 block font-bold">Monthly Expense</span>
                   <div className="flex flex-col">
                       <span className="text-xl lg:text-3xl text-zinc-900 dark:text-white tracking-tighter font-bold">${(data.monthlyExpenses || 0).toLocaleString('en-CA', { maximumFractionDigits: 0 })}</span>
                   </div>
               </div>
               <div className="flex-1 bg-white/40 dark:bg-zinc-800/20 shadow-sm rounded-3xl p-5 border border-white dark:border-zinc-800/50 flex flex-col justify-center transition-all hover:bg-white/60 dark:hover:bg-zinc-800/40">
-                  <span className="text-[10px] lg:text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-1 block font-bold">Remaining Goal</span>
+                  <span className="text-[10px] lg:text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest mb-1 block font-bold">Remaining Goal</span>
                   <div className="flex flex-col">
                       <span className="text-xl lg:text-3xl text-zinc-900 dark:text-white tracking-tighter font-bold">${(remaining || 0).toLocaleString('en-CA', { maximumFractionDigits: 0 })}</span>
                   </div>
@@ -225,16 +225,16 @@ export function EmergencyFundSection() {
           </div>
 
           {/* Right 1/3: Contribution Tracker */}
-          <div className="flex flex-col gap-4 bg-white/40 dark:bg-zinc-800/20 shadow-sm rounded-3xl p-5 border border-white dark:border-zinc-800/50">
+          <div className="flex flex-col gap-4 bg-white/60 dark:bg-zinc-800/40 shadow-sm rounded-3xl p-5 border border-white dark:border-zinc-800/50">
               <div className="flex items-center justify-between pb-2 border-b border-zinc-200/50 dark:border-zinc-700/50">
-                  <h4 className="text-[10px] sm:text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em]">Contribution Tracker</h4>
+                  <h4 className="text-[10px] sm:text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-[0.2em]">Contribution Tracker</h4>
                   <button onClick={() => setIsHistoryModalOpen(true)} className="text-[10px] text-amber-600 dark:text-amber-400 uppercase tracking-widest font-bold hover:underline">View All</button>
               </div>
               <div className="flex flex-col gap-3 overflow-y-auto custom-scrollbar pr-1 flex-1 min-h-[140px]">
                   {(recentContributions || []).length > 0 ? recentContributions.map(c => (
                       <div key={c.id} className="flex items-center justify-between p-3 bg-white dark:bg-zinc-800/50 rounded-2xl border border-zinc-100/50 dark:border-zinc-700/50 shadow-sm">
                           <div className="flex flex-col">
-                              <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mb-0.5">Contribution</span>
+                              <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest mb-0.5">Contribution</span>
                               <span className="text-sm font-bold text-zinc-900 dark:text-white tracking-tight">${(c.amount || 0).toLocaleString('en-CA', { maximumFractionDigits: 0 })}</span>
                           </div>
                           <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-medium bg-zinc-50 dark:bg-zinc-900/50 px-2 py-1 rounded-lg">
@@ -243,7 +243,7 @@ export function EmergencyFundSection() {
                       </div>
                   )) : (
                       <div className="flex flex-col items-center justify-center p-4 bg-white/50 dark:bg-zinc-800/30 rounded-2xl border border-dashed border-zinc-200/80 dark:border-zinc-700 h-full">
-                        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest text-center font-medium">No contributions yet</span>
+                        <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest text-center font-medium">No contributions yet</span>
                       </div>
                   )}
               </div>
@@ -255,7 +255,7 @@ export function EmergencyFundSection() {
       <Modal
         isOpen={isTargetModalOpen}
         onClose={() => setIsTargetModalOpen(false)}
-        title="Adjust Pillar"
+        title="Adjust pillar"
         onSubmit={handleUpdateSettings}
         submitText="Update Pillar"
         accentColor="amber"
@@ -264,7 +264,7 @@ export function EmergencyFundSection() {
           sections={[
             {
               id: 'settings',
-              title: 'Emergency Fund Settings',
+              title: 'Emergency fund settings',
               fields: [
                 { name: 'targetAmount', label: 'Total Goal Target ($)', type: 'number', required: true, step: '1', fullWidth: true },
                 { name: 'monthlyExpenses', label: 'Ideal Monthly Expenses ($)', type: 'number', required: true, step: '1', fullWidth: true }
@@ -281,7 +281,7 @@ export function EmergencyFundSection() {
       <Modal
         isOpen={isContributionModalOpen}
         onClose={() => setIsContributionModalOpen(false)}
-        title="Fuel the Fund"
+        title="Fuel the fund"
         onSubmit={handleAddContribution}
         submitText="Log"
         accentColor="amber"
@@ -306,7 +306,7 @@ export function EmergencyFundSection() {
       <Modal
         isOpen={isHistoryModalOpen}
         onClose={() => setIsHistoryModalOpen(false)}
-        title="Fuel Records"
+        title="Fuel records"
         onSubmit={(e) => { e.preventDefault(); setIsHistoryModalOpen(false); }}
         submitText="Done"
         accentColor="amber"

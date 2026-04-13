@@ -243,10 +243,10 @@ export function SmartInsights({ records, viewingDate }: SmartInsightsProps) {
             <div className="flex flex-col gap-4">
               {section.items.map((item, iIdx) => (
                 <div key={iIdx} className="flex items-start gap-3 group/item">
-                  <span className="mt-1 text-xs shrink-0 select-none text-zinc-400 group-hover/item:text-zinc-600 dark:group-hover/item:text-zinc-300 transition-colors">
+                  <span className="mt-1 text-xs shrink-0 select-none text-zinc-500 group-hover/item:text-zinc-700 dark:group-hover/item:text-zinc-300 transition-colors">
                     {item.emoji || "•"}
                   </span>
-                  <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 leading-relaxed group-hover/item:text-zinc-900 dark:group-hover/item:text-zinc-100 transition-colors">
+                  <p className="text-sm font-medium text-zinc-600 dark:text-zinc-300 leading-relaxed group-hover/item:text-zinc-900 dark:group-hover/item:text-zinc-100 transition-colors">
                     {item.text}
                   </p>
                 </div>

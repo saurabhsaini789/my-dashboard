@@ -16,8 +16,8 @@ export default function HabitsPage() {
       <div className="mx-auto w-full max-w-5xl">
         <header className="mb-12 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white">Habits Tracker</h1>
-            <p className="text-lg text-zinc-500 dark:text-zinc-400 mt-2">Track your daily progress</p>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">Habits Tracker</h1>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">Track your daily progress</p>
           </div>
         </header>
         

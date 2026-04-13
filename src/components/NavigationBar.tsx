@@ -27,8 +27,8 @@ export function NavigationBar() {
     <div className="w-full flex justify-center bg-zinc-50 dark:bg-zinc-950 px-4 md:px-8 xl:px-12 pt-6 pb-2 text-zinc-900 dark:text-zinc-100">
       <header className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full max-w-7xl border-b border-zinc-200 dark:border-zinc-800 pb-4 relative">
         <div className="flex items-center justify-between w-full sm:w-auto">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity">
+          <div className="flex items-center flex-wrap gap-2 sm:gap-4">
+            <Link href="/" className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity whitespace-nowrap">
               Personal OS
             </Link>
             <SyncStatus status={syncStatus} isDevelopment={isDevelopment} />
@@ -71,7 +71,7 @@ export function NavigationBar() {
                 key={link.path}
                 href={link.path} 
                 onClick={() => setMobileMenuOpen(false)}
-                className={`text-sm font-semibold transition-colors ${pathname === link.path ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
+                className={`text-sm font-semibold transition-colors py-3 w-full text-center hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-xl ${pathname === link.path ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
               >
                 {link.name}
               </Link>

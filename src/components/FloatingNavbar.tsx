@@ -100,7 +100,7 @@ export function FloatingNavbar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`relative flex items-center justify-center p-2.5 rounded-xl transition-all duration-300 group ${
+              className={`relative flex items-center justify-center p-2 sm:p-2.5 lg:p-3 rounded-xl transition-all duration-300 group ${
                 isActive 
                   ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-xl shadow-zinc-900/20 dark:shadow-white/10' 
                   : 'text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800'

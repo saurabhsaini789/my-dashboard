@@ -392,11 +392,11 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
                <table className="w-full text-left border-collapse min-w-[800px]">
                   <thead className="bg-zinc-50/80 dark:bg-zinc-900/80 backdrop-blur-md sticky top-0 z-20 shadow-sm border-b border-zinc-100 dark:border-zinc-800">
                      <tr>
-                        <th className="p-4 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Grocery Item</th>
-                        <th className="p-4 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Freq & Size</th>
-                        <th className="p-4 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Est. Price ea</th>
-                        <th className="p-4 text-[10px] font-bold uppercase tracking-widest text-zinc-400 w-48">Tracker Progress</th>
-                        <th className="p-4 text-[10px] font-bold uppercase tracking-widest text-zinc-400 text-right">Total Est.</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-widest text-zinc-500">Grocery Item</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-widest text-zinc-500">Freq & Size</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-widest text-zinc-500">Est. Price ea</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-widest text-zinc-500 w-48">Tracker Progress</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-widest text-zinc-500 text-right">Total Est.</th>
                         <th className="p-4"></th>
                      </tr>
                   </thead>
@@ -425,13 +425,13 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
                                         <td className="p-4 max-w-[200px]">
                                            <div className="flex flex-col gap-0.5">
                                               <span className={`font-bold text-sm truncate ${isSkipped ? 'line-through text-zinc-500' : 'text-zinc-900 dark:text-zinc-100'}`}>{item.name}</span>
-                                              {item.consumptionDays ? <span className="text-[10px] text-teal-600 dark:text-teal-400 font-medium truncate">Consumes in {item.consumptionDays} days</span> : <span className="text-[10px] text-zinc-400 font-medium">No limit</span>}
+                                              {item.consumptionDays ? <span className="text-xs text-teal-600 dark:text-teal-400 font-medium truncate">Consumes in {item.consumptionDays} days</span> : <span className="text-xs text-zinc-400 font-medium">No limit</span>}
                                            </div>
                                         </td>
                                         <td className="p-4">
                                            <div className="flex flex-col gap-0.5">
                                               <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">{item.plannedQuantity} × {item.unitSize || '1 Unit'}</span>
-                                              <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-400">{item.frequency}</span>
+                                              <span className="text-xs uppercase font-bold tracking-widest text-zinc-400">{item.frequency}</span>
                                            </div>
                                         </td>
                                         <td className="p-4 text-xs font-bold text-zinc-600 dark:text-zinc-400">

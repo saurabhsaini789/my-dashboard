@@ -363,7 +363,7 @@ export function Habits() {
                   {datesOfMonth.map((d, index) => {
                     const isToday = isCurrentViewRealTodayMonth && index === todayDateIndex;
                     return (
-                      <th key={`day-name-${index}`} className={`font-semibold text-[10px] uppercase tracking-wider pt-3 pb-1 px-2 text-center w-20 min-w-[3rem] select-none transition-colors ${isToday ? 'text-teal-600 dark:text-teal-400 bg-teal-50/50 dark:bg-teal-500/10' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                      <th key={`day-name-${index}`} className={`font-semibold text-xs uppercase tracking-widest pt-3 pb-1 px-2 text-center w-20 min-w-[3rem] select-none transition-colors ${isToday ? 'text-teal-600 dark:text-teal-400 bg-teal-50/50 dark:bg-teal-500/10' : 'text-zinc-500 dark:text-zinc-400'}`}>
                         {d.dayName}
                       </th>
                     );
@@ -374,7 +374,7 @@ export function Habits() {
                   {datesOfMonth.map((d, index) => {
                     const isToday = isCurrentViewRealTodayMonth && index === todayDateIndex;
                     return (
-                      <th key={`date-${index}`} data-date-index={index} className={`font-semibold text-sm tracking-wider pb-3 pt-1 px-2 text-center w-20 min-w-[3rem] select-none transition-colors border-b-2 ${isToday ? 'text-teal-700 dark:text-teal-300 bg-teal-50/50 dark:bg-teal-500/10 border-teal-500 dark:border-teal-500' : 'text-zinc-700 dark:text-zinc-300 border-transparent dark:border-transparent'}`}>
+                      <th key={`date-${index}`} data-date-index={index} className={`font-semibold text-sm tracking-widest pb-3 pt-1 px-2 text-center w-20 min-w-[3rem] select-none transition-colors border-b-2 ${isToday ? 'text-teal-700 dark:text-teal-300 bg-teal-50/50 dark:bg-teal-500/10 border-teal-500 dark:border-teal-500' : 'text-zinc-700 dark:text-zinc-300 border-transparent dark:border-transparent'}`}>
                         {d.date}
                       </th>
                     );
@@ -461,7 +461,7 @@ export function Habits() {
         <Modal
           isOpen={true}
           onClose={() => setIsAddingHabit(false)}
-          title="Create New Habit"
+          title="Create new habit"
           onSubmit={(e) => {
             e.preventDefault();
             handleAddHabit();
@@ -472,7 +472,7 @@ export function Habits() {
             sections={[
               {
                 id: 'habit_details',
-                title: 'Habit Details',
+                title: 'Habit details',
                 fields: [
                   { name: 'name', label: 'Habit Name', type: 'text', required: true, fullWidth: true, placeholder: 'E.g. Morning Yoga' },
                   {
@@ -507,7 +507,7 @@ export function Habits() {
         <Modal
           isOpen={true}
           onClose={() => setHabitToDelete(null)}
-          title="Delete Habit?"
+          title="Delete habit?"
           onSubmit={(e) => {
             e.preventDefault();
             handleDeleteHabit();

@@ -335,7 +335,7 @@ export function ExpenseSection() {
     <div className="flex flex-col gap-8 w-full transition-all duration-700 animate-in fade-in slide-in-from-bottom-8">
       {/* Integrated Heading, Filters & Global Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
-        <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
             Expenses
         </h2>
         
@@ -356,7 +356,7 @@ export function ExpenseSection() {
             </div>
             <button 
                 onClick={openAddModal}
-                className="bg-rose-600 text-white uppercase tracking-widest text-xs px-8 py-4 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-rose-200/50 dark:shadow-none h-[54px]"
+                className="bg-rose-600 text-white tracking-widest text-xs px-8 py-4 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-rose-200/50 dark:shadow-none h-[54px] font-bold"
             >
                 Add Expense
             </button>
@@ -370,7 +370,7 @@ export function ExpenseSection() {
           {/* Category Breakdown */}
           {filteredRecords.length > 0 && (
             <div className="flex flex-col gap-4">
-               <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-[0.3em] pl-4">Category Breakdown</span>
+               <span className="text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-[0.3em] pl-4">Category Breakdown</span>
                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 px-2">
                  {Object.entries(
                     filteredRecords.reduce((acc, r) => {
@@ -378,8 +378,8 @@ export function ExpenseSection() {
                         return acc;
                     }, {} as Record<string, number>)
                  ).sort((a, b) => b[1] - a[1]).map(([cat, total]) => (
-                    <div key={cat} className="flex flex-col p-4 bg-rose-50/20 dark:bg-rose-500/5 hover:bg-rose-50/50 dark:hover:bg-rose-500/10 rounded-2xl border border-rose-100/50 dark:border-rose-900/30 transition-colors">
-                       <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-500 dark:text-zinc-400">{cat}</span>
+                    <div key={cat} className="flex flex-col p-4 bg-rose-50 dark:bg-rose-500/10 hover:bg-rose-50/50 dark:hover:bg-rose-500/15 rounded-2xl border border-rose-100/50 dark:border-rose-900/30 transition-colors">
+                       <span className="text-xs uppercase font-bold tracking-widest text-zinc-500 dark:text-zinc-300">{cat}</span>
                        <span className="text-lg font-bold text-zinc-900 dark:text-zinc-100">${total.toLocaleString('en-CA', {maximumFractionDigits: 0})}</span>
                     </div>
                  ))}
@@ -388,41 +388,41 @@ export function ExpenseSection() {
           )}
 
           {/* Table Section */}
-          <div className="bg-rose-50/20 dark:bg-rose-500/5 border border-rose-100 dark:border-rose-900/30 rounded-[40px] p-2 overflow-hidden hover:shadow-2xl transition-all flex flex-col pt-8">
+          <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-900/30 rounded-[40px] p-2 overflow-hidden hover:shadow-2xl transition-all flex flex-col pt-8">
               <div className="flex items-center justify-between px-8 mb-8">
-                  <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-[0.3em]">Detailed Records</span>
+                  <span className="text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-[0.3em]">Detailed Records</span>
               </div>
 
               <div className="overflow-x-auto px-4">
-                  <table className="w-full text-left border-collapse">
+                  <table className="w-full text-left border-collapse min-w-[800px]">
                       <thead>
                           <tr className="border-b border-zinc-50 dark:border-zinc-800/50">
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Date</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Category</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Subcategory</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Type</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Paid from</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Paid to</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400">Notes</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400 text-right">Amount</th>
-                              <th className="px-4 py-4 text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400"></th>
+                               <th className="px-4 py-4 text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Date</th>
+                              <th className="px-4 py-4 text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Category</th>
+                              <th className="px-4 py-4 text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Subcategory</th>
+                              <th className="px-4 py-4 text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Type</th>
+                              <th className="px-4 py-4 text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Paid from</th>
+                              <th className="px-4 py-4 text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Paid to</th>
+                              <th className="px-4 py-4 text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-300">Notes</th>
+                              <th className="px-4 py-4 text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-300 text-right">Amount</th>
+                              <th className="px-4 py-4 text-xs font-semibold uppercase tracking-widest text-zinc-600 dark:text-zinc-300"></th>
                           </tr>
                       </thead>
                       <tbody>
                           {filteredRecords.length > 0 ? filteredRecords.map(record => (
                               <tr key={record.id} className="group hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors border-b border-zinc-50 dark:border-zinc-800/20 last:border-0">
                                   <td className="px-4 py-5">
-                                      <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                      <span className="text-xs text-zinc-500 dark:text-zinc-300">
                                           {new Date(record.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
                                       </span>
                                   </td>
                                   <td className="px-4 py-5">
-                                      <span className="text-sm text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
+                                      <span className="text-sm text-zinc-900 dark:text-zinc-100 tracking-tight">
                                           {record.category}
                                       </span>
                                   </td>
                                   <td className="px-4 py-5">
-                                      <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase">
+                                      <span className="text-xs text-zinc-500 dark:text-zinc-400">
                                           {record.subcategory || '-'}
                                       </span>
                                   </td>
@@ -437,7 +437,7 @@ export function ExpenseSection() {
                                       </span>
                                   </td>
                                   <td className="px-4 py-5">
-                                      <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                      <span className="text-xs text-zinc-500 dark:text-zinc-300">
                                           {record.paidToType === 'other' 
                                             ? record.paidToName || '-' 
                                             : record.paidToType === 'emergency'
@@ -450,7 +450,7 @@ export function ExpenseSection() {
                                       </span>
                                   </td>
                                   <td className="px-4 py-5 max-w-[150px]">
-                                      <span className="text-xs text-zinc-500 dark:text-zinc-400 truncate block">
+                                      <span className="text-xs text-zinc-500 dark:text-zinc-300 truncate block">
                                           {record.notes || '-'}
                                       </span>
                                   </td>
@@ -469,7 +469,7 @@ export function ExpenseSection() {
                           )) : (
                               <tr>
                                   <td colSpan={8} className="px-8 py-20 text-center">
-                                      <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em]">No expenses recorded for this period</span>
+                                      <span className="text-xs text-zinc-500 dark:text-zinc-300 uppercase tracking-[0.2em]">No expenses recorded for this period</span>
                                   </td>
                               </tr>
                           )}
@@ -483,7 +483,7 @@ export function ExpenseSection() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingRecord ? 'Edit Expense' : 'Add Expense'}
+        title={editingRecord ? 'Edit expense' : 'Add expense'}
         onSubmit={handleSubmit}
         submitText={editingRecord ? 'Update Expense' : 'Save Expense'}
         accentColor="rose"
@@ -492,7 +492,7 @@ export function ExpenseSection() {
           sections={[
             {
               id: 'basic',
-              title: 'Transaction Basics',
+              title: 'Transaction basics',
               fields: [
                 { 
                   name: 'category', 
@@ -517,7 +517,7 @@ export function ExpenseSection() {
             },
             {
               id: 'amount_date',
-              title: 'Amount & Date',
+              title: 'Amount & date',
               fields: [
                 { name: 'amount', label: 'Amount ($)', type: 'number', required: true, step: "0.01", placeholder: "0.00", fullWidth: true },
                 { name: 'date', label: 'Date', type: 'date', required: true, fullWidth: true }
@@ -587,7 +587,7 @@ export function ExpenseSection() {
             },
             {
               id: 'notes',
-              title: 'Additional Info',
+              title: 'Additional info',
               isAdvanced: true,
               fields: [
                 { name: 'notes', label: 'Quick Notes', type: 'textarea', fullWidth: true, placeholder: "Any additional details or context..." }

@@ -88,10 +88,10 @@ export default function WardrobePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
             Wardrobe Inventory
           </h1>
-          <p className="text-zinc-500 dark:text-zinc-400 mt-1">Manage and optimize your clothing investments.</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Manage and optimize your clothing investments.</p>
         </div>
         <button
           onClick={handleAddNew}
@@ -107,7 +107,7 @@ export default function WardrobePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white dark:bg-zinc-900/40 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-zinc-500 dark:text-zinc-400 font-medium text-sm">Wardrobe Size</h3>
+              <h3 className="text-zinc-500 dark:text-zinc-400 font-medium text-sm">Wardrobe size</h3>
               <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"><Layers size={18} /></div>
             </div>
             <div className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">{items.length}</div>
@@ -142,7 +142,7 @@ export default function WardrobePage() {
 
           <div className="bg-white dark:bg-zinc-900/40 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-zinc-500 dark:text-zinc-400 font-medium text-sm">Total Value</h3>
+              <h3 className="text-zinc-500 dark:text-zinc-400 font-medium text-sm">Total value</h3>
               <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"><DollarSign size={18} /></div>
             </div>
             <div className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">${totalCost.toFixed(0)}</div>
@@ -160,7 +160,7 @@ export default function WardrobePage() {
           {deadItems.length > 0 && (
             <div className="bg-rose-50/50 dark:bg-rose-950/10 border border-rose-100 dark:border-rose-900/30 rounded-2xl p-5">
               <h4 className="text-rose-800 dark:text-rose-400 font-semibold mb-3 flex items-center gap-2">
-                <Archive size={16} /> Declutter Candidates ({deadItems.length})
+                <Archive size={16} /> Declutter candidates ({deadItems.length})
               </h4>
               <ul className="space-y-2 max-h-48 overflow-y-auto">
                 {deadItems.map(item => (
@@ -179,7 +179,7 @@ export default function WardrobePage() {
           {replaceSoonItems.length > 0 && (
             <div className="bg-amber-50/50 dark:bg-amber-950/10 border border-amber-100 dark:border-amber-900/30 rounded-2xl p-5">
               <h4 className="text-amber-800 dark:text-amber-400 font-semibold mb-3 flex items-center gap-2">
-                <RefreshCw size={16} /> Replacement Pipeline ({replaceSoonItems.length})
+                <RefreshCw size={16} /> Replacement pipeline ({replaceSoonItems.length})
               </h4>
               <ul className="space-y-2 max-h-48 overflow-y-auto">
                 {replaceSoonItems.map(item => (
@@ -199,7 +199,7 @@ export default function WardrobePage() {
       {/* Main Inventory List */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4">
-          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Inventory</h2>
+          <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Inventory</h2>
           <div className="flex gap-2 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0 hide-scrollbar items-center">
             {/* View Toggle */}
             <div className="flex items-center bg-zinc-100 dark:bg-zinc-800 rounded-lg p-1 mr-2 shrink-0">
@@ -314,12 +314,12 @@ export default function WardrobePage() {
             <table className="min-w-full text-sm text-left">
               <thead className="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800 text-zinc-500">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Item Name</th>
-                  <th className="px-4 py-3 font-medium">Type</th>
-                  <th className="px-4 py-3 font-medium">Cost</th>
-                  <th className="px-4 py-3 font-medium">Freq / Cond</th>
-                  <th className="px-4 py-3 font-medium">Rating</th>
-                  <th className="px-4 py-3 font-medium">Actions</th>
+                  <th className="px-4 py-3 text-xs font-semibold uppercase tracking-widest text-zinc-500">Item Name</th>
+                  <th className="px-4 py-3 text-xs font-semibold uppercase tracking-widest text-zinc-500">Type</th>
+                  <th className="px-4 py-3 text-xs font-semibold uppercase tracking-widest text-zinc-500">Cost</th>
+                  <th className="px-4 py-3 text-xs font-semibold uppercase tracking-widest text-zinc-500">Freq / Cond</th>
+                  <th className="px-4 py-3 text-xs font-semibold uppercase tracking-widest text-zinc-500">Rating</th>
+                  <th className="px-4 py-3 text-xs font-semibold uppercase tracking-widest text-zinc-500">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
@@ -328,8 +328,8 @@ export default function WardrobePage() {
                     <td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-100">{item.itemName}</td>
                     <td className="px-4 py-3 text-zinc-500">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">{item.type}</span>
-                        {item.status !== 'Active' && <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">{item.status.split(' ')[0]}</span>}
+                        <span className="text-xs uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">{item.type}</span>
+                        {item.status !== 'Active' && <span className="text-xs uppercase font-bold tracking-widest px-2 py-0.5 rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">{item.status.split(' ')[0]}</span>}
                       </div>
                     </td>
                     <td className="px-4 py-3 text-zinc-500">{item.cost > 0 ? `$${item.cost}` : '-'}</td>

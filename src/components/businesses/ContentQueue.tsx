@@ -122,17 +122,17 @@ export function ContentQueue() {
     <section className="w-full mt-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 px-2">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight flex items-center gap-2">
-            Content Queue
+          <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
+            Content queue
           </h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 uppercase tracking-widest">
+          <p className="text-xs text-zinc-500 dark:text-zinc-300 mt-1 uppercase tracking-widest">
             Ready-to-use ideas to keep your execution consistent
           </p>
         </div>
         
         <button 
           onClick={() => setShowCompleted(!showCompleted)}
-          className={`text-[10px] uppercase tracking-widest font-black px-4 py-2 rounded-xl transition-all border ${
+          className={`text-[10px] uppercase tracking-widest font-bold px-4 py-2 rounded-xl transition-all border ${
             showCompleted 
               ? 'bg-teal-50 text-teal-600 border-teal-100 dark:bg-teal-500/10 dark:text-teal-400 dark:border-teal-500/20' 
               : 'text-zinc-500 border-zinc-200 dark:border-zinc-800'
@@ -161,10 +161,10 @@ export function ContentQueue() {
                     {channel.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-tight leading-tight">
+                    <span className="text-sm font-bold text-zinc-900 dark:text-white tracking-tight leading-tight">
                       {channel.name}
                     </span>
-                    <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-black uppercase tracking-widest">
+                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400 font-black uppercase tracking-widest">
                       {channel.platform} • {channelIdeas.length} ideas
                     </span>
                   </div>
@@ -182,7 +182,7 @@ export function ContentQueue() {
                         className={`group/item flex items-start gap-3 p-3 rounded-2xl border transition-all ${
                           idea.status === 'Completed' 
                             ? 'bg-zinc-50 dark:bg-zinc-800/10 border-zinc-100 dark:border-zinc-800/50 opacity-60' 
-                            : 'bg-white dark:bg-zinc-800/30 border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
+                            : 'bg-white dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
                         }`}
                       >
                         <button 
@@ -211,7 +211,7 @@ export function ContentQueue() {
                     ))}
                     {channelIdeas.length === 0 && !showCompleted && (
                       <div className="py-4 text-center">
-                        <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-black">No pending ideas</span>
+                        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-black">No pending ideas</span>
                       </div>
                     )}
                   </div>

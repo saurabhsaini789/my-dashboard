@@ -24,8 +24,8 @@ export default function FinancesPage() {
       <div className="mx-auto w-full max-w-7xl flex flex-col gap-6 md:gap-10 pt-4 relative z-10">
 
         {/* Page Title & Strategic Description */}
-        <div className="flex flex-col gap-6 items-center">
-          <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-zinc-900 dark:text-white text-center uppercase tracking-wider fade-in drop-shadow-sm leading-tight">
+        <div className="flex flex-col gap-6 items-start">
+          <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white tracking-tight fade-in drop-shadow-sm leading-tight">
             Finances
           </h1>
         </div>

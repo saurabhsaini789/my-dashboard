@@ -90,8 +90,8 @@ export function PantryCalendar({ records, onUpdateRecords, viewingDate, setViewi
     <div className="flex flex-col gap-8 w-full">
       {/* Monthly Summary */}
       <div className="flex flex-row items-center justify-between px-4 md:px-10 py-6 md:py-10 bg-zinc-900 dark:bg-zinc-800 rounded-[32px] md:rounded-[40px] text-white shadow-2xl relative overflow-hidden">
-        <div className="flex flex-col items-start gap-1">
-          <span className="text-[10px] md:text-xs uppercase tracking-[0.3em] opacity-60">Monthly Spend</span>
+        <div className="flex flex-col gap-1">
+          <span className="text-xs uppercase tracking-widest font-bold opacity-60">Monthly Spend</span>
           <span className="text-4xl md:text-5xl font-black tracking-tighter">
             ${monthlyTotal.toLocaleString('en-CA', { maximumFractionDigits: 0 })}
           </span>
@@ -102,10 +102,10 @@ export function PantryCalendar({ records, onUpdateRecords, viewingDate, setViewi
             <svg className="w-4 h-4 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" /></svg>
           </button>
           <div className="flex flex-col items-center">
-             <span className="text-[10px] md:text-sm font-black uppercase tracking-widest text-teal-400 leading-none">
+             <span className="text-sm font-bold uppercase tracking-widest text-teal-400 leading-none">
                 {new Intl.DateTimeFormat('en-US', { month: 'short' }).format(viewingDate)}
              </span>
-             <span className="text-[8px] md:text-[11px] font-bold opacity-40 uppercase tracking-[0.1em] mt-0.5 md:mt-1">
+             <span className="text-xs font-bold opacity-40 uppercase tracking-widest mt-0.5 md:mt-1">
                 {viewingDate.getFullYear()}
              </span>
           </div>
@@ -117,9 +117,9 @@ export function PantryCalendar({ records, onUpdateRecords, viewingDate, setViewi
 
       {/* Calendar Grid */}
       <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[30px] md:rounded-[40px] p-4 md:p-10 shadow-xl overflow-hidden">
-        <div className="grid grid-cols-7 gap-1 md:gap-4">
+        <div className="grid grid-cols-7 gap-0.5 sm:gap-2 md:gap-4">
           {dayNames.map(day => (
-            <div key={day} className="text-center text-[8px] md:text-[10px] uppercase tracking-[0.2em] md:tracking-[0.3em] text-zinc-400 py-2 md:py-4">
+            <div key={day} className="text-center text-[10px] sm:text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300 py-2 sm:py-3 md:py-4">
               {day}
             </div>
           ))}
@@ -140,18 +140,18 @@ export function PantryCalendar({ records, onUpdateRecords, viewingDate, setViewi
               <div 
                 key={day}
                 onClick={() => handleDateClick(dateStr)}
-                className={`group relative h-10 md:h-32 rounded-xl md:rounded-3xl border transition-all cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col p-1 md:p-4 overflow-hidden
+                className={`group relative h-11 sm:h-14 md:h-32 rounded-lg sm:rounded-xl md:rounded-3xl border transition-all cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col p-1 md:p-4 overflow-hidden
                   ${totalOnDay > 0 ? getDayColor(totalOnDay) : 'border-zinc-50 dark:border-zinc-800/50 hover:border-zinc-200 dark:hover:border-zinc-700'}
                   ${isToday ? 'ring-2 ring-zinc-900 dark:ring-zinc-100' : ''}
                 `}
               >
                 <div className="flex justify-center md:justify-between items-center md:items-start">
-                  <span className={`text-xs md:text-sm ${totalOnDay > 0 ? 'font-black text-zinc-900 dark:text-zinc-100' : 'font-medium text-zinc-400 dark:text-zinc-600'}`}>
+                  <span className={`text-xs md:text-sm ${totalOnDay > 0 ? 'font-black text-zinc-900 dark:text-zinc-100' : 'font-medium text-zinc-500 dark:text-zinc-600'}`}>
                     {day}
                   </span>
                   {totalOnDay > 0 && (
                     <div className="hidden md:flex flex-col items-end">
-                      <span className="text-[10px] md:text-xs font-bold tracking-tight">
+                      <span className="text-xs font-bold tracking-tight">
                         ${totalOnDay.toLocaleString('en-CA', { maximumFractionDigits: 0 })}
                       </span>
                     </div>
@@ -160,12 +160,12 @@ export function PantryCalendar({ records, onUpdateRecords, viewingDate, setViewi
 
                 <div className="mt-2 hidden md:flex flex-col gap-1 overflow-hidden">
                    {recordsOnDay.slice(0, 2).map((r, idx) => (
-                     <div key={idx} className="text-[10px] truncate uppercase tracking-tighter text-zinc-500">
+                     <div key={idx} className="text-xs truncate uppercase tracking-tighter text-zinc-600 dark:text-zinc-300">
                         {r.vendor ? `${r.vendor}${r.entryType === 'Bill' ? ' Bill' : ''}` : (r.subcategory || r.category)}
                      </div>
                    ))}
                    {recordsOnDay.length > 2 && (
-                     <div className="text-[8px] text-zinc-400">+{recordsOnDay.length - 2} more</div>
+                     <div className="text-xs text-zinc-400">+{recordsOnDay.length - 2} more</div>
                    )}
                 </div>
                 
@@ -229,12 +229,12 @@ export function PantryCalendar({ records, onUpdateRecords, viewingDate, setViewi
                      </div>
                      <div className="flex flex-col">
                         <span className="text-sm font-bold text-zinc-900 dark:text-white">{record.vendor || record.subcategory}</span>
-                        <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">{record.category}</span>
+                        <span className="text-xs uppercase font-bold text-zinc-500 dark:text-zinc-300 tracking-widest">{record.category}</span>
                      </div>
                   </div>
                   <div className="flex flex-col items-end">
                      <span className="text-lg font-black text-zinc-900 dark:text-white">${record.amount.toLocaleString('en-CA', { maximumFractionDigits: 0 })}</span>
-                     <span className={`text-[10px] uppercase font-black ${record.type === 'need' ? 'text-emerald-500' : 'text-amber-500'}`}>{record.type}</span>
+                     <span className={`text-xs uppercase font-black ${record.type === 'need' ? 'text-emerald-500' : 'text-amber-500'}`}>{record.type}</span>
                   </div>
                </div>
              ))

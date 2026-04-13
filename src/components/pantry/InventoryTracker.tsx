@@ -143,7 +143,7 @@ export function InventoryTracker({ records }: InventoryTrackerProps) {
       <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[40px] p-6 lg:p-8 shadow-xl flex flex-col gap-8">
          <div className="flex justify-between items-center px-2">
             <h3 className="uppercase tracking-[0.3em] font-bold text-sm text-zinc-400">Inventory Status</h3>
-            <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full">Source: Monthly Plan</span>
+            <span className="text-xs uppercase font-bold tracking-widest text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full">Source: Monthly Plan</span>
          </div>
 
          {/* Inventory List with scrollable height */}
@@ -154,7 +154,7 @@ export function InventoryTracker({ records }: InventoryTrackerProps) {
                 <div className="flex flex-col gap-1">
                   <div className="flex justify-between items-start">
                     <h4 className="font-bold text-lg text-zinc-900 dark:text-zinc-100">{item.name}</h4>
-                    <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md ${
+                    <span className={`text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded-md ${
                       item.status === 'Fresh' ? 'bg-teal-50 text-teal-600 dark:bg-teal-500/10 dark:text-teal-400' :
                       item.status === 'Low' ? 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400' :
                       item.status === 'Out' ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400' :
@@ -163,13 +163,13 @@ export function InventoryTracker({ records }: InventoryTrackerProps) {
                       {item.status}
                     </span>
                   </div>
-                  <p className="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Cycle: {item.consumptionDays || '?'} days</p>
+                  <p className="text-xs uppercase font-bold tracking-widest text-zinc-400">Cycle: {item.consumptionDays || '?'} days</p>
                 </div>
 
                 <div className="flex flex-col gap-3 p-4 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm">
                   <div className="flex justify-between items-end">
                     <div className="flex flex-col">
-                      <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Estimated Stock</span>
+                      <span className="text-xs uppercase font-bold tracking-widest text-zinc-400">Estimated Stock</span>
                       <span className={`text-2xl font-bold tracking-tight ${item.status === 'Low' || item.status === 'Out' ? 'text-amber-500' : 'text-zinc-900 dark:text-zinc-100'}`}>
                         {item.status === 'Out' ? 'None' : item.status === 'Fresh' ? 'Good' : 'Expiring'}
                       </span>

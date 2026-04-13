@@ -51,7 +51,7 @@ const FormFieldComponent: React.FC<FormFieldProps> = (props) => {
     return (
       <div className={fullWidth ? 'md:col-span-2' : ''}>
         <div className="mb-1 flex items-center justify-between">
-          <label htmlFor={id} className={`block text-sm font-medium ${error ? 'text-red-500' : 'text-zinc-500 dark:text-zinc-400'}`}>
+          <label htmlFor={id} className={`block text-sm font-medium ${error ? 'text-red-500' : 'text-zinc-500 dark:text-zinc-300'}`}>
             {label} {required && <span className="text-red-500">*</span>}
           </label>
         </div>
@@ -154,7 +154,7 @@ const FormFieldComponent: React.FC<FormFieldProps> = (props) => {
 
   return (
     <div className={fullWidth ? 'md:col-span-2' : ''}>
-      <label id={`${id}-label`} htmlFor={id} className={`block text-sm font-medium mb-1 ${error ? 'text-red-500' : 'text-zinc-500 dark:text-zinc-400'}`}>
+      <label id={`${id}-label`} htmlFor={id} className={`block text-sm font-medium mb-1 ${error ? 'text-red-500' : 'text-zinc-500 dark:text-zinc-300'}`}>
         {label} {required && <span className="text-red-500" aria-hidden="true">*</span>}
       </label>
       {renderInput()}

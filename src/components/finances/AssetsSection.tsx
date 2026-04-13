@@ -221,21 +221,21 @@ export function AssetsSection() {
       {/* Heading & Summary Card */}
       <div className="flex flex-col gap-4 md:gap-6 px-1 md:px-2">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
+          <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
             Assets
           </h2>
           <button 
             onClick={openAddModal}
-            className="bg-emerald-600 text-white uppercase tracking-widest text-[10px] md:text-xs px-5 md:px-6 py-2.5 md:py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg md:h-[46px] w-fit"
+            className="bg-emerald-600 text-white tracking-widest text-[10px] md:text-xs px-5 md:px-6 py-2.5 md:py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg md:h-[46px] w-fit"
           >
             Add Asset
           </button>
         </div>
 
         {/* Total Assets Metric */}
-        <div className="bg-emerald-50/30 dark:bg-emerald-500/5 border border-emerald-100/50 dark:border-emerald-900/30 rounded-[32px] p-5 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-xl transition-all group overflow-hidden relative">
+        <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100/50 dark:border-emerald-900/30 rounded-[32px] p-5 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-xl transition-all group overflow-hidden relative">
           <div className="flex flex-col gap-1 relative z-10">
-            <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em]">Portfolio valuation</span>
+            <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-[0.2em]">Portfolio valuation</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl md:text-3xl text-zinc-900 dark:text-zinc-100 tracking-tighter font-bold">
                 ${totalPortfolioValue.toLocaleString("en-CA", { maximumFractionDigits: 0 })}
@@ -245,7 +245,7 @@ export function AssetsSection() {
           </div>
 
           <div className="flex items-center gap-4 sm:flex-col sm:items-end sm:gap-1 relative z-10">
-             <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest leading-none">Total Assets</span>
+             <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest leading-none">Total Assets</span>
              <span className="text-base md:text-lg text-zinc-900 dark:text-zinc-100 font-bold">{assets.length} Holdings</span>
           </div>
         </div>
@@ -260,7 +260,7 @@ export function AssetsSection() {
           return (
             <div key={type} className="flex flex-col gap-4">
               <div className="flex items-center gap-4 px-2">
-                <h3 className="text-[10px] md:text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] whitespace-nowrap">
+                <h3 className="text-[10px] md:text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-[0.2em] whitespace-nowrap">
                   {type}
                 </h3>
                 <div className="h-px flex-1 bg-zinc-100 dark:bg-zinc-800/30" />
@@ -272,7 +272,7 @@ export function AssetsSection() {
                   return (
                     <div 
                       key={asset.id} 
-                      className="bg-emerald-50/20 dark:bg-emerald-500/5 border border-emerald-100/50 dark:border-emerald-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-4 group hover:shadow-lg transition-all relative overflow-hidden"
+                      className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100/50 dark:border-emerald-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-4 group hover:shadow-lg transition-all relative overflow-hidden"
                     >
                       {/* Action Buttons */}
                       <div className="absolute top-5 right-5 flex items-center gap-1 z-10">
@@ -327,7 +327,7 @@ export function AssetsSection() {
                       <div className={`sm:flex flex-col gap-4 w-full ${expandedAssets[asset.id] ? 'flex mt-2' : 'hidden'}`}>
                           <div className="flex flex-col gap-0.5">
 
-                         <span className="text-xs text-zinc-600 dark:text-zinc-400 uppercase tracking-widest">Compounded Valuation</span>
+                         <span className="text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest">Compounded Valuation</span>
                          <div className="flex items-baseline gap-2">
                             <span className="text-2xl text-zinc-900 dark:text-zinc-100 tracking-tight">
                                 ${currentValue.toLocaleString("en-CA", { maximumFractionDigits: 0 })}
@@ -366,7 +366,7 @@ export function AssetsSection() {
 
                        <div className="flex flex-col gap-1.5 mt-auto border-t border-zinc-50 dark:border-zinc-800/50 pt-4">
                            <div className="flex items-center justify-between">
-                             <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Last Updated</span>
+                             <span className="text-xs text-zinc-500 dark:text-zinc-300 uppercase tracking-widest">Last Updated</span>
                              <span className="text-xs text-zinc-700 dark:text-zinc-300">
                                  {new Date(asset.lastUpdated).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
                              </span>
@@ -386,7 +386,7 @@ export function AssetsSection() {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingAsset ? 'Modify Asset' : 'New Asset'}
+        title={editingAsset ? 'Modify asset' : 'New asset'}
         onSubmit={handleSubmit}
         submitText={editingAsset ? 'Update' : 'Save'}
         accentColor="emerald"
@@ -395,7 +395,7 @@ export function AssetsSection() {
           sections={[
             {
               id: 'basic',
-              title: 'Asset Profile',
+              title: 'Asset profile',
               fields: [
                 { name: 'name', label: 'Asset Name', type: 'text', required: true, fullWidth: true, placeholder: 'e.g. Primary Residence...' },
                 { 
@@ -430,7 +430,7 @@ export function AssetsSection() {
       <Modal
         isOpen={isContribModalOpen}
         onClose={() => setIsContribModalOpen(false)}
-        title="Log Fuel"
+        title="Log fuel"
         onSubmit={handleContribSubmit}
         submitText="Log Fuel"
       >
@@ -464,7 +464,7 @@ export function AssetsSection() {
           sections={[
             {
               id: 'rate',
-              title: 'Growth Rate',
+              title: 'Growth rate',
               fields: [
                 { name: 'rate', label: 'Rate (%)', type: 'number', required: true, step: "0.01", placeholder: "0.0%", fullWidth: true }
               ]

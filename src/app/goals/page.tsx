@@ -16,10 +16,10 @@ export default function GoalsPage() {
       <div className="mx-auto w-full max-w-6xl">
         <header className="mb-10 text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white flex items-center gap-3">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white flex items-center gap-3">
               Goals
             </h1>
-            <p className="text-lg text-zinc-500 dark:text-zinc-400 mt-2 block">Prioritize what matters most.</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2 block">Prioritize what matters most.</p>
           </div>
         </header>
         
