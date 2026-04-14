@@ -226,16 +226,16 @@ export function AssetsSection() {
           </h2>
           <button 
             onClick={openAddModal}
-            className="bg-emerald-600 text-white tracking-widest text-[10px] md:text-xs px-5 md:px-6 py-2.5 md:py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg md:h-[46px] w-fit"
+            className="bg-emerald-600 text-white tracking-widest text-xs px-5 md:px-6 py-2.5 md:py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg md:h-[46px] w-fit"
           >
             Add Asset
           </button>
         </div>
 
         {/* Total Assets Metric */}
-        <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100/50 dark:border-emerald-900/30 rounded-[32px] p-5 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:shadow-xl transition-all group overflow-hidden relative">
+        <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100/50 dark:border-emerald-900/30 rounded-2xl p-5 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm transition-all group overflow-hidden relative">
           <div className="flex flex-col gap-1 relative z-10">
-            <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-[0.2em]">Portfolio valuation</span>
+            <span className="text-xs text-zinc-500 dark:text-zinc-300 uppercase tracking-widest">Portfolio valuation</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl md:text-3xl text-zinc-900 dark:text-zinc-100 tracking-tighter font-bold">
                 ${totalPortfolioValue.toLocaleString("en-CA", { maximumFractionDigits: 0 })}
@@ -245,7 +245,7 @@ export function AssetsSection() {
           </div>
 
           <div className="flex items-center gap-4 sm:flex-col sm:items-end sm:gap-1 relative z-10">
-             <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest leading-none">Total Assets</span>
+             <span className="text-xs text-zinc-500 dark:text-zinc-300 uppercase tracking-widest leading-none">Total Assets</span>
              <span className="text-base md:text-lg text-zinc-900 dark:text-zinc-100 font-bold">{assets.length} Holdings</span>
           </div>
         </div>
@@ -260,7 +260,7 @@ export function AssetsSection() {
           return (
             <div key={type} className="flex flex-col gap-4">
               <div className="flex items-center gap-4 px-2">
-                <h3 className="text-[10px] md:text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-[0.2em] whitespace-nowrap">
+                <h3 className="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-widest whitespace-nowrap">
                   {type}
                 </h3>
                 <div className="h-px flex-1 bg-zinc-100 dark:bg-zinc-800/30" />
@@ -272,7 +272,7 @@ export function AssetsSection() {
                   return (
                     <div 
                       key={asset.id} 
-                      className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100/50 dark:border-emerald-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-4 group hover:shadow-lg transition-all relative overflow-hidden"
+                      className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100/50 dark:border-emerald-900/30 rounded-2xl p-5 md:p-6 flex flex-col gap-4 group shadow-sm transition-all relative overflow-hidden"
                     >
                       {/* Action Buttons */}
                       <div className="absolute top-5 right-5 flex items-center gap-1 z-10">
@@ -299,7 +299,7 @@ export function AssetsSection() {
                       <div className="flex flex-col gap-2 min-w-0">
                         <div className="flex flex-col gap-1 min-w-0">
                           <div className="pr-16 md:pr-0">
-                            <span className="text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-emerald-100/50 bg-emerald-50/50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-900/30 w-fit whitespace-nowrap font-bold">
+                            <span className="text-xs uppercase tracking-widest px-2 py-0.5 rounded-full border border-emerald-100/50 bg-emerald-50/50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-900/30 w-fit whitespace-nowrap font-bold">
                                 {asset.type}
                             </span>
                           </div>
@@ -315,7 +315,7 @@ export function AssetsSection() {
                                     ${currentValue.toLocaleString("en-CA", { maximumFractionDigits: 0 })}
                                 </span>
                                 {asset.growthRate !== 0 && (
-                                    <span className={`text-[10px] font-bold ${asset.growthRate > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                    <span className={`text-xs font-bold ${asset.growthRate > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
                                         {asset.growthRate > 0 ? '↑' : '↓'}{Math.abs(asset.growthRate)}%
                                     </span>
                                 )}
@@ -334,7 +334,7 @@ export function AssetsSection() {
                             </span>
                             {(asset.contributions || []).length > 0 && asset.growthRate !== 0 && (
                                 <span className={`text-xs ${asset.growthRate > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
-                                    {asset.growthRate > 0 ? '↑' : '↓'}{Math.abs(asset.growthRate)}% <span className="text-[10px] opacity-60">APY</span>
+                                    {asset.growthRate > 0 ? '↑' : '↓'}{Math.abs(asset.growthRate)}% <span className="text-xs opacity-60">APY</span>
                                 </span>
                             )}
                          </div>
@@ -457,7 +457,7 @@ export function AssetsSection() {
         onSubmit={handleRateSubmit}
         submitText="Update APY"
       >
-        <p className="text-[10px] text-zinc-600 text-center uppercase tracking-widest mb-6 leading-relaxed">
+        <p className="text-xs text-zinc-600 text-center uppercase tracking-widest mb-6 leading-relaxed">
           Set annual appreciation (+) or depreciation (-)<br />to calculate compounding growth over time.
         </p>
         <DynamicForm

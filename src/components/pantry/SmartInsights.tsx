@@ -218,7 +218,7 @@ export function SmartInsights({ records, viewingDate }: SmartInsightsProps) {
           </div>
           <div className="flex flex-col">
             <h2 className="text-2xl font-bold uppercase tracking-[0.2em] text-zinc-900 dark:text-zinc-100">Smart Insights</h2>
-            <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">AI-Powered Optimization & Personal Spending Intelligence</p>
+            <p className="text-xs text-zinc-500 uppercase tracking-widest font-bold">AI-Powered Optimization & Personal Spending Intelligence</p>
           </div>
         </div>
       </div>
@@ -227,7 +227,7 @@ export function SmartInsights({ records, viewingDate }: SmartInsightsProps) {
         {insights.map((section, idx) => (
           <div 
             key={idx} 
-            className={`group relative p-6 bg-white dark:bg-zinc-900 border ${section.borderColor} rounded-[32px] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-5`}
+            className={`group relative p-6 bg-white dark:bg-zinc-900 border ${section.borderColor} rounded-2xl shadow-sm transition-all duration-300 flex flex-col gap-5`}
           >
             {/* Header */}
             <div className="flex items-center gap-3">
@@ -260,12 +260,12 @@ export function SmartInsights({ records, viewingDate }: SmartInsightsProps) {
       </div>
 
       {/* Action Footer */}
-      <div className="flex flex-col md:flex-row items-center justify-between p-6 bg-zinc-50 dark:bg-zinc-950/30 rounded-3xl border border-dashed border-zinc-200 dark:border-zinc-800 gap-4 mt-2">
+      <div className="flex flex-col md:flex-row items-center justify-between p-6 bg-zinc-50 dark:bg-zinc-950/30 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 gap-4 mt-2">
          <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Insights are calculated daily based on your transaction history.</p>
          </div>
-         <button className="px-5 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-zinc-900 transition-all shadow-sm">
+         <button className="px-5 py-2 text-xs font-bold uppercase tracking-widest text-zinc-600 dark:text-zinc-400 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-zinc-900 transition-all shadow-sm">
             Recalculate Now
          </button>
       </div>

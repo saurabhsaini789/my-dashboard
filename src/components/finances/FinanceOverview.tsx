@@ -37,14 +37,14 @@ function MetricCard({ label, value, subValue, icon, color, customBg }: MetricPro
   };
 
   return (
-    <div className={`flex flex-col p-4 md:p-6 rounded-[32px] border transition-all hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none hover:-translate-y-1 group relative overflow-hidden h-full ${customBg || `bg-white dark:bg-zinc-900/50 ${borderClasses[color]}`}`}>
+    <div className={`flex flex-col p-4 md:p-6 rounded-2xl border shadow-sm transition-all group relative overflow-hidden h-full ${customBg || `bg-white dark:bg-zinc-900/50 ${borderClasses[color]}`}`}>
       <div className="flex items-center justify-between mb-4 md:mb-6">
         <div className={`p-2.5 md:p-3.5 rounded-2xl transition-colors ${iconClasses[color]}`}>
           {React.cloneElement(icon as React.ReactElement<any>, { className: "w-5 h-5 md:w-6 md:h-6" })}
         </div>
         {subValue && (
             <div className="flex flex-col items-end">
-                <span className="text-[10px] uppercase tracking-widest text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/50 px-2.5 py-1 rounded-full text-right leading-none">
+                <span className="text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/50 px-2.5 py-1 rounded-full text-right leading-none">
                     {subValue}
                 </span>
             </div>
@@ -52,7 +52,7 @@ function MetricCard({ label, value, subValue, icon, color, customBg }: MetricPro
       </div>
       
       <div className="flex flex-col gap-0.5">
-        <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400 mb-0.5">
+        <span className="text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-0.5">
           {label}
         </span>
         <div className="flex flex-col">

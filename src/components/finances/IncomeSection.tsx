@@ -263,7 +263,7 @@ export function IncomeSection() {
           <IncomeMetrics records={records} selectedMonths={selectedMonths} selectedYears={selectedYears} />
 
           {/* Table Section */}
-          <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-900/30 rounded-[40px] p-2 overflow-hidden hover:shadow-2xl transition-all flex flex-col pt-8">
+          <div className="bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-900/30 rounded-2xl p-2 overflow-hidden shadow-sm transition-all flex flex-col pt-8">
               <div className="flex items-center justify-between px-8 mb-8">
                   <span className="text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-[0.3em]">Detailed Records</span>
               </div>

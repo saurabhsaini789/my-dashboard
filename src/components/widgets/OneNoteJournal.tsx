@@ -81,7 +81,7 @@ export function OneNoteJournal() {
   const isInteractionInProgress = inProgress !== InteractionStatus.None;
 
   return (
-    <div className="w-full bg-white dark:bg-zinc-900 rounded-3xl p-6 md:p-8 border border-zinc-200 dark:border-zinc-800 shadow-xl shadow-zinc-200/50 dark:shadow-none transition-all duration-300">
+    <div className="w-full bg-white dark:bg-zinc-900 rounded-2xl p-6 md:p-8 border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all duration-300">
       <div className="flex flex-col gap-8">
         
         {/* Header */}

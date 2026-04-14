@@ -112,7 +112,7 @@ export function LoginPage() {
         )}
 
         <div className="mt-8 pt-6 border-t border-white/5 flex justify-center">
-          <p className="text-[10px] text-gray-500 uppercase tracking-[0.2em]">
+          <p className="text-xs text-gray-500 uppercase tracking-[0.2em]">
             &copy; {new Date().getFullYear()} Security System Active
           </p>
         </div>

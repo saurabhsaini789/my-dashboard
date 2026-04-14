@@ -42,13 +42,13 @@ export default function RootLayout({
           <AuthGuard>
             <SyncManager />
             <NavigationBar />
-            <div className="pb-24 md:pb-32">
+            <div className="pb-24 md:pb-32 bg-zinc-50 dark:bg-zinc-950">
               {children}
             </div>
             <FloatingNavbar />
-            <AIAssistant />
+            {/* <AIAssistant /> */}
             
-            <footer className="w-full flex justify-center pb-40 pt-8 border-t border-zinc-200/50 dark:border-zinc-800/50 mt-auto">
+            <footer className="w-full flex justify-center pb-40 pt-8 border-t border-zinc-200/50 dark:border-zinc-800/50 mt-auto bg-zinc-50 dark:bg-zinc-950">
               {/* Note: ThemeToggle needs to be inside Providers if it uses theme context */}
               {/* @ts-ignore */}
               <ThemeToggle />

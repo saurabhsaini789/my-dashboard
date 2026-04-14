@@ -12,7 +12,8 @@ import {
   Rocket,
   ChevronUp,
   FileText,
-  Shirt
+  Shirt,
+  Activity
 } from 'lucide-react';
 
 export function FloatingNavbar() {
@@ -69,6 +70,7 @@ export function FloatingNavbar() {
     { name: 'Businesses', href: '/businesses', icon: Rocket },
     { name: 'Expenses', href: '/pantry', icon: ShoppingBasket },
     { name: 'Wardrobe', href: '/wardrobe', icon: Shirt },
+    { name: 'Health', href: '/health-system', icon: Activity },
   ];
 
 

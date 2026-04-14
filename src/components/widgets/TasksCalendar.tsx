@@ -105,7 +105,7 @@ export function TasksCalendar() {
   return (
     <div className="w-full grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* 1. Tasks Calendar */}
-      <div className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 flex flex-col shadow-sm">
+      <div className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 flex flex-col shadow-sm">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
             <span className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
@@ -191,7 +191,7 @@ export function TasksCalendar() {
       </div>
 
       {/* 2. Selected Day Detail */}
-      <div className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 flex flex-col shadow-sm max-h-[420px]">
+      <div className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 flex flex-col shadow-sm max-h-[420px]">
         {selectedDay ? (
           <>
             <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mb-6">
@@ -245,7 +245,7 @@ export function TasksCalendar() {
       </div>
 
       {/* 3. Next Tasks */}
-      <div className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 flex flex-col shadow-sm max-h-[420px]">
+      <div className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 flex flex-col shadow-sm max-h-[420px]">
         <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2 mb-6">
           <span className="w-8 h-8 rounded-full bg-orange-50 dark:bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
@@ -274,7 +274,7 @@ export function TasksCalendar() {
                     <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 leading-tight text-wrap break-words max-w-[200px]">
                       {p.title}
                     </span>
-                    <span className="shrink-0 text-[10px] font-bold bg-white dark:bg-black/20 px-1.5 py-0.5 rounded-md border border-zinc-200 dark:border-zinc-700">
+                    <span className="shrink-0 text-xs font-bold bg-white dark:bg-black/20 px-1.5 py-0.5 rounded-md border border-zinc-200 dark:border-zinc-700">
                       {new Date(p.dueDate + 'T12:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                     </span>
                   </div>

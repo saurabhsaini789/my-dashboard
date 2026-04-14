@@ -89,7 +89,7 @@ export function PantryCalendar({ records, onUpdateRecords, viewingDate, setViewi
   return (
     <div className="flex flex-col gap-8 w-full">
       {/* Monthly Summary */}
-      <div className="flex flex-row items-center justify-between px-4 md:px-10 py-6 md:py-10 bg-zinc-900 dark:bg-zinc-800 rounded-[32px] md:rounded-[40px] text-white shadow-2xl relative overflow-hidden">
+      <div className="flex flex-row items-center justify-between px-4 md:px-10 py-6 md:py-10 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-zinc-900 dark:text-white shadow-sm relative overflow-hidden">
         <div className="flex flex-col gap-1">
           <span className="text-xs uppercase tracking-widest font-bold opacity-60">Monthly Spend</span>
           <span className="text-4xl md:text-5xl font-black tracking-tighter">
@@ -98,28 +98,28 @@ export function PantryCalendar({ records, onUpdateRecords, viewingDate, setViewi
         </div>
         
         <div className="flex items-center gap-3 md:gap-4">
-          <button onClick={prevMonth} className="p-2 md:p-3 hover:bg-white/10 rounded-xl md:rounded-2xl transition-all">
+          <button onClick={prevMonth} className="p-2 md:p-3 hover:bg-zinc-100 dark:hover:bg-white/10 rounded-xl md:rounded-2xl transition-all">
             <svg className="w-4 h-4 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" /></svg>
           </button>
           <div className="flex flex-col items-center">
-             <span className="text-sm font-bold uppercase tracking-widest text-teal-400 leading-none">
+             <span className="text-sm font-bold uppercase tracking-widest text-teal-600 dark:text-teal-400 leading-none">
                 {new Intl.DateTimeFormat('en-US', { month: 'short' }).format(viewingDate)}
              </span>
              <span className="text-xs font-bold opacity-40 uppercase tracking-widest mt-0.5 md:mt-1">
                 {viewingDate.getFullYear()}
              </span>
           </div>
-          <button onClick={nextMonth} className="p-2 md:p-3 hover:bg-white/10 rounded-xl md:rounded-2xl transition-all">
+          <button onClick={nextMonth} className="p-2 md:p-3 hover:bg-zinc-100 dark:hover:bg-white/10 rounded-xl md:rounded-2xl transition-all">
             <svg className="w-4 h-4 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" /></svg>
           </button>
         </div>
       </div>
 
       {/* Calendar Grid */}
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[30px] md:rounded-[40px] p-4 md:p-10 shadow-xl overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 md:p-10 shadow-sm overflow-hidden">
         <div className="grid grid-cols-7 gap-0.5 sm:gap-2 md:gap-4">
           {dayNames.map(day => (
-            <div key={day} className="text-center text-[10px] sm:text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300 py-2 sm:py-3 md:py-4">
+            <div key={day} className="text-center text-xs sm:text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300 py-2 sm:py-3 md:py-4">
               {day}
             </div>
           ))}
@@ -140,7 +140,7 @@ export function PantryCalendar({ records, onUpdateRecords, viewingDate, setViewi
               <div 
                 key={day}
                 onClick={() => handleDateClick(dateStr)}
-                className={`group relative h-11 sm:h-14 md:h-32 rounded-lg sm:rounded-xl md:rounded-3xl border transition-all cursor-pointer hover:shadow-lg hover:-translate-y-1 flex flex-col p-1 md:p-4 overflow-hidden
+                className={`group relative h-11 sm:h-14 md:h-32 rounded-lg sm:rounded-xl md:rounded-2xl border transition-all cursor-pointer shadow-sm hover:-translate-y-1 flex flex-col p-1 md:p-4 overflow-hidden
                   ${totalOnDay > 0 ? getDayColor(totalOnDay) : 'border-zinc-50 dark:border-zinc-800/50 hover:border-zinc-200 dark:hover:border-zinc-700'}
                   ${isToday ? 'ring-2 ring-zinc-900 dark:ring-zinc-100' : ''}
                 `}
@@ -254,7 +254,7 @@ export function PantryCalendar({ records, onUpdateRecords, viewingDate, setViewi
               setIsMobilePopupOpen(false);
               setIsModalOpen(true);
             }}
-            className="flex-1 py-4 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl active:scale-95 transition-all"
+            className="flex-1 py-4 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-sm active:scale-95 transition-all"
            >
               Add New Entry
            </button>

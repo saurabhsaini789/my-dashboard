@@ -209,12 +209,12 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
     });
   };
 
-  if (!isLoaded) return <div className="h-96 animate-pulse bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800"></div>;
+  if (!isLoaded) return <div className="h-96 animate-pulse bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800"></div>;
 
   const yearData = getYearData(currentYear);
 
   return (
-    <div className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-3xl shadow-sm overflow-hidden fade-in">
+    <div className="w-full bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden fade-in">
       {/* Table Header / Year Selector */}
       <div className="px-6 py-5 border-b border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 bg-zinc-50/50 dark:bg-zinc-900/20">
         <div className="flex items-center gap-4">
@@ -386,7 +386,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
                   {/* English Section */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">English 📘</span>
+                      <span className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em]">English 📘</span>
                       {!searchQuery && (
                         <button 
                           onClick={() => openAddModal(month, 'english')}
@@ -406,7 +406,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
                           placeholder="Title..."
                         />
                       )) : (
-                        <span className="text-[10px] text-zinc-300 dark:text-zinc-700 italic">No entries</span>
+                        <span className="text-xs text-zinc-300 dark:text-zinc-700 italic">No entries</span>
                       )}
                     </div>
                   </div>
@@ -414,7 +414,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
                   {/* Hindi Section */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">Hindi 📗</span>
+                      <span className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em]">Hindi 📗</span>
                       {!searchQuery && (
                         <button 
                           onClick={() => openAddModal(month, 'hindi')}
@@ -434,7 +434,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
                           placeholder="Title..."
                         />
                       )) : (
-                        <span className="text-[10px] text-zinc-300 dark:text-zinc-700 italic">No entries</span>
+                        <span className="text-xs text-zinc-300 dark:text-zinc-700 italic">No entries</span>
                       )}
                     </div>
                   </div>
@@ -446,7 +446,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
         
         {/* Mobile View Indicators */}
         <div className="px-6 py-3 bg-zinc-50/50 dark:bg-zinc-900/50 border-t border-zinc-100 dark:border-zinc-800 flex justify-center">
-            <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+            <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
                 <div className="w-1 h-1 rounded-full bg-zinc-300"></div>
                 Scroll to see more months
                 <div className="w-1 h-1 rounded-full bg-zinc-300"></div>
@@ -510,7 +510,7 @@ function EditableBookRow({ book, onUpdate, onRemove, placeholder }: {
             <button
               key={opt}
               onClick={() => onUpdate({ status: opt })}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition-colors ${
                 book.status === opt 
                   ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white' 
                   : 'text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-white'

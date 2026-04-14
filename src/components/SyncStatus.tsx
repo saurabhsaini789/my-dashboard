@@ -72,7 +72,7 @@ export function SyncStatus({ status, isDevelopment }: SyncStatusProps) {
         )}
         <span className={`relative inline-flex rounded-full h-2 w-2 ${config.color}`}></span>
       </div>
-      <span className={`text-[10px] font-bold uppercase tracking-[0.15em] ${config.label} transition-colors duration-500`}>
+      <span className={`text-xs font-bold uppercase tracking-[0.15em] ${config.label} transition-colors duration-500`}>
         {config.text}
       </span>
     </div>

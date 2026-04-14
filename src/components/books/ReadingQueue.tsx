@@ -49,7 +49,7 @@ function BookItem({ book, onEdit }: BookItemProps) {
     >
       {/* Priority Number */}
       <div className="flex-shrink-0 w-10 h-10 flex flex-col items-center justify-center bg-zinc-100 dark:bg-zinc-800 rounded-xl text-zinc-500 dark:text-zinc-400 group-hover:bg-teal-50 dark:group-hover:bg-teal-500/10 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
-        <span className="text-[10px] font-bold uppercase opacity-50 mb-0.5">Pos</span>
+        <span className="text-xs font-bold uppercase opacity-50 mb-0.5">Pos</span>
         <span className="text-sm font-black leading-none">{book.order}</span>
       </div>
 
@@ -60,15 +60,15 @@ function BookItem({ book, onEdit }: BookItemProps) {
         </h4>
         
         <div className="flex items-center gap-4 border-l-2 border-zinc-100 dark:border-zinc-800/50 pl-4 overflow-x-auto no-scrollbar">
-          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
+          <span className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
             {book.author || 'Unknown Author'}
           </span>
-          <span className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-zinc-400 tracking-wider whitespace-nowrap">
+          <span className="flex items-center gap-1.5 text-xs uppercase font-bold text-zinc-400 tracking-wider whitespace-nowrap">
             <Languages size={12} className="text-zinc-300 dark:text-zinc-700" />
             {book.language}
           </span>
           {book.category && (
-            <span className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-zinc-400 tracking-wider whitespace-nowrap">
+            <span className="flex items-center gap-1.5 text-xs uppercase font-bold text-zinc-400 tracking-wider whitespace-nowrap">
               <Tag size={12} className="text-zinc-300 dark:text-zinc-700" />
               {book.category}
             </span>

@@ -107,23 +107,23 @@ export function InventoryTracker({ records }: InventoryTrackerProps) {
       
       {/* Header & Alerts */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 md:p-8 bg-zinc-900 dark:bg-zinc-800 rounded-[40px] text-white shadow-xl relative overflow-hidden">
-           <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/20 rounded-full blur-3xl -mr-10 -mt-20 pointer-events-none" />
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 md:p-8 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-zinc-900 dark:text-white shadow-sm relative overflow-hidden">
+           <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 dark:bg-amber-500/10 rounded-full blur-3xl -mr-10 -mt-20 pointer-events-none" />
            
            <div className="flex flex-col gap-2 relative z-10">
-              <h2 className="text-2xl font-bold uppercase tracking-[0.2em]">Smart Inventory</h2>
-              <p className="text-sm text-zinc-400 font-medium max-w-sm">Auto-advising based on consumption cycles and calendar purchases.</p>
+              <h2 className="text-2xl font-bold uppercase tracking-[0.2em] text-zinc-900 dark:text-white">Smart Inventory</h2>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium max-w-sm">Auto-advising based on consumption cycles and calendar purchases.</p>
            </div>
 
            <div className="flex gap-4 md:gap-8 relative z-10">
               <div className="flex flex-col items-start md:items-end">
-                 <span className="text-xs uppercase tracking-widest text-zinc-500 font-bold">Planned Items</span>
-                 <span className="text-2xl md:text-3xl font-bold tracking-tight">{plannedItems.length}</span>
+                 <span className="text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-500 font-bold">Planned Items</span>
+                 <span className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">{plannedItems.length}</span>
               </div>
-              <div className="w-px h-12 bg-zinc-800 hidden md:block" />
+              <div className="w-px h-12 bg-zinc-200 dark:bg-zinc-800 hidden md:block" />
               <div className="flex flex-col items-start md:items-end">
-                 <span className="text-xs uppercase tracking-widest text-amber-500/80 font-bold">Needs Attention</span>
-                 <span className="text-2xl md:text-3xl font-bold tracking-tight text-amber-400">{lowStockCount}</span>
+                 <span className="text-xs uppercase tracking-widest text-amber-600 dark:text-amber-500/80 font-bold">Needs Attention</span>
+                 <span className="text-2xl md:text-3xl font-bold tracking-tight text-amber-600 dark:text-amber-400">{lowStockCount}</span>
               </div>
            </div>
         </div>
@@ -140,7 +140,7 @@ export function InventoryTracker({ records }: InventoryTrackerProps) {
         ))}
       </div>
 
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[40px] p-6 lg:p-8 shadow-xl flex flex-col gap-8">
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 lg:p-8 shadow-sm flex flex-col gap-8">
          <div className="flex justify-between items-center px-2">
             <h3 className="uppercase tracking-[0.3em] font-bold text-sm text-zinc-400">Inventory Status</h3>
             <span className="text-xs uppercase font-bold tracking-widest text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full">Source: Monthly Plan</span>
@@ -149,7 +149,7 @@ export function InventoryTracker({ records }: InventoryTrackerProps) {
          {/* Inventory List with scrollable height */}
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar pb-4">
             {inventoryStatus.map(item => (
-              <div key={item.id} className="group relative p-6 bg-zinc-50 dark:bg-zinc-950/30 rounded-[32px] border border-zinc-100 dark:border-zinc-800 hover:border-amber-500/30 transition-all flex flex-col gap-4">
+              <div key={item.id} className="group relative p-6 bg-zinc-50 dark:bg-zinc-950/30 rounded-2xl border border-zinc-100 dark:border-zinc-800 hover:border-amber-500/30 transition-all flex flex-col gap-4">
                 
                 <div className="flex flex-col gap-1">
                   <div className="flex justify-between items-start">
@@ -175,7 +175,7 @@ export function InventoryTracker({ records }: InventoryTrackerProps) {
                       </span>
                     </div>
                     <div className="flex flex-col items-end">
-                      <span className="text-[10px] uppercase font-bold tracking-widest text-zinc-400">Lasts</span>
+                      <span className="text-[11px] uppercase font-bold tracking-widest text-zinc-400">Lasts</span>
                       <span className={`text-sm font-bold ${item.status === 'Low' || item.status === 'Out' ? 'text-amber-500' : 'text-zinc-600 dark:text-zinc-400'}`}>
                         {item.daysRemaining === Infinity ? '?' : item.daysRemaining < 1 ? 'Out!' : `${Math.round(item.daysRemaining)} days`}
                       </span>
@@ -196,10 +196,10 @@ export function InventoryTracker({ records }: InventoryTrackerProps) {
                 </div>
 
                 <div className="mt-auto pt-2 flex flex-col gap-1 border-t border-zinc-100 dark:border-zinc-800/50">
-                   <p className="text-[9px] text-zinc-400 uppercase font-medium">
+                   <p className="text-xs text-zinc-400 uppercase font-medium">
                      Latest: <span className="text-zinc-600 dark:text-zinc-300 font-bold">{(item.latestPurchaseDate as unknown) instanceof Date ? (item.latestPurchaseDate as unknown as Date).toLocaleDateString() : 'Never'}</span>
                    </p>
-                   <p className="text-[9px] text-zinc-400 uppercase font-medium">
+                   <p className="text-xs text-zinc-400 uppercase font-medium">
                      Last Qty: <span className="text-zinc-600 dark:text-zinc-300 font-bold">{item.totalBoughtLast} {item.unitSize}</span>
                    </p>
                 </div>

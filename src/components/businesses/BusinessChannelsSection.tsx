@@ -268,7 +268,7 @@ export function BusinessChannelsSection() {
         
         <button 
           onClick={openAddModal}
-          className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 tracking-widest text-[10px] font-bold px-6 py-4 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-zinc-900/10 h-[54px] flex items-center gap-2"
+          className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 tracking-widest text-xs font-bold px-6 py-4 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-sm shadow-zinc-900/10 h-[54px] flex items-center gap-2"
         >
           <Plus size={16} />
           New Channel
@@ -276,19 +276,19 @@ export function BusinessChannelsSection() {
       </div>
 
       {/* Table View (Desktop) */}
-      <div className="hidden lg:block bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-[40px] overflow-hidden shadow-sm">
+      <div className="hidden lg:block bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-zinc-100 dark:border-zinc-800">
-                <th className="px-6 py-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-black">Status</th>
-                <th className="px-6 py-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-black">Channel / Business Name</th>
-                <th className="px-6 py-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-black">Platform / Location</th>
-                <th className="px-6 py-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-black">Content / Category</th>
-                <th className="px-6 py-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-black text-center">Freq</th>
-                <th className="px-6 py-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-black text-center">Days Ago</th>
-                <th className="px-6 py-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-black text-right">Next Due</th>
-                <th className="px-6 py-6 text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-black"></th>
+                <th className="px-6 py-6 text-xs uppercase tracking-widest text-zinc-500 font-black">Status</th>
+                <th className="px-6 py-6 text-xs uppercase tracking-widest text-zinc-500 font-black">Channel / Business Name</th>
+                <th className="px-6 py-6 text-xs uppercase tracking-widest text-zinc-500 font-black">Platform / Location</th>
+                <th className="px-6 py-6 text-xs uppercase tracking-widest text-zinc-500 font-black">Content / Category</th>
+                <th className="px-6 py-6 text-xs uppercase tracking-widest text-zinc-500 font-black text-center">Freq</th>
+                <th className="px-6 py-6 text-xs uppercase tracking-widest text-zinc-500 font-black text-center">Days Ago</th>
+                <th className="px-6 py-6 text-xs uppercase tracking-widest text-zinc-500 font-black text-right">Next Due</th>
+                <th className="px-6 py-6 text-xs uppercase tracking-widest text-zinc-500 font-black"></th>
               </tr>
             </thead>
             <tbody>
@@ -303,7 +303,7 @@ export function BusinessChannelsSection() {
                   <tr key={channel.id} className={`group hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors border-b border-zinc-100 dark:border-zinc-800 last:border-0 ${channel.rowColor || (indicator.label === 'Overdue' ? 'bg-rose-500/[0.02]' : '')}`}>
                     <td className="px-6 py-6">
                       <div className="flex flex-col gap-1">
-                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border ${
                           channel.status === 'Active' 
                             ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
                             : channel.status === 'Paused'
@@ -314,7 +314,7 @@ export function BusinessChannelsSection() {
                           {channel.status}
                         </span>
                         {channel.status === 'Active' && (
-                          <span className={`text-[10px] font-bold px-2 ${indicator.color}`}>
+                          <span className={`text-xs font-bold px-2 ${indicator.color}`}>
                             {indicator.icon} {indicator.label}
                           </span>
                         )}
@@ -333,7 +333,7 @@ export function BusinessChannelsSection() {
                       </span>
                     </td>
                     <td className="px-6 py-6">
-                      <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 px-2 py-0.5 rounded-full">
+                      <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 px-2 py-0.5 rounded-full">
                         {channel.contentType || 'Mixed'}
                       </span>
                     </td>
@@ -404,23 +404,23 @@ export function BusinessChannelsSection() {
           const daysSince = Math.floor((today.getTime() - lastPosted.getTime()) / (1000 * 60 * 60 * 24));
 
           return (
-            <div key={channel.id} className={`p-6 rounded-[32px] border border-zinc-200 dark:border-zinc-800 ${channel.rowColor || (indicator.label === 'Overdue' ? 'bg-rose-500/[0.02]' : 'bg-white dark:bg-zinc-900/30')} space-y-4`}>
+            <div key={channel.id} className={`p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 ${channel.rowColor || (indicator.label === 'Overdue' ? 'bg-rose-500/[0.02]' : 'bg-white dark:bg-zinc-900/30')} space-y-4`}>
               <div className="flex justify-between items-start">
                 <div className="flex flex-col gap-2">
                   <span className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight leading-tight">
                     {channel.name}
                   </span>
                   <div className="flex flex-wrap gap-2">
-                    <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 px-2 py-0.5 rounded-full">
+                    <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 px-2 py-0.5 rounded-full">
                       {channel.platform}
                     </span>
-                    <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 px-2 py-0.5 rounded-full">
+                    <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 px-2 py-0.5 rounded-full">
                       {channel.contentType || 'Mixed'}
                     </span>
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border ${
                     channel.status === 'Active' 
                       ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
                       : channel.status === 'Paused'
@@ -430,7 +430,7 @@ export function BusinessChannelsSection() {
                     {channel.status}
                   </span>
                   {channel.status === 'Active' && (
-                    <span className={`text-[9px] font-bold ${indicator.color}`}>
+                    <span className={`text-xs font-bold ${indicator.color}`}>
                       {indicator.icon} {indicator.label}
                     </span>
                   )}
@@ -439,15 +439,15 @@ export function BusinessChannelsSection() {
 
               <div className="grid grid-cols-3 gap-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
                 <div className="flex flex-col">
-                  <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Freq</span>
+                  <span className="text-[11px] font-black text-zinc-400 uppercase tracking-widest">Freq</span>
                   <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{channel.postingFrequency}d</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Last</span>
+                  <span className="text-[11px] font-black text-zinc-400 uppercase tracking-widest">Last</span>
                   <span className={`text-sm font-bold ${daysSince > channel.postingFrequency ? 'text-rose-500' : 'text-zinc-700 dark:text-zinc-300'}`}>{daysSince}d</span>
                 </div>
                 <div className="flex flex-col items-end">
-                  <span className="text-[9px] font-black text-zinc-400 uppercase tracking-widest">Next Due</span>
+                  <span className="text-[11px] font-black text-zinc-400 uppercase tracking-widest">Next Due</span>
                   <span className={`text-sm font-bold ${indicator.label === 'Overdue' ? 'text-rose-500' : 'text-zinc-700 dark:text-zinc-300'}`}>
                     {channel.nextPostDueDate ? new Date(channel.nextPostDueDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '-'}
                   </span>
@@ -457,7 +457,7 @@ export function BusinessChannelsSection() {
               <div className="flex items-center justify-end gap-3 pt-2">
                 <button 
                   onClick={() => openEditModal(channel)}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 text-[10px] font-black uppercase tracking-widest text-zinc-500 bg-zinc-100 dark:bg-zinc-800 rounded-2xl"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 text-xs font-black uppercase tracking-widest text-zinc-500 bg-zinc-100 dark:bg-zinc-800 rounded-2xl"
                 >
                   <Edit2 size={14} />
                   Edit
@@ -465,7 +465,7 @@ export function BusinessChannelsSection() {
                 {channel.status === 'Active' && (
                   <button
                     onClick={() => markAsPosted(channel.id)}
-                    className="flex-[2] flex items-center justify-center gap-2 py-3 text-[10px] font-black uppercase tracking-widest bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-2xl shadow-lg"
+                    className="flex-[2] flex items-center justify-center gap-2 py-3 text-xs font-black uppercase tracking-widest bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-2xl shadow-lg"
                   >
                     <CheckCircle2 size={14} />
                     Mark Posted
@@ -475,7 +475,7 @@ export function BusinessChannelsSection() {
             </div>
           );
         }) : (
-          <div className="p-12 text-center bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-[32px]">
+          <div className="p-12 text-center bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl">
             <Info size={32} className="mx-auto text-zinc-300 mb-2" />
             <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">No channels found</span>
           </div>

@@ -44,27 +44,45 @@ export const Modal: React.FC<ModalProps> = ({
   accentColor = 'blue',
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+  const hasFocusedRef = useRef(false);
+  const onCloseRef = useRef(onClose);
+
+  // Keep onCloseRef updated but don't trigger effects when it changes
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') onCloseRef.current();
     };
 
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
-      // Rough focus trap - just focus the first input inside the modal
-      setTimeout(() => {
-        const firstInput = modalRef.current?.querySelector('input, select, textarea, button') as HTMLElement;
-        if (firstInput) {
-          firstInput.focus();
-        }
-      }, 0);
+      
+      // Only perform initial focus once when the modal opens
+      if (!hasFocusedRef.current) {
+        setTimeout(() => {
+          // Focus the first input/button that is NOT the close button in the header
+          const firstInput = modalRef.current?.querySelector(
+            'input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([aria-label="Close modal"]):not([disabled])'
+          ) as HTMLElement;
+          
+          if (firstInput) {
+            firstInput.focus();
+          }
+          hasFocusedRef.current = true;
+        }, 0);
+      }
+    } else {
+      // Reset the focus flag when the modal is closed
+      hasFocusedRef.current = false;
     }
     
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

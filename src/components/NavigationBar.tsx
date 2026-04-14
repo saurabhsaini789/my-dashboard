@@ -21,6 +21,7 @@ export function NavigationBar() {
     { name: 'Businesses', path: '/businesses' },
     { name: 'Expenses', path: '/pantry' },
     { name: 'Wardrobe', path: '/wardrobe' },
+    { name: 'Health', path: '/health-system' },
   ];
 
   return (

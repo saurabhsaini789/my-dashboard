@@ -269,32 +269,32 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
     <div className="flex flex-col gap-6 animate-in fade-in duration-700 delay-100">
       
       {/* Header & Metrics */}
-      <div className="flex flex-col md:flex-row justify-between items-center md:items-center gap-6 p-6 md:p-8 bg-zinc-900 dark:bg-zinc-800 rounded-[32px] md:rounded-[40px] text-white shadow-xl relative overflow-hidden">
-         <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/20 rounded-full blur-3xl -mr-10 -mt-20 pointer-events-none" />
+      <div className="flex flex-col md:flex-row justify-between items-center md:items-center gap-6 p-6 md:p-8 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-zinc-900 dark:text-white shadow-sm relative overflow-hidden">
+         <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 dark:bg-teal-500/10 rounded-full blur-3xl -mr-10 -mt-20 pointer-events-none" />
          
          <div className="flex flex-col gap-1 relative z-10 w-full md:w-auto text-center md:text-left">
-            <h2 className="text-sm md:text-xl lg:text-2xl font-black uppercase tracking-[0.2em] whitespace-nowrap">Monthly Grocery Plan</h2>
-            <p className="hidden md:block text-sm text-zinc-400 font-medium max-w-sm">Compact table tracking for planned food budget vs actual spending.</p>
+            <h2 className="text-sm md:text-xl lg:text-2xl font-black uppercase tracking-[0.2em] whitespace-nowrap text-zinc-900 dark:text-white">Monthly Grocery Plan</h2>
+            <p className="hidden md:block text-sm text-zinc-500 dark:text-zinc-400 font-medium max-w-sm">Compact table tracking for planned food budget vs actual spending.</p>
          </div>
 
          <div className="flex w-full md:w-auto gap-0 md:gap-8 relative z-10">
             <div className="flex-1 flex flex-col items-center md:items-end gap-1 md:gap-0">
-               <span className="text-xs uppercase tracking-widest text-zinc-500 font-bold whitespace-nowrap">Planned Cost</span>
-               <span className="text-2xl md:text-3xl font-bold tracking-tight">
+               <span className="text-xs uppercase tracking-widest text-zinc-500 dark:text-zinc-500 font-bold whitespace-nowrap">Planned Cost</span>
+               <span className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
                   ${plannedTotalCAD.toLocaleString('en-CA', { maximumFractionDigits: 0 })}
                </span>
             </div>
-            <div className="w-px h-10 bg-zinc-800/50 md:block hidden mx-4" />
+            <div className="w-px h-10 bg-zinc-200 dark:bg-zinc-800 md:block hidden mx-4" />
             <div className="flex-1 flex flex-col items-center md:items-end gap-1 md:gap-0">
-               <span className="text-xs uppercase tracking-widest text-teal-500/80 font-bold">Projected</span>
-               <span className="text-2xl md:text-3xl font-bold tracking-tight text-teal-400">
+               <span className="text-xs uppercase tracking-widest text-teal-600 dark:text-teal-500/80 font-bold">Projected</span>
+               <span className="text-2xl md:text-3xl font-bold tracking-tight text-teal-600 dark:text-teal-400">
                   ${projectedTotalCAD.toLocaleString('en-CA', { maximumFractionDigits: 0 })}
                </span>
             </div>
          </div>
       </div>
 
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[40px] p-6 lg:p-8 shadow-xl flex flex-col gap-8">
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 lg:p-8 shadow-sm flex flex-col gap-8">
          <div className="flex justify-between items-center">
             <h3 className="uppercase tracking-[0.3em] font-bold text-sm text-zinc-400">Master Grocery List</h3>
             <button 
@@ -388,7 +388,7 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
          {/* Scrollable Content Container */}
          <div className="overflow-y-auto max-h-[500px] md:max-h-[600px] pr-2 -mr-2 custom-scrollbar flex flex-col gap-8">
             {/* Desktop Table View */}
-            <div className="hidden md:block overflow-x-auto border border-zinc-100 dark:border-zinc-800 rounded-3xl relative">
+            <div className="hidden md:block overflow-x-auto border border-zinc-100 dark:border-zinc-800 rounded-2xl relative">
                <table className="w-full text-left border-collapse min-w-[800px]">
                   <thead className="bg-zinc-50/80 dark:bg-zinc-900/80 backdrop-blur-md sticky top-0 z-20 shadow-sm border-b border-zinc-100 dark:border-zinc-800">
                      <tr>
@@ -439,10 +439,10 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
                                         </td>
                                    <td className="p-4">
                                            {isSkipped ? (
-                                              <span className="text-[10px] font-bold uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-lg text-zinc-500">Skipped for {viewingDate.toLocaleString('default', { month: 'short' })}</span>
+                                              <span className="text-xs font-bold uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-lg text-zinc-500">Skipped for {viewingDate.toLocaleString('default', { month: 'short' })}</span>
                                            ) : (
                                               <div className="flex flex-wrap gap-1.5 items-center">
-                                                 <span className={`text-[10px] font-bold w-6 mr-1 ${isExceeded ? 'text-rose-500' : 'text-zinc-400'}`}>
+                                                 <span className={`text-xs font-bold w-6 mr-1 ${isExceeded ? 'text-rose-500' : 'text-zinc-400'}`}>
                                                     {loggedQty} / {item.plannedQuantity}
                                                  </span>
                                                  {Array.from({ length: Math.ceil(item.plannedQuantity) }).map((_, i) => {
@@ -479,7 +479,7 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
                                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                               <button 
                                                  onClick={() => handleEdit(item)}
-                                                 className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all shadow-sm"
+                                                 className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 rounded-xl text-xs font-bold uppercase tracking-widest transition-all shadow-sm"
                                               >
                                                  Edit Item
                                               </button>
@@ -502,7 +502,7 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
                   return (
                      <div key={categoryName} className="flex flex-col gap-4">
                         <div className="flex items-center gap-3 px-2">
-                           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400">{categoryName}</span>
+                           <span className="text-xs font-black uppercase tracking-[0.3em] text-zinc-400">{categoryName}</span>
                            <div className="flex-1 h-px bg-zinc-100 dark:bg-zinc-800" />
                         </div>
                         <div className="grid gap-4">
@@ -515,7 +515,7 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
                               return (
                                  <div 
                                     key={item.id} 
-                                    className={`p-5 rounded-3xl border transition-all flex flex-col gap-4 shadow-sm ${isSkipped ? 'opacity-50 grayscale bg-zinc-50 dark:bg-zinc-900/40 border-zinc-100 dark:border-zinc-800' : isExceeded ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-100 dark:border-rose-900/30' : 'bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800'}`}
+                                    className={`p-5 rounded-2xl border transition-all flex flex-col gap-4 shadow-sm ${isSkipped ? 'opacity-50 grayscale bg-zinc-50 dark:bg-zinc-900/40 border-zinc-100 dark:border-zinc-800' : isExceeded ? 'bg-rose-50/50 dark:bg-rose-900/10 border-rose-100 dark:border-rose-900/30' : 'bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800'}`}
                                  >
                                     <div className="flex justify-between items-start">
                                        <div className="flex flex-col gap-1">
@@ -523,7 +523,7 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
                                              {item.name}
                                           </span>
                                           <div className="flex items-center gap-2">
-                                             <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
+                                             <span className="text-xs font-bold uppercase tracking-widest text-zinc-500">
                                                 {item.plannedQuantity} × {item.unitSize || 'Unit'} • {item.frequency}
                                              </span>
                                           </div>
@@ -532,15 +532,15 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
                                           <span className="text-lg font-black tracking-tighter text-teal-600 dark:text-teal-400">
                                              ${localCost.toLocaleString("en-CA", { maximumFractionDigits: 1 })}
                                           </span>
-                                          <span className="text-[8px] font-bold uppercase tracking-widest text-zinc-400">Total Est.</span>
+                                          <span className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">Total Est.</span>
                                        </div>
                                     </div>
 
                                     {!isSkipped && (
                                        <div className="bg-zinc-50/50 dark:bg-zinc-800/20 p-4 rounded-2xl flex flex-col gap-3">
                                           <div className="flex justify-between items-center">
-                                             <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Tracker Progress</span>
-                                             <span className={`text-[10px] font-bold ${isExceeded ? 'text-rose-500' : 'text-teal-500'}`}>
+                                             <span className="text-xs font-black uppercase tracking-widest text-zinc-400">Tracker Progress</span>
+                                             <span className={`text-xs font-bold ${isExceeded ? 'text-rose-500' : 'text-teal-500'}`}>
                                                 {loggedQty} / {item.plannedQuantity}
                                              </span>
                                           </div>
@@ -568,11 +568,11 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
 
                                     <div className="flex justify-between items-center pt-2">
                                        {item.consumptionDays ? (
-                                          <span className="text-[10px] text-teal-600 dark:text-teal-400 font-bold uppercase tracking-wide italic">Consumes in {item.consumptionDays} days</span>
+                                          <span className="text-xs text-teal-600 dark:text-teal-400 font-bold uppercase tracking-wide italic">Consumes in {item.consumptionDays} days</span>
                                        ) : <div />}
                                        <button 
                                           onClick={() => handleEdit(item)}
-                                          className="px-6 py-2.5 bg-zinc-100 dark:bg-zinc-800 active:bg-zinc-200 dark:active:bg-zinc-700 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-300 transition-all border border-zinc-200/50 dark:border-zinc-700/50"
+                                          className="px-6 py-2.5 bg-zinc-100 dark:bg-zinc-800 active:bg-zinc-200 dark:active:bg-zinc-700 rounded-xl text-xs font-black uppercase tracking-[0.2em] text-zinc-600 dark:text-zinc-300 transition-all border border-zinc-200/50 dark:border-zinc-700/50"
                                        >
                                           Edit
                                        </button>

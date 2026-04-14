@@ -247,7 +247,7 @@ export function SavingsTargets() {
         </h2>
         <button 
           onClick={openAddModal}
-          className="bg-blue-600 text-white tracking-widest text-[10px] sm:text-xs px-5 sm:px-8 py-2.5 sm:py-4 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-blue-200/50 dark:shadow-none font-bold"
+          className="bg-blue-600 text-white tracking-widest text-xs px-5 sm:px-8 py-2.5 sm:py-4 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-sm dark:shadow-none font-bold"
         >
           New Goal
         </button>
@@ -258,7 +258,7 @@ export function SavingsTargets() {
           const { progress, currentTotal, remaining, requiredMonthly, status, recentContributions } = calculateTrajectoryMetrics(goal);
           
           return (
-            <div key={goal.id} className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100/50 dark:border-blue-900/30 rounded-[32px] p-5 md:p-8 flex flex-col gap-5 md:gap-6 group hover:shadow-xl transition-all relative overflow-hidden">
+            <div key={goal.id} className="bg-blue-50 dark:bg-blue-500/10 border border-blue-100/50 dark:border-blue-900/30 rounded-2xl p-5 md:p-8 flex flex-col gap-5 md:gap-6 group shadow-sm transition-all relative overflow-hidden">
               {/* Header */}
               <div className="flex justify-between items-start gap-4">
                 <div className="flex flex-col gap-1.5 flex-1">
@@ -266,7 +266,7 @@ export function SavingsTargets() {
                         <h3 className="font-bold text-xl md:text-2xl text-zinc-900 dark:text-zinc-100 capitalize tracking-tighter">
                             {goal.name}
                         </h3>
-                        <div className={`hidden sm:block text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full border font-bold ${
+                        <div className={`hidden sm:block text-xs uppercase tracking-widest px-2.5 py-1 rounded-full border font-bold ${
                             status === 'Ahead' 
                                 ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-900/30" 
                                 : "bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-900/30"
@@ -278,9 +278,9 @@ export function SavingsTargets() {
                     <div className={`sm:hidden flex items-center justify-between ${expandedGoals[goal.id] ? 'hidden' : 'flex'}`}>
                         <div className="flex items-baseline gap-1.5">
                             <span className="text-blue-600 dark:text-blue-400 font-bold text-lg">{progress.toFixed(0)}%</span>
-                            <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest font-medium">${(currentTotal || 0).toLocaleString('en-CA', { maximumFractionDigits: 0 })}</span>
+                            <span className="text-xs text-zinc-500 dark:text-zinc-300 uppercase tracking-widest font-medium">${(currentTotal || 0).toLocaleString('en-CA', { maximumFractionDigits: 0 })}</span>
                         </div>
-                        <span className={`text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ${status === 'Ahead' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}`}>
+                        <span className={`text-[11px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full ${status === 'Ahead' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}`}>
                             {status}
                         </span>
                     </div>
@@ -312,7 +312,7 @@ export function SavingsTargets() {
                                 {progress.toFixed(0)}<span className="text-lg text-zinc-500 dark:text-zinc-300 ml-1 font-medium">%</span>
                             </span>
                             <div className="flex flex-col items-end">
-                                <span className="text-[10px] md:text-xs text-zinc-500 dark:text-zinc-300 uppercase tracking-widest mb-0.5 text-right font-medium">
+                                <span className="text-xs md:text-xs text-zinc-500 dark:text-zinc-300 uppercase tracking-widest mb-0.5 text-right font-medium">
                                     ${(currentTotal || 0).toLocaleString('en-CA', { maximumFractionDigits: 0 })} / ${(goal.targetAmount || 0).toLocaleString('en-CA', { maximumFractionDigits: 0 })}
                                 </span>
                             </div>
@@ -323,26 +323,26 @@ export function SavingsTargets() {
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
-                        <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.15em] font-medium mt-1">
+                        <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-medium mt-1">
                             ${(remaining || 0).toLocaleString('en-CA', { maximumFractionDigits: 0 })} Remaining
                         </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 md:gap-4">
                         <div className="flex flex-col gap-0.5">
-                            <span className="text-[9px] md:text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest font-bold">Start</span>
+                            <span className="text-[11px] md:text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest font-bold">Start</span>
                             <span className="text-xs md:text-sm text-zinc-900 dark:text-zinc-100 opacity-80 font-medium">
                                 {new Date(goal.startDate).toLocaleDateString('en-CA', { month: 'short', year: 'numeric' })}
                             </span>
                         </div>
                         <div className="flex flex-col gap-0.5">
-                            <span className="text-[9px] md:text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest font-bold">Target</span>
+                            <span className="text-[11px] md:text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest font-bold">Target</span>
                             <span className="text-xs md:text-sm text-zinc-900 dark:text-zinc-100 font-medium">
                                 {new Date(goal.targetDate).toLocaleDateString('en-CA', { month: 'short', year: 'numeric' })}
                             </span>
                         </div>
                         <div className="flex flex-col gap-0.5 col-span-2">
-                            <span className="text-[9px] md:text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest leading-tight font-bold">Required Contribution</span>
+                            <span className="text-[11px] md:text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest leading-tight font-bold">Required Contribution</span>
                             <span className="text-sm md:text-base text-blue-500 font-bold tracking-tight">
                                 ${(Math.ceil(requiredMonthly) || 0).toLocaleString('en-CA', { maximumFractionDigits: 0 })}/mo
                             </span>
@@ -354,7 +354,7 @@ export function SavingsTargets() {
                                 setTargetGoalId(goal.id);
                                 setIsContributionModalOpen(true);
                             }}
-                            className="w-full bg-blue-600 text-white tracking-widest text-[10px] sm:text-xs px-6 py-3.5 md:py-4 rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-blue-200/50 dark:shadow-none flex items-center justify-center gap-2 font-bold"
+                            className="w-full bg-blue-600 text-white tracking-widest text-xs px-6 py-3.5 md:py-4 rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-sm dark:shadow-none flex items-center justify-center gap-2 font-bold"
                         >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
                             Fuel Goal
@@ -371,7 +371,7 @@ export function SavingsTargets() {
                                     setHistoryGoalId(goal.id);
                                     setIsHistoryModalOpen(true);
                                 }}
-                                className="text-[10px] text-zinc-900 dark:text-zinc-100 uppercase tracking-widest hover:underline font-bold"
+                                className="text-xs text-zinc-900 dark:text-zinc-100 uppercase tracking-widest hover:underline font-bold"
                              >
                                  View All
                              </button>
@@ -385,13 +385,13 @@ export function SavingsTargets() {
                                     <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
                                         ${(c.amount || 0).toLocaleString('en-CA', { maximumFractionDigits: 0 })}
                                     </span>
-                                    <span className="text-[10px] text-zinc-500 dark:text-zinc-300">{new Date(c.date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })}</span>
+                                    <span className="text-xs text-zinc-500 dark:text-zinc-300">{new Date(c.date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })}</span>
                                 </div>
-                                <div className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded uppercase text-[8px] text-zinc-600 dark:text-zinc-400 font-bold tracking-widest">Added</div>
+                                <div className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded uppercase text-xs text-zinc-600 dark:text-zinc-400 font-bold tracking-widest">Added</div>
                             </div>
                         )) : (
                             <div className="flex flex-col items-center justify-center py-6 bg-zinc-50 dark:bg-zinc-800/10 rounded-3xl border border-dashed border-zinc-200 dark:border-zinc-800/50">
-                                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold">Empty</span>
+                                <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold">Empty</span>
                             </div>
                         )}
                     </div>
@@ -485,7 +485,7 @@ export function SavingsTargets() {
                       <span className="text-lg font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
                           ${c.amount.toLocaleString('en-CA', { maximumFractionDigits: 0 })}
                       </span>
-                      <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest font-medium">{new Date(c.date).toLocaleDateString('en-CA', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                      <span className="text-xs text-zinc-500 dark:text-zinc-300 uppercase tracking-widest font-medium">{new Date(c.date).toLocaleDateString('en-CA', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                     </div>
                     <button type="button" onClick={() => deleteContribution(historyGoalId as string, c.id)} className="p-2 text-zinc-400 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all">
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -498,9 +498,9 @@ export function SavingsTargets() {
                           <span className="text-lg font-bold text-blue-600 dark:text-blue-400 tracking-tight">
                               ${goal.initialAmount.toLocaleString('en-CA', { maximumFractionDigits: 0 })}
                           </span>
-                          <span className="text-[10px] text-blue-500/50 uppercase tracking-widest font-bold">Starting Balance</span>
+                          <span className="text-xs text-blue-500/50 uppercase tracking-widest font-bold">Starting Balance</span>
                       </div>
-                      <div className="text-[10px] text-blue-500/40 uppercase tracking-widest px-3 py-1 bg-blue-50/50 dark:bg-blue-500/10 rounded-xl font-bold">Init</div>
+                      <div className="text-xs text-blue-500/40 uppercase tracking-widest px-3 py-1 bg-blue-50/50 dark:bg-blue-500/10 rounded-xl font-bold">Init</div>
                     </div>
                 )}
               </div>

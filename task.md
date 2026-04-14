@@ -9,11 +9,19 @@
 - [x] Update `useSync.ts` with legacy key migration logic
 - [x] Refactor `AssetsSection.tsx` to use standardized keys
 - [x] Refactor `LiabilitiesSection.tsx` to use standardized keys
+- [x] Fix focus logic in `src/components/ui/Modal.tsx` to use standardized keys
 - [x] Refactor `IncomeSection.tsx` to use standardized keys
 - [x] Refactor `ExpenseSection.tsx` to use standardized keys
 - [x] Refactor `SavingsTargets.tsx` to use standardized keys
 - [x] Refactor `EmergencyFundSection.tsx` to use standardized keys
 - [x] Refactor `ExchangeRateSection.tsx` to use standardized keys
+- [x] Update `src/app/health-system/page.tsx` with global filter state and clickable alert
+- [x] Update `src/components/health-system/MedicineInventorySection.tsx` to support `externalFilter`
+- [x] Update `src/components/health-system/TravelMedicalKitSection.tsx` to support `externalFilter`
+- [x] Update `src/components/health-system/FirstAidHomeSection.tsx` to support `externalFilter`
+- [x] Update `src/components/health-system/FirstAidMobileSection.tsx` to support `externalFilter`
+- [x] Update `src/components/health-system/SupplementSection.tsx` to support `externalFilter`
+- [x] Verify functionality in the browser
 - [x] Conduct final audit of `localStorage` calls to ensure no hardcoded strings remain
 - [x] Verify cross-tab synchronization and data integrity
 - [x] Verification

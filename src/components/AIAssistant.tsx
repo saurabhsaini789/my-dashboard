@@ -1206,7 +1206,7 @@ export function AIAssistant() {
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-tighter">Eva</span>
-                <span className="text-[10px] text-emerald-500 uppercase tracking-widest font-bold">Online</span>
+                <span className="text-xs text-emerald-500 uppercase tracking-widest font-bold">Online</span>
               </div>
             </div>
             <div className="flex items-center gap-2">

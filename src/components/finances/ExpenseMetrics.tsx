@@ -29,7 +29,7 @@ function MetricCard({ label, value, subValue, icon, color }: MetricProps) {
   };
 
   return (
-    <div className="flex flex-col p-6 rounded-3xl border border-rose-100 dark:border-rose-900/30 bg-rose-50/20 dark:bg-rose-500/5 transition-all hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none hover:-translate-y-1 group relative overflow-hidden h-full">
+    <div className="flex flex-col p-6 rounded-2xl border border-rose-100 dark:border-rose-900/30 bg-rose-50/20 dark:bg-rose-500/5 shadow-sm transition-all group relative overflow-hidden h-full">
       <div className="flex items-center justify-between mb-6">
         <div className={`p-3.5 rounded-2xl transition-colors ${iconClasses[color]}`}>
           {icon}

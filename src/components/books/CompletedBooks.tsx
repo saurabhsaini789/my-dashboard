@@ -100,7 +100,7 @@ export function CompletedBooks() {
     b.notes.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (!isLoaded) return <div className="h-96 animate-pulse bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800"></div>;
+  if (!isLoaded) return <div className="h-96 animate-pulse bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800"></div>;
 
   return (
     <div className="w-full">
@@ -135,7 +135,7 @@ export function CompletedBooks() {
           
           <button
             onClick={() => setIsAdding(true)}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-6 py-3 rounded-2xl text-sm font-black hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-zinc-900/10 dark:shadow-white/5"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-6 py-3 rounded-2xl text-sm font-black hover:scale-[1.02] active:scale-[0.98] transition-all shadow-sm shadow-zinc-900/10 dark:shadow-white/5"
           >
             <Plus size={20} />
             Add Completed
@@ -145,7 +145,7 @@ export function CompletedBooks() {
 
       {/* Grid view */}
       {books.length === 0 ? (
-        <div className="text-center py-20 bg-white dark:bg-zinc-950 border-2 border-dashed border-zinc-100 dark:border-zinc-800 rounded-[2.5rem] flex flex-col items-center gap-6">
+        <div className="text-center py-20 bg-white dark:bg-zinc-950 border-2 border-dashed border-zinc-100 dark:border-zinc-800 rounded-2xl flex flex-col items-center gap-6">
           <div className="w-20 h-20 bg-teal-50 dark:bg-teal-500/10 rounded-[1.75rem] flex items-center justify-center text-teal-500 shadow-inner">
             <Star size={40} fill="currentColor" />
           </div>
@@ -269,18 +269,18 @@ function BookCard({ book, viewMode, onEdit }: { book: CompletedBook, viewMode: '
           </h4>
           
           <div className="flex items-center gap-4 border-l-2 border-zinc-100 dark:border-zinc-800/50 pl-4 overflow-x-auto no-scrollbar">
-            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
+            <span className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
               {book.author || 'Unknown Author'}
             </span>
-            <span className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-zinc-400 tracking-wider whitespace-nowrap">
+            <span className="flex items-center gap-1.5 text-xs uppercase font-bold text-zinc-400 tracking-wider whitespace-nowrap">
               <Languages size={12} className="text-zinc-300 dark:text-zinc-700" />
               {book.language}
             </span>
-            <span className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-zinc-400 tracking-wider whitespace-nowrap">
+            <span className="flex items-center gap-1.5 text-xs uppercase font-bold text-zinc-400 tracking-wider whitespace-nowrap">
               <Calendar size={12} className="text-zinc-300 dark:text-zinc-700" />
               {new Date(book.completionDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
             </span>
-            <span className="flex items-center gap-1.5 text-[10px] uppercase font-black text-zinc-400 tracking-wider whitespace-nowrap">
+            <span className="flex items-center gap-1.5 text-xs uppercase font-black text-zinc-400 tracking-wider whitespace-nowrap">
               <Tag size={12} className="text-teal-500/30" />
               {book.category || 'Other'}
             </span>
@@ -305,7 +305,7 @@ function BookCard({ book, viewMode, onEdit }: { book: CompletedBook, viewMode: '
   return (
     <div 
       onClick={onEdit}
-      className="group flex flex-col bg-white dark:bg-zinc-950 border-2 border-zinc-100 dark:border-zinc-800 rounded-[2.5rem] p-8 hover:border-teal-500/30 transition-all cursor-pointer relative overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1"
+      className="group flex flex-col bg-white dark:bg-zinc-950 border-2 border-zinc-100 dark:border-zinc-800 rounded-2xl p-8 hover:border-teal-500/30 transition-all cursor-pointer relative overflow-hidden shadow-sm hover:-translate-y-1"
     >
       {/* Visual Accent */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/5 -mr-16 -mt-16 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
@@ -315,8 +315,8 @@ function BookCard({ book, viewMode, onEdit }: { book: CompletedBook, viewMode: '
         <div className="flex justify-between items-start gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 opacity-60">{book.language}</span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-teal-600 dark:text-teal-400 opacity-80 flex items-center gap-1">
+              <span className="text-xs font-black uppercase tracking-[0.2em] text-zinc-400 opacity-60">{book.language}</span>
+              <span className="text-xs font-black uppercase tracking-[0.2em] text-teal-600 dark:text-teal-400 opacity-80 flex items-center gap-1">
                 <Tag size={10} />
                 {book.category || 'Other'}
               </span>
@@ -325,7 +325,7 @@ function BookCard({ book, viewMode, onEdit }: { book: CompletedBook, viewMode: '
             <h4 className="font-black text-2xl text-zinc-900 dark:text-white tracking-tight leading-tight group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
               {book.name}
             </h4>
-            <div className="text-[10px] font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-600 mt-2">
+            <div className="text-xs font-black uppercase tracking-widest text-zinc-500 dark:text-zinc-600 mt-2">
               {book.author || 'Unknown Author'}
             </div>
           </div>
@@ -354,11 +354,11 @@ function BookCard({ book, viewMode, onEdit }: { book: CompletedBook, viewMode: '
         </div>
 
         <div className="mt-auto flex items-center justify-between pt-2">
-          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em] text-zinc-400">
+          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.15em] text-zinc-400">
             <Calendar size={12} className="opacity-40" />
             {new Date(book.completionDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
           </div>
-          <div className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
+          <div className={`px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest ${
             book.wouldRecommend ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-600' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500'
           }`}>
             {book.wouldRecommend ? 'Highly Recommended' : 'Completed'}
@@ -371,7 +371,7 @@ function BookCard({ book, viewMode, onEdit }: { book: CompletedBook, viewMode: '
 
 function StatCard({ icon, value, description }: { icon: React.ReactNode, value: string, description: string }) {
   return (
-    <div className="bg-white dark:bg-zinc-950 border-2 border-zinc-50 dark:border-zinc-900 p-6 rounded-[2.5rem] flex items-center gap-6 shadow-sm hover:shadow-xl hover:border-teal-500/10 transition-all duration-300 group relative overflow-hidden">
+    <div className="bg-white dark:bg-zinc-950 border-2 border-zinc-50 dark:border-zinc-900 p-6 rounded-2xl flex items-center gap-6 shadow-sm hover:border-teal-500/10 transition-all duration-300 group relative overflow-hidden">
       <div className="w-14 h-14 bg-zinc-50 dark:bg-zinc-900 rounded-2xl flex items-center justify-center shadow-inner shrink-0 group-hover:scale-105 transition-transform duration-500">
         {icon}
       </div>

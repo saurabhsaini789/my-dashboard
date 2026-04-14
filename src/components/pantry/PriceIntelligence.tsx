@@ -215,7 +215,7 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
     <div className="flex flex-col gap-6 animate-in fade-in duration-700 delay-300">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 md:p-8 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[40px] shadow-xl relative overflow-hidden">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 p-6 md:p-8 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm relative overflow-hidden">
          <div className="absolute top-0 left-0 w-64 h-64 bg-amber-500/15 dark:bg-amber-500/10 rounded-full blur-3xl -ml-10 -mt-20 pointer-events-none" />
          
          <div className="flex flex-col gap-2 relative z-10">
@@ -241,13 +241,13 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
 
       {/* Grid of Intel Cards */}
       {filteredStats.length === 0 ? (
-        <div className="text-center p-12 bg-white/50 dark:bg-zinc-900/50 rounded-[40px] border border-dashed border-zinc-300 dark:border-zinc-700">
+        <div className="text-center p-12 bg-zinc-50/50 dark:bg-zinc-900/50 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800">
            <p className="text-zinc-500 font-medium">{itemStats.length === 0 ? "No grocery items logged yet. Add items in Quick Entry or detailed bills." : "No items found matching your search."}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
           {filteredStats.map(stat => (
-            <div key={stat.name} onClick={() => setActiveItemStats(stat)} className="group bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-[28px] p-6 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between cursor-pointer">
+            <div key={stat.name} onClick={() => setActiveItemStats(stat)} className="group bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between cursor-pointer">
                 
                 <div>
                    {/* Name & Trend Indicator */}
@@ -301,7 +301,7 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
                 {stat.smartInsights.length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mt-auto pt-2">
                      {stat.smartInsights.slice(0, 2).map((insight, idx) => ( // max 2 insights for space
-                       <span key={idx} className={`text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-[8px] truncate max-w-full ${
+                       <span key={idx} className={`text-xs font-bold uppercase tracking-widest px-2 py-1 rounded-[8px] truncate max-w-full ${
                           insight.type === 'positive' ? 'bg-teal-50 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-100 dark:border-teal-500/20' : 
                           insight.type === 'negative' ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-500/20' : 
                           'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700'
@@ -310,7 +310,7 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
                        </span>
                      ))}
                      {stat.smartInsights.length > 2 && (
-                         <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded-[8px] bg-zinc-100 dark:bg-zinc-800 text-zinc-500 border border-zinc-200 dark:border-zinc-700">
+                         <span className="text-xs font-bold uppercase tracking-widest px-2 py-1 rounded-[8px] bg-zinc-100 dark:bg-zinc-800 text-zinc-500 border border-zinc-200 dark:border-zinc-700">
                            +{stat.smartInsights.length - 2}
                          </span>
                      )}
@@ -333,17 +333,17 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
             <div className="flex-1 custom-scrollbar space-y-8">
                {/* Summary Header inside Modal */}
                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800 flex flex-col gap-2">
+                  <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800 flex flex-col gap-2">
                      <span className="text-[11px] uppercase font-bold tracking-widest text-zinc-400">Lowest</span>
                      <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">${activeItemStats.lowestPrice.price.toLocaleString("en-CA", {maximumFractionDigits:2})}</span>
                      <span className="text-xs text-zinc-500 truncate" title={activeItemStats.lowestPrice.vendor}>at {activeItemStats.lowestPrice.vendor}</span>
                   </div>
-                  <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800 flex flex-col gap-2">
+                  <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800 flex flex-col gap-2">
                      <span className="text-[11px] uppercase font-bold tracking-widest text-zinc-400">Average</span>
                      <span className="text-2xl font-bold text-zinc-800 dark:text-zinc-200">${activeItemStats.averagePrice.toLocaleString("en-CA", {maximumFractionDigits:2})}</span>
                      <span className="text-xs text-zinc-500">{activeItemStats.history.length} purchases</span>
                   </div>
-                  <div className="p-5 rounded-3xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800 flex flex-col gap-2">
+                  <div className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-950/50 border border-zinc-100 dark:border-zinc-800 flex flex-col gap-2">
                      <span className="text-[11px] uppercase font-bold tracking-widest text-zinc-400">Trend</span>
                      <span className={`text-2xl font-bold ${activeItemStats.priceTrend > 3 ? 'text-rose-500' : activeItemStats.priceTrend < -3 ? 'text-teal-500' : 'text-zinc-500'}`}>
                         {activeItemStats.priceTrend > 0 ? '+' : ''}{activeItemStats.priceTrend.toFixed(1)}%
@@ -374,14 +374,14 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
                {/* History Table */}
                <div className="space-y-3">
                   <h4 className="text-[11px] uppercase tracking-[0.2em] font-bold text-zinc-400 pl-2">Price History</h4>
-                  <div className="border border-zinc-100 dark:border-zinc-800 rounded-3xl overflow-hidden">
+                  <div className="border border-zinc-100 dark:border-zinc-800 rounded-2xl overflow-hidden">
                      <table className="w-full text-left">
                         <thead className="bg-zinc-50 dark:bg-zinc-950/50 border-b border-zinc-100 dark:border-zinc-800">
                            <tr>
-                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold">Date</th>
-                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold">Store</th>
-                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold text-right">Details</th>
-                              <th className="p-4 px-6 text-[10px] uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold text-right">Unit Price</th>
+                              <th className="p-4 px-6 text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold">Date</th>
+                              <th className="p-4 px-6 text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold">Store</th>
+                              <th className="p-4 px-6 text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold text-right">Details</th>
+                              <th className="p-4 px-6 text-xs uppercase tracking-widest text-zinc-600 dark:text-zinc-300 font-bold text-right">Unit Price</th>
                            </tr>
                         </thead>
                         <tbody>

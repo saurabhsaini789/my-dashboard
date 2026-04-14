@@ -276,7 +276,7 @@ export function LiabilitiesSection() {
           </h2>
           <button 
             onClick={openAddModal}
-            className="bg-rose-600 text-white tracking-widest text-[10px] md:text-xs px-5 md:px-6 py-2.5 md:py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg md:h-[46px] w-fit"
+            className="bg-rose-600 text-white tracking-widest text-xs px-5 md:px-6 py-2.5 md:py-3 rounded-xl hover:scale-105 active:scale-95 transition-all shadow-lg md:h-[46px] w-fit"
           >
             Add Liability
           </button>
@@ -284,8 +284,8 @@ export function LiabilitiesSection() {
 
         {/* Global Summary Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
-            <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative">
-                <span className="text-[10px] text-zinc-500 dark:text-zinc-300 font-medium uppercase tracking-[0.2em]">Total Debt</span>
+            <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-2xl p-5 md:p-6 flex flex-col gap-1 shadow-sm transition-all group overflow-hidden relative">
+                <span className="text-xs text-zinc-500 dark:text-zinc-300 font-medium uppercase tracking-widest">Total Debt</span>
                 <div className="flex flex-col">
                   <span className="text-xl md:text-2xl text-zinc-900 dark:text-zinc-100 tracking-tighter font-bold">
                       ${totalDebt.toLocaleString("en-CA", { maximumFractionDigits: 0 })}
@@ -294,8 +294,8 @@ export function LiabilitiesSection() {
                 </div>
             </div>
 
-            <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative">
-                <span className="text-[10px] text-zinc-500 dark:text-zinc-300 font-medium uppercase tracking-[0.2em]">EMI Burden</span>
+            <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-2xl p-5 md:p-6 flex flex-col gap-1 shadow-sm transition-all group overflow-hidden relative">
+                <span className="text-xs text-zinc-500 dark:text-zinc-300 font-medium uppercase tracking-widest">EMI Burden</span>
                 <div className="flex flex-col">
                   <span className="text-xl md:text-2xl text-zinc-900 dark:text-zinc-100 tracking-tighter font-bold">
                       ${totalEMI.toLocaleString("en-CA", { maximumFractionDigits: 0 })}
@@ -304,13 +304,13 @@ export function LiabilitiesSection() {
                 </div>
             </div>
 
-            <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-1 hover:shadow-xl transition-all group overflow-hidden relative col-span-2 lg:col-span-1">
-                <span className="text-[10px] text-zinc-500 dark:text-zinc-300 font-medium uppercase tracking-[0.2em]">DTI Ratio</span>
+            <div className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-2xl p-5 md:p-6 flex flex-col gap-1 shadow-sm transition-all group overflow-hidden relative col-span-2 lg:col-span-1">
+                <span className="text-xs text-zinc-500 dark:text-zinc-300 font-medium uppercase tracking-widest">DTI Ratio</span>
                 <div className="flex items-baseline gap-2">
                     <span className={`text-xl md:text-2xl tracking-tighter font-bold ${dti > 40 ? 'text-rose-500' : dti > 25 ? 'text-amber-500' : 'text-emerald-500'}`}>
                         {dti.toFixed(1)}%
                     </span>
-                    <span className={`text-[10px] uppercase tracking-widest font-bold ${dti > 40 ? 'text-rose-500' : dti > 25 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                    <span className={`text-xs uppercase tracking-widest font-bold ${dti > 40 ? 'text-rose-500' : dti > 25 ? 'text-amber-500' : 'text-emerald-500'}`}>
                         {dti > 40 ? 'Critical' : dti > 25 ? 'Moderate' : 'Healthy'}
                     </span>
                 </div>
@@ -327,17 +327,17 @@ export function LiabilitiesSection() {
           return (
               <div 
                 key={liability.id} 
-                className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-[32px] p-5 md:p-6 flex flex-col gap-5 group hover:shadow-lg transition-all relative overflow-hidden"
+                className="bg-rose-50 dark:bg-rose-500/10 border border-rose-100/50 dark:border-rose-900/30 rounded-2xl p-5 md:p-6 flex flex-col gap-5 group shadow-sm transition-all relative overflow-hidden"
               >
               {/* Card Header */}
               <div className="flex justify-between items-start gap-4">
                 <div className="flex flex-col flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="text-[9px] uppercase tracking-widest px-2 py-0.5 rounded-full border border-rose-100/50 bg-rose-50/50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-900/30 w-fit leading-none whitespace-nowrap font-bold">
+                    <span className="text-xs uppercase tracking-widest px-2 py-0.5 rounded-full border border-rose-100/50 bg-rose-50/50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-900/30 w-fit leading-none whitespace-nowrap font-bold">
                         {liability.type}
                     </span>
                     {isHighInterest && (
-                        <span className="bg-rose-500 text-white text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.1em] px-2 py-0.5 rounded-full animate-pulse leading-none whitespace-nowrap">
+                        <span className="bg-rose-500 text-white text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded-full animate-pulse leading-none whitespace-nowrap">
                             High interest
                         </span>
                     )}
@@ -371,7 +371,7 @@ export function LiabilitiesSection() {
               <div className="flex flex-col gap-4">
                 {/* Progress Bar (Always visible for better hierarchy) */}
                 <div className="flex flex-col gap-1.5">
-                  <div className="flex justify-between text-[10px] text-zinc-600 dark:text-zinc-300 uppercase tracking-widest font-bold">
+                  <div className="flex justify-between text-xs text-zinc-600 dark:text-zinc-300 uppercase tracking-widest font-bold">
                       <span>Payoff progress</span>
                       <span>{payoffProgress.toFixed(0)}%</span>
                   </div>
@@ -385,7 +385,7 @@ export function LiabilitiesSection() {
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col">
-                        <span className="text-[10px] text-zinc-500 dark:text-zinc-300 uppercase tracking-widest font-medium">Outstanding Bal</span>
+                        <span className="text-xs text-zinc-500 dark:text-zinc-300 uppercase tracking-widest font-medium">Outstanding Bal</span>
                         <span className="text-lg md:text-xl text-zinc-900 dark:text-zinc-100 tracking-tighter font-bold">
                             ${calculateLiabilityBalance(liability).toLocaleString("en-CA", { maximumFractionDigits: 0 })}
                         </span>
@@ -534,14 +534,14 @@ export function LiabilitiesSection() {
                         <button 
                             type="button" 
                             onClick={() => onChange(name, 'Regular EMI')}
-                            className={`flex-1 py-2 text-[10px] uppercase tracking-widest rounded-lg transition-all ${value === 'Regular EMI' ? 'bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-white' : 'text-zinc-600'}`}
+                            className={`flex-1 py-2 text-xs uppercase tracking-widest rounded-lg transition-all ${value === 'Regular EMI' ? 'bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-white' : 'text-zinc-600'}`}
                         >
                             Regular EMI
                         </button>
                         <button 
                             type="button" 
                             onClick={() => onChange(name, 'Prepayment')}
-                            className={`flex-1 py-2 text-[10px] uppercase tracking-widest rounded-lg transition-all ${value === 'Prepayment' ? 'bg-rose-500 text-white shadow-lg shadow-rose-200 dark:shadow-none' : 'text-zinc-600'}`}
+                            className={`flex-1 py-2 text-xs uppercase tracking-widest rounded-lg transition-all ${value === 'Prepayment' ? 'bg-rose-500 text-white shadow-lg shadow-rose-200 dark:shadow-none' : 'text-zinc-600'}`}
                         >
                             Prepayment
                         </button>
@@ -568,7 +568,7 @@ export function LiabilitiesSection() {
         onSubmit={(e) => { e.preventDefault(); setIsSimModalOpen(false); }}
         submitText="Done"
       >
-        <p className="text-[10px] text-zinc-500 text-center uppercase tracking-widest mb-6 font-medium">
+        <p className="text-xs text-zinc-500 text-center uppercase tracking-widest mb-6 font-medium">
           Visualize how much time and interest you save with an extra payment.
         </p>
         <DynamicForm

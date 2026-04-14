@@ -139,7 +139,7 @@ export function Editor({ content, onChange, placeholder }: EditorProps) {
 
       {/* Footer Info */}
       <div className="px-4 py-2 bg-zinc-50/30 dark:bg-zinc-900/10 border-t border-zinc-200 dark:border-zinc-800 flex justify-end items-center">
-        <span className="text-[10px] uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-medium">
+        <span className="text-xs uppercase tracking-wider text-zinc-400 dark:text-zinc-500 font-medium">
           {editor.storage.characterCount.characters()} characters
         </span>
       </div>

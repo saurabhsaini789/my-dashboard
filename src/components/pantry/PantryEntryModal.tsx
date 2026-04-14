@@ -290,7 +290,7 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                               <span className="text-2xl font-bold tracking-tighter text-zinc-900 dark:text-white flex items-baseline gap-1">
                                  ${record.amount.toLocaleString('en-CA', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                               </span>
-                              <span className={`text-[10px] uppercase font-bold tracking-widest ${record.type === 'need' ? 'text-emerald-500' : 'text-amber-500'}`}>{record.type}</span>
+                              <span className={`text-xs uppercase font-bold tracking-widest ${record.type === 'need' ? 'text-emerald-500' : 'text-amber-500'}`}>{record.type}</span>
                            </div>
                         </div>
                     </div>
@@ -343,7 +343,7 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                                           <input type="text" placeholder="e.g. Milk 3%" value={item.name} onChange={e => updateItem(item.id, 'name', e.target.value)} className="bg-white dark:bg-zinc-950 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full shadow-sm" />
                                        </div>
                                        <div className="flex flex-col gap-2">
-                                          <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Category</label>
+                                          <label className="text-xs uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Category</label>
                                           <select value={item.category} onChange={e => updateItem(item.id, 'category', e.target.value)} className="bg-white dark:bg-zinc-950 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full appearance-none cursor-pointer shadow-sm">
                                              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                                              <option value="Others">Others</option>
@@ -358,33 +358,33 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                                        )}
 
                                        <div className="flex flex-col gap-2">
-                                          <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Price</label>
+                                          <label className="text-xs uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Price</label>
                                           <input type="number" placeholder="0.00" value={item.unitPrice} onChange={e => updateItem(item.id, 'unitPrice', parseFloat(e.target.value))} className="bg-white dark:bg-zinc-950 border-none px-4 py-3 rounded-2xl text-sm font-black outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full shadow-sm" />
                                        </div>
                                        <div className="flex flex-col gap-2">
-                                          <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Qty</label>
+                                          <label className="text-xs uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Qty</label>
                                           <input type="number" min="0" step="any" placeholder="1, 2..." value={item.quantity} onChange={e => updateItem(item.id, 'quantity', e.target.value)} className="bg-white dark:bg-zinc-950 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full shadow-sm" />
                                        </div>
                                        
                                        <div className="flex flex-col gap-2">
-                                          <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Size/Wt</label>
+                                          <label className="text-xs uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Size/Wt</label>
                                           <input type="text" placeholder="3L, 2kg" value={item.size || ''} onChange={e => updateItem(item.id, 'size', e.target.value)} className="bg-white dark:bg-zinc-950 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full shadow-sm" />
                                        </div>
                                        <div className="flex flex-col gap-2">
-                                          <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Brand</label>
+                                          <label className="text-xs uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Brand</label>
                                           <input type="text" placeholder="Brand" value={item.brand} onChange={e => updateItem(item.id, 'brand', e.target.value)} className="bg-white dark:bg-zinc-950 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full shadow-sm" />
                                        </div>
                                        
                                        <div className="flex flex-col gap-2 md:col-span-2">
-                                          <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Type</label>
+                                          <label className="text-xs uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Type</label>
                                           <div className="flex bg-zinc-100 dark:bg-zinc-900 rounded-2xl p-1 w-full shadow-sm">
-                                             <button type="button" onClick={() => updateItem(item.id, 'type', 'need')} className={`flex-1 py-1.5 rounded-xl text-[10px] uppercase font-black tracking-widest transition-all ${item.type === 'need' ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-900 dark:text-white' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-400'}`}>Need</button>
-                                             <button type="button" onClick={() => updateItem(item.id, 'type', 'want')} className={`flex-1 py-1.5 rounded-xl text-[10px] uppercase font-black tracking-widest transition-all ${item.type === 'want' ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-900 dark:text-white' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-400'}`}>Want</button>
+                                             <button type="button" onClick={() => updateItem(item.id, 'type', 'need')} className={`flex-1 py-1.5 rounded-xl text-xs uppercase font-black tracking-widest transition-all ${item.type === 'need' ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-900 dark:text-white' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-400'}`}>Need</button>
+                                             <button type="button" onClick={() => updateItem(item.id, 'type', 'want')} className={`flex-1 py-1.5 rounded-xl text-xs uppercase font-black tracking-widest transition-all ${item.type === 'want' ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-900 dark:text-white' : 'text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-400'}`}>Want</button>
                                           </div>
                                        </div>
                                        
                                        <div className="flex flex-col gap-2 md:col-span-2">
-                                           <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Notes & Details</label>
+                                           <label className="text-xs uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">Notes & Details</label>
                                            <input type="text" placeholder="Any additional notes..." value={item.notes || ''} onChange={e => updateItem(item.id, 'notes', e.target.value)} className="bg-white dark:bg-zinc-950 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full shadow-sm" />
                                        </div>
                                    </div>
@@ -413,7 +413,7 @@ export function PantryEntryModal({ isOpen, date, recordsOnDate, onClose, onUpdat
                         <input type="number" step="0.01" value={sgst} onChange={e => setSgst(e.target.value)} placeholder="0.00" className="bg-zinc-50 dark:bg-zinc-900 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full" />
                      </div>
                      <div className="flex flex-col gap-2">
-                        <label className="text-[10px] uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">CGST / Central Tax</label>
+                        <label className="text-xs uppercase font-black tracking-[0.2em] text-zinc-400 ml-2">CGST / Central Tax</label>
                         <input type="number" step="0.01" value={cgst} onChange={e => setCgst(e.target.value)} placeholder="0.00" className="bg-zinc-50 dark:bg-zinc-900 border-none px-4 py-3 rounded-2xl text-sm font-medium outline-none focus:ring-2 focus:ring-teal-500/30 transition-all w-full" />
                      </div>
                   </FormSection>

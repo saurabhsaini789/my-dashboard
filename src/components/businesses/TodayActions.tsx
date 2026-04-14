@@ -90,7 +90,7 @@ export function TodayActions() {
         </h2>
       </div>
 
-      <div className="bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-[32px] p-8 shadow-sm hover:shadow-md transition-all">
+      <div className="bg-white dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-8 shadow-sm transition-all">
         {dueToday.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {dueToday.map(channel => (
@@ -126,7 +126,7 @@ export function TodayActions() {
                     </span>
                     <button
                       onClick={() => markAsPosted(channel.id)}
-                      className="flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 active:scale-95 transition-all shadow-lg shadow-zinc-900/20 dark:shadow-white/10"
+                      className="flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-4 py-2 rounded-xl text-xs font-bold hover:scale-105 active:scale-95 transition-all shadow-sm shadow-zinc-900/20 dark:shadow-white/10"
                     >
                       <CheckCircle2 size={14} />
                       Mark as Posted
