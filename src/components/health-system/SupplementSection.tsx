@@ -244,7 +244,7 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
         </div>
       )}
 
-      <div className="flex items-center gap-4 text-xs font-medium text-zinc-500 mb-6 px-2">
+      <div className="flex items-center gap-4 text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-6 px-2">
         {allGood ? (
           <span>All items in good condition</span>
         ) : (

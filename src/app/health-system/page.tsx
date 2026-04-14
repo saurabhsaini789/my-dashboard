@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { MedicineInventorySection } from '@/components/health-system/MedicineInventorySection';
 import { TravelMedicalKitSection } from '@/components/health-system/TravelMedicalKitSection';
 import { FirstAidHomeSection } from '@/components/health-system/FirstAidHomeSection';
@@ -10,11 +11,19 @@ import { PageContainer } from '@/components/PageContainer';
 import { getPrefixedKey } from '@/lib/keys';
 
 export default function HealthSystemPage() {
+  const searchParams = useSearchParams();
+
+  const getInitialFilter = (): 'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' => {
+    const param = searchParams.get('filter')?.toUpperCase();
+    if (param === 'EXPIRED' || param === 'MISSING' || param === 'LOW') return param;
+    return 'ALL';
+  };
+
   const [mounted, setMounted] = useState(false);
   const [allItems, setAllItems] = useState<any[]>([]);
   const [globalStatusFilter, setGlobalStatusFilter] = useState<
     'ALL' | 'LOW' | 'MISSING' | 'EXPIRED'
-  >('ALL');
+  >(getInitialFilter());
   const medicineRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
