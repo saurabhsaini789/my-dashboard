@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { setSyncedItem } from "@/lib/storage";
 import { getPrefixedKey } from "@/lib/keys";
 import type { Project, Task } from "./widgets/ProjectModal";
+import type { MedicineItem } from "@/types/health-system";
 import type { BusinessChannel } from "@/types/business";
 
 /**
@@ -95,7 +96,194 @@ export function DataLoader() {
       ];
       setSyncedItem('finances_business', JSON.stringify(SEED_BUSINESSES));
     }
+
+    // --- Medicine Inventory Seeding ---
+    if (typeof window !== 'undefined' && !localStorage.getItem(getPrefixedKey('MEDICINE_INVENTORY'))) {
+      const SEED_MEDICINE: MedicineItem[] = [
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Paracetamol',
+          category: 'Pain Relief & Inflammation',
+          purpose: 'Pain, fever relief',
+          whenToUse: 'Headache, fever',
+          quantity: 25,
+          targetQuantity: 30,
+          expiryDate: '2027-04-16',
+          instructions: 'As per label',
+          notes: 'Core stock'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Ibuprofen',
+          category: 'Pain Relief & Inflammation',
+          purpose: 'Anti-inflammatory pain relief',
+          whenToUse: 'Migraine, body pain, sciatica',
+          quantity: 17,
+          targetQuantity: 20,
+          expiryDate: '2027-04-16',
+          instructions: 'After food',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Sciatica Medication',
+          category: 'Chronic Conditions',
+          purpose: 'Nerve pain control',
+          whenToUse: 'Sciatica flare-up',
+          quantity: 12,
+          targetQuantity: 15,
+          expiryDate: '2027-04-16',
+          instructions: 'As prescribed',
+          notes: 'Critical'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Blood Pressure Medication',
+          category: 'Chronic Conditions',
+          purpose: 'Control BP',
+          whenToUse: 'Daily use',
+          quantity: 30,
+          targetQuantity: 30,
+          expiryDate: '2027-04-16',
+          instructions: 'As prescribed',
+          notes: 'Critical'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Diabetes Medication',
+          category: 'Chronic Conditions',
+          purpose: 'Control sugar',
+          whenToUse: 'Daily use',
+          quantity: 30,
+          targetQuantity: 30,
+          expiryDate: '2027-04-16',
+          instructions: 'As prescribed',
+          notes: 'Critical'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Glucose Tablets / Powder',
+          category: 'Chronic Conditions',
+          purpose: 'Raise blood sugar',
+          whenToUse: 'Low sugar episode',
+          quantity: 12,
+          targetQuantity: 15,
+          expiryDate: '2027-04-16',
+          instructions: 'Immediate use',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Antacid',
+          category: 'Digestive Care',
+          purpose: 'Reduce acidity',
+          whenToUse: 'Acid reflux',
+          quantity: 17,
+          targetQuantity: 20,
+          expiryDate: '2027-04-16',
+          instructions: 'After meals',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Gas Relief Medicine',
+          category: 'Digestive Care',
+          purpose: 'Reduce bloating',
+          whenToUse: 'Gas discomfort',
+          quantity: 12,
+          targetQuantity: 15,
+          expiryDate: '2027-04-16',
+          instructions: 'As needed',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Cough Syrup',
+          category: 'Cold, Cough & Flu',
+          purpose: 'Relieve cough',
+          whenToUse: 'Persistent cough',
+          quantity: 1,
+          targetQuantity: 1,
+          expiryDate: '2027-04-16',
+          instructions: 'As per label',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Cold & Flu Tablets',
+          category: 'Cold, Cough & Flu',
+          purpose: 'Relieve symptoms',
+          whenToUse: 'Cold, congestion',
+          quantity: 12,
+          targetQuantity: 15,
+          expiryDate: '2027-04-16',
+          instructions: 'As needed',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Tooth Pain Relief',
+          category: 'Dental Care',
+          purpose: 'Relieve toothache',
+          whenToUse: 'Dental pain',
+          quantity: 8,
+          targetQuantity: 10,
+          expiryDate: '2027-04-16',
+          instructions: 'As needed',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Period Pain Relief',
+          category: 'Women’s Health',
+          purpose: 'Reduce cramps',
+          whenToUse: 'Menstrual pain',
+          quantity: 12,
+          targetQuantity: 15,
+          expiryDate: '2027-04-16',
+          instructions: 'As needed',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Eye Drops',
+          category: 'Eye & Minor Care',
+          purpose: 'Relieve irritation',
+          whenToUse: 'Dryness, irritation',
+          quantity: 1,
+          targetQuantity: 2,
+          expiryDate: '2027-04-16',
+          instructions: 'As needed',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Heart Emergency Medication',
+          category: 'Emergency Medication',
+          purpose: 'Cardiac emergency',
+          whenToUse: 'Chest pain (if prescribed)',
+          quantity: 1,
+          targetQuantity: 1,
+          expiryDate: '2027-04-16',
+          instructions: 'As prescribed',
+          notes: 'Critical'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'ORS Sachets',
+          category: 'General Health Essentials',
+          purpose: 'Hydration',
+          whenToUse: 'Dehydration',
+          quantity: 7,
+          targetQuantity: 10,
+          expiryDate: '2027-04-16',
+          instructions: 'Mix with water',
+          notes: ''
+        }
+      ];
+      setSyncedItem('MEDICINE_INVENTORY', JSON.stringify(SEED_MEDICINE));
+    }
   }, []);
 
- return null;
+  return null;
 }
