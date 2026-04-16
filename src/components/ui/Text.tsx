@@ -93,7 +93,7 @@ export const PageTitle = ({ className, ...props }: WithoutAsOrVariant<"h1">) => 
 );
 
 export const SectionTitle = ({ className, ...props }: WithoutAsOrVariant<"h2">) => (
- <Text as="h2" variant="title" className={cn(typographySpacing.title, className)} {...props} />
+ <Text as="h2" variant="title" className={cn("mb-0 self-end leading-none", className)} {...props} />
 );
 
 export const BodyText = ({ className, ...props }: WithoutAsOrVariant<"p">) => (

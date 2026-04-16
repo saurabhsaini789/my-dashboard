@@ -42,31 +42,31 @@ export default function HealthSystemPage() {
     <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-zinc-500/10 relative overflow-hidden">
       <PageContainer>
         {/* Page Title */}
-        <header className="flex flex-col items-start mb-10">
-          <PageTitle>
-            Health
-          </PageTitle>
-          <Description>Medical inventory and preparedness system</Description>
+        <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="flex flex-col items-start">
+            <PageTitle>Health</PageTitle>
+            <Description>Medical inventory and preparedness system</Description>
+          </div>
         </header>
 
         {/* Medicine Inventory Section - Animated Entry */}
-        <div ref={medicineRef} className="fade-in pt-4" style={{ animationDelay: '0.2s' }}>
+        <div ref={medicineRef} className="fade-in mb-14" style={{ animationDelay: '0.2s' }}>
           <MedicineInventorySection externalFilter={globalStatusFilter} />
         </div>
 
-        <div className="fade-in pt-4" style={{ animationDelay: '1.2s' }}>
+        <div className="fade-in mb-14" style={{ animationDelay: '1.2s' }}>
           <TravelMedicalKitSection externalFilter={globalStatusFilter} />
         </div>
 
-        <div className="fade-in pt-4" style={{ animationDelay: '1.4s' }}>
+        <div className="fade-in mb-14" style={{ animationDelay: '1.4s' }}>
           <FirstAidHomeSection externalFilter={globalStatusFilter} />
         </div>
 
-        <div className="fade-in pt-4" style={{ animationDelay: '1.6s' }}>
+        <div className="fade-in mb-14" style={{ animationDelay: '1.6s' }}>
           <FirstAidMobileSection externalFilter={globalStatusFilter} />
         </div>
 
-        <div className="fade-in pt-4" style={{ animationDelay: '1.8s' }}>
+        <div className="fade-in mb-14" style={{ animationDelay: '1.8s' }}>
           <SupplementSection externalFilter={globalStatusFilter} />
         </div>
       </PageContainer>

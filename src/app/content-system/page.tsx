@@ -18,35 +18,33 @@ export default function ContentSystemPage() {
 
   return (
     <main className="min-h-screen bg-[#fcfcfc] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/10 p-4 md:p-8 xl:p-12 relative overflow-hidden">
-      <div className="mx-auto w-full max-w-7xl flex flex-col gap-12 relative z-10">
+      <div className="mx-auto w-full max-w-7xl relative z-10">
 
         {/* Page Title */}
-        <header className="flex flex-col items-start mb-6">
-          <PageTitle>
-            Content System
-          </PageTitle>
-          <Description>
-            Manage you content operations, channels and strategy
-          </Description>
+        <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="flex flex-col items-start">
+            <PageTitle>Content System</PageTitle>
+            <Description>Manage you content operations, channels and strategy</Description>
+          </div>
         </header>
 
         {/* Insights - Actionable Guidance */}
-        <div className="fade-in pt-0" style={{ animationDelay: '0.2s' }}>
+        <div className="fade-in mb-14" style={{ animationDelay: '0.2s' }}>
           <Insights />
         </div>
 
         {/* Today's Actions - Highlighted Section */}
-        <div className="fade-in pt-4" style={{ animationDelay: '0.4s' }}>
+        <div className="fade-in mb-14" style={{ animationDelay: '0.4s' }}>
           <TodayActions />
         </div>
 
         {/* Business Channels & Management */}
-        <div className="fade-in pt-4" style={{ animationDelay: '0.6s' }}>
+        <div className="fade-in mb-14" style={{ animationDelay: '0.6s' }}>
           <BusinessChannelsSection />
         </div>
 
         {/* Content Queue - New Section */}
-        <div className="fade-in pt-4" style={{ animationDelay: '0.8s' }}>
+        <div className="fade-in mb-14" style={{ animationDelay: '0.8s' }}>
           <ContentQueue />
         </div>
 

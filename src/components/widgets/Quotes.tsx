@@ -105,7 +105,7 @@ export function Quotes() {
 
   return (
     <div className="w-full flex flex-col gap-6">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-end">
         <SectionTitle className="mb-0">Daily Inspiration</SectionTitle>
         <button
           onClick={() => setIsAdding(true)}

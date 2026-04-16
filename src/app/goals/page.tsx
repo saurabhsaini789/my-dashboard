@@ -33,7 +33,7 @@ export default function GoalsPage() {
         
         {/* Overview Section */}
         <section className="w-full relative fade-in mb-14">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-8">
             <SectionTitle className="mb-0">Overview</SectionTitle>
             
             <div className="flex flex-wrap gap-2 items-center w-full md:w-auto">
@@ -86,7 +86,7 @@ export default function GoalsPage() {
 
         {/* Goals Tracker Section */}
         <section className="w-full relative fade-in">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-8">
             <SectionTitle className="mb-0">Goals Tracker</SectionTitle>
             
             <div className="bg-zinc-100 dark:bg-zinc-800/50 p-1 rounded-xl flex items-center gap-1 shadow-inner">

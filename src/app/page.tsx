@@ -99,7 +99,7 @@ export default function Home() {
                         const isActive = !h.monthScope || h.monthScope.length === 0 || h.monthScope.includes(monthKey);
                         if (!isActive) return;
                         const dayStatus = h.records?.[monthKey]?.[dayIndex];
-                        if (dayStatus !== 'done') {
+                        if (dayStatus === 'none' || dayStatus === undefined) {
                             pending++;
                         }
                     });
@@ -154,23 +154,20 @@ export default function Home() {
 
     return (
         <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/30 font-sans p-4 md:p-8 xl:p-12">
-            <div className="mx-auto w-full max-w-7xl flex flex-col gap-12">
+            <div className="mx-auto w-full max-w-7xl">
 
                 {/* Page Title */}
-                <header className="fade-in mb-10">
+                <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div className="flex flex-col items-start">
                         <PageTitle>
                             Today Actions
                         </PageTitle>
-                        <Description>
-                            Review and manage your critical alerts, daily tasks, and system insights.
-                        </Description>
-
+                        <Description>Review and manage your critical alerts, daily tasks, and system insights.</Description>
                     </div>
                 </header>
 
                 {/* Page Status Container */}
-                <div className="fade-in bg-white dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-6 md:p-8 mb-4 shadow-sm">
+                <div className="fade-in bg-white dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-6 md:p-8 mb-14 shadow-sm">
                     <div className="w-full flex flex-col md:flex-row gap-8 md:gap-12">
                         {/* Action Queue */}
                         <div className="w-full md:w-1/2">
@@ -304,14 +301,14 @@ export default function Home() {
                 </div>
 
                 {/* Top Section: Quotes */}
-                <section className="w-full fade-in">
+                <section className="w-full fade-in mb-14">
                     <div className="w-full">
                         <Quotes />
                     </div>
                 </section>
 
                 {/* Middle Section: Full Width Calendar */}
-                <section className="w-full fade-in" style={{ animationDelay: '100ms' }}>
+                <section className="w-full fade-in mb-14" style={{ animationDelay: '100ms' }}>
                     <TasksCalendar />
                 </section>
 

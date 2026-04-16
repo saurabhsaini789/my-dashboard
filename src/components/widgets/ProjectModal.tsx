@@ -257,56 +257,74 @@ export function ProjectModal({ project, onClose, onUpdateProject, onDeleteProjec
  />
  ) : (
  <div className="flex flex-col gap-6">
- <div className="flex flex-col gap-4 p-5 bg-zinc-50 dark:bg-zinc-900/30 rounded-2xl border border-zinc-100 dark:border-zinc-800">
- <div className="flex flex-wrap items-center gap-3">
- <span className="text-xs font-semibold uppercase text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-500/10 px-2 py-1 rounded-md">
- {project.bucketId}
- </span>
- <span className={`text-xs font-semibold uppercase px-2 py-1 rounded-md flex items-center gap-1.5 ${priority.bg} ${priority.text} ${priority.classes}`}>
- <span>{priority.label}</span>
- </span>
- </div>
- {project.isImportant && (
- <span className="text-amber-500 font-semibold text-sm flex items-center gap-2">
- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
- Important Project
- </span>
- )}
- <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500 dark:text-zinc-400 font-medium">
- {project.startDate && (
- <div>Started: {new Date(project.startDate + 'T12:00:00').toLocaleDateString()}</div>
- )}
- {project.dueDate && (
- <div>Due: {new Date(project.dueDate + 'T12:00:00').toLocaleDateString()}</div>
- )}
- </div>
- <div className="flex gap-3">
- <button
- onClick={() => {
- setFormData({
- title: project.title,
- startDate: project.startDate || '',
- dueDate: project.dueDate,
- isImportant: project.isImportant,
- status: project.status || 'not-started'
- });
- setIsEditing(true);
- }}
- className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
- >
- Edit Project
- </button>
- <button
- onClick={() => {
- if(confirm('Are you sure you want to delete this project?')) {
- onDeleteProject(project.id);
- }
- }}
- className="px-4 py-2 bg-rose-50 dark:bg-rose-900/10 text-rose-600 dark:text-rose-400 rounded-lg text-xs font-semibold hover:bg-rose-100 dark:hover:bg-rose-900/20"
- >
- Delete
- </button>
- </div>
+ <div className="flex flex-col gap-5 p-5 bg-white dark:bg-zinc-900/40 rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 shadow-sm transition-all duration-300">
+  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+  <div className="flex flex-wrap items-center gap-3">
+  <span className="text-[10px] font-bold tracking-wider uppercase text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-500/10 px-2.5 py-1 rounded-lg border border-teal-100 dark:border-teal-500/20">
+  {project.bucketId}
+  </span>
+  <span className={`text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-lg flex items-center gap-1.5 ${priority.bg} ${priority.text} ${priority.classes} border border-transparent`}>
+  <span>{priority.label}</span>
+  </span>
+
+  {(project.startDate || project.dueDate) && (
+  <div className="flex items-center gap-3 text-[11px] text-zinc-500 dark:text-zinc-400 font-medium ml-1">
+  <span className="w-1 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700 hidden xs:block"></span>
+  <div className="flex flex-wrap items-center gap-3">
+  {project.startDate && (
+  <span className="flex items-center gap-1">
+  <span className="text-zinc-400 font-normal">Started</span>
+  <span className="text-zinc-700 dark:text-zinc-300">{new Date(project.startDate + 'T12:00:00').toLocaleDateString()}</span>
+  </span>
+  )}
+  {project.dueDate && (
+  <span className="flex items-center gap-1">
+  <span className="text-zinc-400 font-normal">Due</span>
+  <span className="text-zinc-700 dark:text-zinc-300">{new Date(project.dueDate + 'T12:00:00').toLocaleDateString()}</span>
+  </span>
+  )}
+  </div>
+  </div>
+  )}
+  </div>
+
+  <div className="flex items-center gap-3">
+  {project.isImportant && (
+  <div className="flex items-center gap-1.5 px-2.5 py-1 text-amber-500 bg-amber-50/50 dark:bg-amber-500/10 rounded-lg border border-amber-100/50 dark:border-amber-500/20">
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>
+  <span className="text-[10px] font-bold uppercase tracking-tight">Important</span>
+  </div>
+  )}
+  
+  <div className="flex gap-2">
+  <button
+  onClick={() => {
+  setFormData({
+  title: project.title,
+  startDate: project.startDate || '',
+  dueDate: project.dueDate,
+  isImportant: project.isImportant,
+  status: project.status || 'not-started'
+  });
+  setIsEditing(true);
+  }}
+  className="px-4 py-1.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg text-[11px] font-bold text-zinc-600 dark:text-zinc-300 transition-colors border border-zinc-200 dark:border-zinc-700"
+  >
+  Edit Project
+  </button>
+  <button
+  onClick={() => {
+  if (confirm('Are you sure you want to delete this project?')) {
+  onDeleteProject(project.id);
+  }
+  }}
+  className="px-4 py-1.5 bg-rose-50 dark:bg-rose-900/10 text-rose-600 dark:text-rose-400 rounded-lg text-[11px] font-bold hover:bg-rose-100 dark:hover:bg-rose-900/20 transition-colors border border-rose-100 dark:border-rose-900/20"
+  >
+  Delete
+  </button>
+  </div>
+  </div>
+  </div>
  </div>
 
  <div className="flex flex-col gap-4">

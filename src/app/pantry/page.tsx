@@ -88,21 +88,19 @@ export default function PantryPage() {
 
  return (
  <main className="min-h-screen bg-[#fcfcfc] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/10 p-4 md:p-8 xl:p-12 relative overflow-hidden">
- <div className="mx-auto w-full max-w-7xl flex flex-col gap-8 md:gap-10 relative z-10">
+ <div className="mx-auto w-full max-w-7xl relative z-10">
 
- {/* Page Title */}
- <header className="flex flex-col items-start mb-10">
- <PageTitle>
- Pantry
- </PageTitle>
- <Description>
- Kitchen inventory, groceries, and shopping lists.
- </Description>
- </header>
+  {/* Page Title */}
+  <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="flex flex-col items-start">
+      <PageTitle>Pantry</PageTitle>
+      <Description>Kitchen inventory, groceries, and shopping lists.</Description>
+    </div>
+  </header>
 
- {/* Current Month Breakdown Overview */}
- {Object.keys(categoryTotals).length > 0 && (
- <div className="flex flex-col gap-5 fade-in animate-in slide-in-from-bottom-4 duration-700 delay-100">
+  {/* Current Month Breakdown Overview */}
+  {Object.keys(categoryTotals).length > 0 && (
+  <div className="flex flex-col gap-5 fade-in animate-in slide-in-from-bottom-4 duration-700 delay-100 mb-14">
  <div className="flex items-center justify-between px-2">
  <Text variant="label" as="span">{viewingDate.toLocaleString('default', { month: 'long', year: 'numeric' })} Breakdown</Text>
  <Text variant="label" as="span">Total: ${(totalNeed + totalWant).toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</Text>
@@ -137,8 +135,8 @@ export default function PantryPage() {
  </div>
  )}
 
- {/* Dynamic Pantry Calendar */}
- <div className="fade-in animate-in slide-in-from-bottom-4 duration-700">
+  {/* Dynamic Pantry Calendar */}
+  <div className="fade-in animate-in slide-in-from-bottom-4 duration-700 mb-14">
  <PantryCalendar 
  records={records} 
  onUpdateRecords={updateRecords} 
@@ -147,23 +145,23 @@ export default function PantryPage() {
  />
  </div>
 
- {/* Monthly Grocery Plan */}
- <div className="fade-in animate-in slide-in-from-bottom-4 duration-700 delay-200">
+  {/* Monthly Grocery Plan */}
+  <div className="fade-in animate-in slide-in-from-bottom-4 duration-700 delay-200 mb-14">
  <GroceryPlan records={records} viewingDate={viewingDate} />
  </div>
 
- {/* Price Intelligence Tracker */}
- <div className="fade-in animate-in slide-in-from-bottom-4 duration-700 delay-300">
+  {/* Price Intelligence Tracker */}
+  <div className="fade-in animate-in slide-in-from-bottom-4 duration-700 delay-300 mb-14">
  <PriceIntelligence records={records} />
  </div>
 
- {/* Inventory Tracker (Auto-updating) */}
- <div className="fade-in animate-in slide-in-from-bottom-4 duration-700 delay-400">
+  {/* Inventory Tracker (Auto-updating) */}
+  <div className="fade-in animate-in slide-in-from-bottom-4 duration-700 delay-400 mb-14">
  <InventoryTracker records={records} />
  </div>
 
- {/* Smart Insights (AI-Powered) */}
- <div className="fade-in animate-in slide-in-from-bottom-4 duration-700 delay-500">
+  {/* Smart Insights (AI-Powered) */}
+  <div className="fade-in animate-in slide-in-from-bottom-4 duration-700 delay-500 mb-14">
  <SmartInsights records={records} viewingDate={viewingDate} />
  </div>
 
