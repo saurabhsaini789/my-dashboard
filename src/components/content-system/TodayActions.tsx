@@ -83,7 +83,7 @@ export function TodayActions() {
   return (
     <section className="w-full mb-12">
       <div className="flex flex-col mb-6 px-2">
-        <h2 className="text-xl md:text-2xl font-black tracking-tighter text-zinc-900 dark:text-white uppercase transition-all">
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
           Today&apos;s Actions
         </h2>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 uppercase tracking-widest font-bold">

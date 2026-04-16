@@ -84,15 +84,13 @@ export default function HealthSystemPage() {
   return (
     <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-zinc-500/10 relative overflow-hidden">
       <PageContainer>
-        {/* Page Title & Strategic Description */}
-        <div className="flex flex-col gap-6 items-start">
-          <div>
-            <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-widest">
-              Health
-            </h1>
-            <p className="text-xs text-zinc-500 mt-1 uppercase tracking-widest">Medical inventory and preparedness system</p>
-          </div>
-        </div>
+        {/* Page Title */}
+        <header className="flex flex-col items-start mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+            Health
+          </h1>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">Medical inventory and preparedness system</p>
+        </header>
 
         {/* Global Alert System */}
         {(expiredCount > 0 || missingCount > 0 || lowCount > 0) && (

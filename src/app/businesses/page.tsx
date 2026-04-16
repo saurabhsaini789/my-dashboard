@@ -16,16 +16,18 @@ export default function BusinessesPage() {
   if (!mounted) return null;
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/10 p-6 md:p-10 lg:p-12 relative overflow-hidden">
-      <div className="mx-auto w-full max-w-7xl flex flex-col gap-12 pt-4 relative z-10">
+    <main className="min-h-screen bg-[#fcfcfc] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/10 p-4 md:p-8 xl:p-12 relative overflow-hidden">
+      <div className="mx-auto w-full max-w-7xl flex flex-col gap-12 relative z-10">
 
-        {/* Page Title & Strategic Description */}
-        <div className="flex flex-col gap-6 items-start mb-4">
-          <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white tracking-tight fade-in drop-shadow-sm leading-tight">
+        {/* Page Title */}
+        <header className="flex flex-col items-start mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
             Businesses
           </h1>
-          <div className="h-1 w-20 bg-teal-500 rounded-full animate-pulse" />
-        </div>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+            Manage your business operations, channels, and strategy.
+          </p>
+        </header>
 
         {/* Insights - Actionable Guidance */}
         <div className="fade-in pt-4" style={{ animationDelay: '0.2s' }}>

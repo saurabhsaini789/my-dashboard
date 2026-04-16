@@ -86,18 +86,18 @@ export default function PantryPage() {
   }, { totalNeed: 0, totalWant: 0 });
 
   return (
-    <main className="min-h-screen bg-[#fcfcfc] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/10 p-6 md:p-10 lg:p-12 relative overflow-hidden">
-      <div className="mx-auto w-full max-w-7xl flex flex-col gap-8 md:gap-10 pt-4 relative z-10">
+    <main className="min-h-screen bg-[#fcfcfc] dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/10 p-4 md:p-8 xl:p-12 relative overflow-hidden">
+      <div className="mx-auto w-full max-w-7xl flex flex-col gap-8 md:gap-10 relative z-10">
 
         {/* Page Title */}
-        <div className="flex flex-col gap-6 items-start">
-          <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight drop-shadow-sm leading-tight">
+        <header className="flex flex-col items-start mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
             Pantry
           </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest text-left max-w-lg">
-            Calendar-based Expense Tracker & Bill Management
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2 max-w-lg">
+            Kitchen inventory, groceries, and shopping lists.
           </p>
-        </div>
+        </header>
 
         {/* Current Month Breakdown Overview */}
         {Object.keys(categoryTotals).length > 0 && (

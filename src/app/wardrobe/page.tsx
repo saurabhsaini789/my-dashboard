@@ -84,14 +84,15 @@ export default function WardrobePage() {
   if (!isLoaded) return <div className="text-center py-20 text-zinc-500">Loading wardrobe array...</div>;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 xl:px-12 py-8 space-y-10">
+    <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/30 font-sans p-4 md:p-8 xl:p-12 transition-colors duration-200">
+      <div className="mx-auto w-full max-w-7xl space-y-10 relative z-10">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
+      <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col items-start">
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3">
             Wardrobe Inventory
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">Manage and optimize your clothing investments.</p>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">Manage and optimize your clothing investments.</p>
         </div>
         <button
           onClick={handleAddNew}
@@ -100,7 +101,7 @@ export default function WardrobePage() {
           <Plus size={18} />
           Add Item
         </button>
-      </div>
+      </header>
 
       {/* Metrics Dashboard */}
       {items.length > 0 && (
@@ -356,5 +357,6 @@ export default function WardrobePage() {
         initialData={editingItem}
       />
     </div>
+    </main>
   );
 }

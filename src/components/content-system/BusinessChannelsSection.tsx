@@ -217,7 +217,7 @@ export function BusinessChannelsSection() {
     <section className="w-full">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 px-2">
         <div>
-          <h2 className="text-xl md:text-2xl font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-tighter">
+          <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
             System Channels
           </h2>
           <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 uppercase tracking-widest font-bold">

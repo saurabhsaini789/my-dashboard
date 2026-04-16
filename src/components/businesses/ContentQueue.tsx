@@ -122,7 +122,7 @@ export function ContentQueue() {
     <section className="w-full mt-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 px-2">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
+          <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
             Content queue
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-300 mt-1 uppercase tracking-widest">

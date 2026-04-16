@@ -141,7 +141,7 @@ export function Insights() {
   return (
     <section className="w-full">
       <div className="flex flex-col mb-4 px-2">
-        <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight uppercase">
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
           Insights
         </h2>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 uppercase tracking-widest font-bold">

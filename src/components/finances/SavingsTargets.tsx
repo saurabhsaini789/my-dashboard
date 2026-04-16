@@ -242,8 +242,8 @@ export function SavingsTargets() {
   return (
     <div className="flex flex-col gap-6 md:gap-8 w-full transition-all duration-700 animate-in fade-in slide-in-from-bottom-8">
       <div className="flex flex-row items-center justify-between gap-4 px-1 md:px-2">
-        <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
-            Savings targets
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+          Savings Planner
         </h2>
         <button 
           onClick={openAddModal}

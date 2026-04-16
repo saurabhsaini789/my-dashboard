@@ -3,6 +3,7 @@ import { setSyncedItem } from '@/lib/storage';
 import { getPrefixedKey } from '@/lib/keys';
 import { Modal } from '../ui/Modal';
 import { DynamicForm } from '../ui/DynamicForm';
+import { Baby } from 'lucide-react';
 
 type HabitStatus = 'none' | 'done' | 'missed';
 
@@ -347,7 +348,7 @@ export function Habits() {
 
       {isBeforeBirth ? (
         <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm p-12 text-center flex flex-col items-center justify-center min-h-[400px]">
-          <div className="text-5xl mb-4 text-zinc-900 dark:text-zinc-100">👶</div>
+          <div className="mb-4 text-zinc-900 dark:text-zinc-100 flex justify-center"><Baby size={48} /></div>
           <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">Wait a minute!</h3>
           <p className="text-zinc-500 dark:text-zinc-400 max-w-sm">
             I was not born then... I was born on <span className="font-semibold text-zinc-800 dark:text-zinc-200">27th March 2026</span>, so please select a month on or after that!

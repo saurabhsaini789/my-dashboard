@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import { ExpenseRecord, ExpenseItem } from '@/types/finance';
 import { Modal } from '../ui/Modal';
-
+import { Sparkles, AlertTriangle, Lightbulb } from 'lucide-react';
 
 interface PriceIntelligenceProps {
   records: ExpenseRecord[];
@@ -146,9 +146,9 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
       
       // Insight 3: Good Deal / Expensive Flags
       if (lastPurchase.price <= lowestPrice.price * 1.05 && count > 1) {
-        insights.push({ text: '🔥 Good Deal', type: 'positive' });
+        insights.push({ text: 'Good Deal', type: 'positive' });
       } else if (lastPurchase.price >= averagePrice * 1.15 && count > 1) {
-        insights.push({ text: '⚠️ Expensive', type: 'negative' });
+        insights.push({ text: 'Expensive', type: 'negative' });
       }
       
       stats.push({
@@ -219,7 +219,7 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
          <div className="absolute top-0 left-0 w-64 h-64 bg-amber-500/15 dark:bg-amber-500/10 rounded-full blur-3xl -ml-10 -mt-20 pointer-events-none" />
          
          <div className="flex flex-col gap-2 relative z-10">
-            <h2 className="text-2xl font-bold uppercase tracking-[0.2em] text-zinc-900 dark:text-white">Price Intelligence</h2>
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Price Intelligence</h2>
             <p className="text-sm text-zinc-500 font-medium max-w-md">Track historical pricing, store comparisons, and pinpoint the best local deals intelligently based on entered bills and data.</p>
          </div>
 
@@ -363,7 +363,11 @@ export function PriceIntelligence({ records }: PriceIntelligenceProps) {
                            insight.type === 'negative' ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-100 dark:border-rose-500/20' : 
                            'bg-zinc-50 dark:bg-zinc-800/50 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700'
                          }`}>
-                           <span className="text-xl">{insight.type === 'positive' ? '✨' : insight.type === 'negative' ? '⚠️' : '💡'}</span>
+                           <span className="flex-shrink-0 mt-px">
+                             {insight.type === 'positive' ? <Sparkles size={20} className="text-teal-500" /> : 
+                              insight.type === 'negative' ? <AlertTriangle size={20} className="text-rose-500" /> : 
+                              <Lightbulb size={20} className="text-amber-500" />}
+                           </span>
                            {insight.text}
                          </div>
                        ))}

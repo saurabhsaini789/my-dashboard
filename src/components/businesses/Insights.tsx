@@ -78,7 +78,7 @@ export function Insights() {
       message: `You are on track for ${onTrackChannels} out of ${activeChannels.length} active channels this week.`
     });
 
-    // 🔴 Attention Required
+    // Attention Required
     const overdue = activeChannels.filter(c => {
       const due = new Date(c.nextPostDueDate);
       due.setHours(0, 0, 0, 0);
@@ -95,7 +95,7 @@ export function Insights() {
       });
     }
 
-    // 🟡 Smart Tips & Moderate Signals
+    // Smart Tips & Moderate Signals
     const mostConsistent = activeChannels.reduce((prev, curr) => {
       const prevDate = new Date(prev.lastPostedDate);
       const currDate = new Date(curr.lastPostedDate);
@@ -126,7 +126,7 @@ export function Insights() {
       });
     }
 
-    // 🟢 Positive Signals
+    // Positive Signals
     if (overdue.length === 0 && onTrackChannels === activeChannels.length) {
        insights.push({
         type: 'positive',
@@ -148,7 +148,7 @@ export function Insights() {
   return (
     <section className="w-full">
       <div className="flex flex-col mb-6 px-2">
-        <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
+        <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
           Insights
         </h2>
         <p className="text-xs text-zinc-500 dark:text-zinc-300 mt-1 uppercase tracking-widest">

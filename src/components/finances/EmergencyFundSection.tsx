@@ -131,8 +131,8 @@ export function EmergencyFundSection() {
     <div className="flex flex-col gap-6 md:gap-8 w-full transition-all duration-700 animate-in fade-in slide-in-from-bottom-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 md:gap-6 px-1 md:px-2">
         <div className="flex items-center justify-between w-full sm:w-auto">
-            <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
-                Emergency fund
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+              Emergency Fund
             </h2>
             <button 
                 onClick={() => setIsCollapsed(!isCollapsed)}

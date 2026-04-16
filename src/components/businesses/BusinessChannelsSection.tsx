@@ -13,7 +13,8 @@ import {
   MoreHorizontal,
   Info,
   CheckCircle2,
-  Rocket
+  Rocket,
+  Circle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { getPrefixedKey } from '@/lib/keys';
@@ -225,7 +226,7 @@ export function BusinessChannelsSection() {
   };
 
   const getStatusIndicator = (channel: BusinessChannel) => {
-    if (channel.status !== 'Active') return { icon: '⚪', label: 'Draft', color: 'text-zinc-400' };
+    if (channel.status !== 'Active') return { icon: <Circle size={10} className="fill-current text-zinc-400" />, label: 'Draft', color: 'text-zinc-400' };
     
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -234,9 +235,9 @@ export function BusinessChannelsSection() {
     
     const diffDays = Math.ceil((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
     
-    if (diffDays < 0) return { icon: '🔴', label: 'Overdue', color: 'text-rose-500', priority: 3 };
-    if (diffDays <= 1) return { icon: '🟡', label: 'Due Soon', color: 'text-amber-500', priority: 2 };
-    return { icon: '🟢', label: 'On Track', color: 'text-emerald-500', priority: 1 };
+    if (diffDays < 0) return { icon: <Circle size={10} className="fill-current text-rose-500" />, label: 'Overdue', color: 'text-rose-500', priority: 3 };
+    if (diffDays <= 1) return { icon: <Circle size={10} className="fill-current text-amber-500" />, label: 'Due Soon', color: 'text-amber-500', priority: 2 };
+    return { icon: <Circle size={10} className="fill-current text-emerald-500" />, label: 'On Track', color: 'text-emerald-500', priority: 1 };
   };
 
   const sortedChannels = [...channels].sort((a, b) => {
@@ -257,7 +258,7 @@ export function BusinessChannelsSection() {
     <section className="w-full">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 px-2">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
+          <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
             Channels / businesses
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 uppercase tracking-widest">
@@ -314,7 +315,7 @@ export function BusinessChannelsSection() {
                           {channel.status}
                         </span>
                         {channel.status === 'Active' && (
-                          <span className={`text-xs font-bold px-2 ${indicator.color}`}>
+                          <span className={`text-xs font-bold px-2 flex items-center gap-1.5 ${indicator.color}`}>
                             {indicator.icon} {indicator.label}
                           </span>
                         )}
@@ -430,7 +431,7 @@ export function BusinessChannelsSection() {
                     {channel.status}
                   </span>
                   {channel.status === 'Active' && (
-                    <span className={`text-xs font-bold ${indicator.color}`}>
+                    <span className={`text-xs font-bold flex items-center gap-1.5 ${indicator.color}`}>
                       {indicator.icon} {indicator.label}
                     </span>
                   )}

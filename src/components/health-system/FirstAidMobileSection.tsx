@@ -205,8 +205,8 @@ export function FirstAidMobileSection({ externalFilter }: FirstAidMobileSectionP
     <section className="w-full">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 px-2">
         <div>
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 tracking-tight">
-            First Aid Kit (Mobile)
+          <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+            First Aid - Mobile
           </h2>
           <p className="text-xs text-zinc-500 mt-1 uppercase tracking-widest">
             On-the-go emergency essentials

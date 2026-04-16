@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { getPrefixedKey } from "@/lib/keys";
 
+import { Flame, Trophy, AlertTriangle } from 'lucide-react';
+
 type TimeFilter = '1 Day' | '7 Days' | '1 Month' | '6 Months' | '1 Year' | 'Custom Month';
 
 interface HabitInsight {
@@ -305,7 +307,7 @@ export function HabitsOverview() {
           {/* Best Streak */}
           <div className="bg-orange-50/50 dark:bg-orange-500/5 border border-orange-100/50 dark:border-orange-500/10 rounded-2xl p-6 flex flex-col gap-4">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xl">🔥</span>
+              <Flame className="w-5 h-5 text-orange-500" />
               <h3 className="text-sm font-bold text-orange-800 dark:text-orange-400 tracking-widest">Best streak</h3>
             </div>
             {bestStreak ? (
@@ -321,7 +323,7 @@ export function HabitsOverview() {
           {/* Top 3 Habits */}
           <div className="bg-blue-50/50 dark:bg-blue-500/5 border border-blue-100/50 dark:border-blue-500/10 rounded-2xl p-6 flex flex-col gap-4">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xl">🏆</span>
+              <Trophy className="w-5 h-5 text-blue-500" />
               <h3 className="text-sm font-bold text-blue-800 dark:text-blue-400 tracking-widest">Top consistent</h3>
             </div>
             <div className="flex flex-col gap-3">
@@ -339,7 +341,7 @@ export function HabitsOverview() {
           {/* Bottom 3 Habits */}
           <div className="bg-red-50/50 dark:bg-red-500/5 border border-red-100/50 dark:border-red-500/10 rounded-2xl p-6 flex flex-col gap-4">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xl">⚠️</span>
+              <AlertTriangle className="w-5 h-5 text-red-500" />
               <h3 className="text-sm font-bold text-red-800 dark:text-red-400 tracking-widest">Needs attention</h3>
             </div>
             <div className="flex flex-col gap-3">

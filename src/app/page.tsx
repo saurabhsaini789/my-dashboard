@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Quotes } from '@/components/widgets/Quotes';
 import { GoalsSummary } from '@/components/widgets/GoalsSummary';
 import { TasksCalendar } from '@/components/widgets/TasksCalendar';
-import { HabitsOverview } from '@/components/widgets/HabitsOverview';
 import { OneNoteJournal } from '@/components/widgets/OneNoteJournal';
 import { getPrefixedKey } from '@/lib/keys';
 
@@ -154,115 +153,142 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/30 font-sans p-4 md:p-8 xl:p-12">
-      <div className="mx-auto w-full max-w-7xl flex flex-col gap-12 pt-4">
+      <div className="mx-auto w-full max-w-7xl flex flex-col gap-12">
         
         {/* Page Title */}
-        <div className="text-center fade-in">
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900/80 dark:text-zinc-100/80">
-            Today
-          </h1>
-          <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mt-1">
-            {totalIssues > 0
-              ? `${totalIssues} item${totalIssues !== 1 ? 's' : ''} need attention`
-              : 'All systems stable'}
-          </p>
-
-          {/* Action Strip */}
-          {actionSegments.length > 0 && (
-            <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mt-2">
-              {actionSegments.join(' · ')}
+        <header className="fade-in mb-8">
+          <div className="flex flex-col items-start">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+              Today Actions
+            </h1>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+              Review and manage your critical alerts, daily tasks, and system insights.
             </p>
-          )}
+          </div>
+        </header>
 
-          {/* Action Queue */}
-          {actionQueue.length === 0 ? (
-            <div className="mt-2 flex flex-col gap-0.5">
-              <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-                All systems in good condition
+        {/* Page Status Container */}
+        <div className="fade-in bg-white dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800/80 rounded-2xl p-6 md:p-8 mb-4 shadow-sm">
+          <div className="mb-6">
+            <div className="flex items-center gap-3">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                {totalIssues > 0
+                  ? `${totalIssues} item${totalIssues !== 1 ? 's' : ''} need attention`
+                  : 'All systems stable'}
               </p>
-              {expiredCount === 0 && missingCount === 0 && lowCount === 0 && (
-                <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-                  All medical items are well stocked
-                </p>
+              {actionSegments.length > 0 && (
+                <>
+                  <span className="w-1 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700"></span>
+                  <p className="text-xs font-medium text-zinc-600 dark:text-zinc-400 tracking-wide">
+                    {actionSegments.join(' · ')}
+                  </p>
+                </>
               )}
             </div>
-          ) : (
-            <div className="mt-2 flex flex-col w-full max-w-sm mx-auto">
-              {actionQueue.map((action) => {
-                const badgeClass =
-                  action.type === 'EXPIRED'
-                    ? 'text-rose-600 bg-rose-50 dark:bg-rose-500/10 dark:text-rose-400'
-                    : action.type === 'MISSING' || action.type === 'OVERDUE_TASK'
-                    ? 'text-amber-600 bg-amber-50 dark:bg-amber-500/10 dark:text-amber-400'
-                    : 'text-zinc-500 bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-400';
+          </div>
 
-                const badgeLabel =
-                  action.type === 'EXPIRED'
-                    ? 'Expired'
-                    : action.type === 'MISSING'
-                    ? 'Missing'
-                    : action.type === 'OVERDUE_TASK'
-                    ? 'Overdue'
-                    : action.type === 'LOW'
-                    ? 'Low'
-                    : action.type === 'TODAY_TASK'
-                    ? 'Today'
-                    : 'Habit';
-
-                return (
-                  <Link
-                    key={action.type}
-                    href={action.href}
-                    className="flex justify-between items-center py-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
-                  >
-                    <span>{action.label}</span>
-                    <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-md ml-3 shrink-0 ${badgeClass}`}>
-                      {badgeLabel}
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Cross-system Insights */}
-          {(() => {
-            // Tier 1: Risk insights (highest priority)
-            const riskInsights: string[] = [];
-            if (expiredCount > 0 && missingCount > 0)
-              riskInsights.push('Critical gaps in medical inventory');
-            if (lowCount >= 5)
-              riskInsights.push('Multiple items running low — restock soon');
-            if (overdueCount > 0 && pendingHabitsCount > 2)
-              riskInsights.push('High workload today — focus on essentials');
-            const totalActions = expiredCount + missingCount + lowCount + overdueCount + dueTodayCount + pendingHabitsCount;
-            if (totalActions > 5)
-              riskInsights.push('Multiple areas need attention today');
-
-            // Tier 2: Pattern insights
-            const patternInsights: string[] = [];
-            if (lowCount >= 3)
-              patternInsights.push('Some items frequently run low — consider increasing target levels');
-            if (pendingHabitsCount >= 3)
-              patternInsights.push('Multiple habits pending — consider reducing daily load');
-            if (overdueCount >= 2)
-              patternInsights.push('You often have overdue tasks — review workload planning');
-            if (missingCount >= 2)
-              patternInsights.push('Essential items missing — maintain minimum stock levels');
-
-            // Combine: risk first, then pattern, cap at 3
-            const combined = [...riskInsights, ...patternInsights].slice(0, 3);
-            if (combined.length === 0) return null;
-            return (
-              <div className="mt-3 flex flex-col gap-1 w-full max-w-sm mx-auto">
-                {combined.map((insight, i) => (
-                  <p key={i} className="text-sm text-zinc-600 dark:text-zinc-400">
-                    {insight}
+          <div className="w-full flex flex-col md:flex-row gap-8 md:gap-12">
+            {/* Action Queue */}
+            <div className="w-full md:w-1/2">
+              {actionQueue.length === 0 ? (
+                <div className="flex flex-col gap-1.5 py-2">
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/80"></span>
+                    All systems in good condition
                   </p>
-                ))}
-              </div>
-            );
-          })()}
+                  {expiredCount === 0 && missingCount === 0 && lowCount === 0 && (
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/80"></span>
+                      All medical items are well stocked
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-1">Pending Actions</h3>
+                  {actionQueue.map((action) => {
+                    const badgeClass =
+                      action.type === 'EXPIRED'
+                        ? 'text-rose-600 bg-rose-50/80 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-100/50 dark:border-rose-500/20'
+                        : action.type === 'MISSING' || action.type === 'OVERDUE_TASK'
+                        ? 'text-amber-600 bg-amber-50/80 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-100/50 dark:border-amber-500/20'
+                        : 'text-zinc-500 bg-zinc-50/80 dark:bg-zinc-800/50 dark:text-zinc-400 border border-zinc-200/50 dark:border-zinc-700/50';
+
+                    const badgeLabel =
+                      action.type === 'EXPIRED'
+                        ? 'Expired'
+                        : action.type === 'MISSING'
+                        ? 'Missing'
+                        : action.type === 'OVERDUE_TASK'
+                        ? 'Overdue'
+                        : action.type === 'LOW'
+                        ? 'Low'
+                        : action.type === 'TODAY_TASK'
+                        ? 'Today'
+                        : 'Habit';
+
+                    return (
+                      <Link
+                        key={action.type}
+                        href={action.href}
+                        className="group flex justify-between items-center py-2.5 px-3 -mx-3 rounded-lg hover:bg-zinc-100/80 dark:hover:bg-zinc-800/50 transition-all text-sm border border-transparent"
+                      >
+                        <span className="font-medium text-zinc-600 dark:text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-200 transition-colors truncate pr-4">
+                          {action.label}
+                        </span>
+                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md shrink-0 transition-colors ${badgeClass}`}>
+                          {badgeLabel}
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Cross-system Insights */}
+            {(() => {
+              // Tier 1: Risk insights (highest priority)
+              const riskInsights: string[] = [];
+              if (expiredCount > 0 && missingCount > 0)
+                riskInsights.push('Critical gaps in medical inventory');
+              if (lowCount >= 5)
+                riskInsights.push('Multiple items running low — restock soon');
+              if (overdueCount > 0 && pendingHabitsCount > 2)
+                riskInsights.push('High workload today — focus on essentials');
+              const totalActions = expiredCount + missingCount + lowCount + overdueCount + dueTodayCount + pendingHabitsCount;
+              if (totalActions > 5)
+                riskInsights.push('Multiple areas need attention today');
+
+              // Tier 2: Pattern insights
+              const patternInsights: string[] = [];
+              if (lowCount >= 3)
+                patternInsights.push('Some items frequently run low — consider increasing target levels');
+              if (pendingHabitsCount >= 3)
+                patternInsights.push('Multiple habits pending — consider reducing daily load');
+              if (overdueCount >= 2)
+                patternInsights.push('You often have overdue tasks — review workload planning');
+              if (missingCount >= 2)
+                patternInsights.push('Essential items missing — maintain minimum stock levels');
+
+              // Combine: risk first, then pattern, cap at 3
+              const combined = [...riskInsights, ...patternInsights].slice(0, 3);
+              if (combined.length === 0) return null;
+              return (
+                <div className="w-full md:w-1/2 flex flex-col gap-3 pt-6 md:pt-0 pl-0 md:pl-12 border-t md:border-t-0 md:border-l border-zinc-200 dark:border-zinc-800/50">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-1">System Insights</h3>
+                  {combined.map((insight, i) => (
+                    <div key={i} className="flex gap-3 items-start group">
+                      <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700 group-hover:bg-teal-500/50 dark:group-hover:bg-teal-400/50 transition-colors shrink-0" />
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-snug">
+                        {insight}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
         </div>
 
         {/* Top Section: Goals Summary and Quotes */}
@@ -288,16 +314,8 @@ export default function Home() {
         </section>
 
         {/* Bottom Section */}
-        <section className="w-full flex flex-col xl:flex-row gap-6 fade-in pb-12" style={{ animationDelay: '200ms' }}>
-          <div className="w-full xl:w-1/2">
-            {pendingHabitsCount > 0 ? (
-              <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">{pendingHabitsCount} habit{pendingHabitsCount !== 1 ? 's' : ''} pending today</p>
-            ) : (
-              <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400 mb-2">All habits completed today</p>
-            )}
-            <HabitsOverview />
-          </div>
-          <div className="w-full xl:w-1/2">
+        <section className="w-full fade-in pb-12" style={{ animationDelay: '200ms' }}>
+          <div className="w-full">
             <OneNoteJournal />
           </div>
         </section>

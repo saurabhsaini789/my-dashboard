@@ -11,7 +11,6 @@ interface SmartInsightsProps {
 interface InsightItem {
   text: string;
   trend?: string;
-  emoji?: string;
 }
 
 interface InsightSection {
@@ -151,10 +150,10 @@ export function SmartInsights({ records, viewingDate }: SmartInsightsProps) {
     // Spending Behavior
     const behaviorItems: InsightItem[] = [];
     if (thisWeekDining > avgWeeklyDining * 1.3 && avgWeeklyDining > 0) {
-      behaviorItems.push({ text: "“You spent significantly more on eating out this week than your average”", emoji: "🔹" });
+      behaviorItems.push({ text: "“You spent significantly more on eating out this week than your average”" });
     }
     if (thisMonthClothing > 0) {
-      behaviorItems.push({ text: `“Clothing spend tracked at $${thisMonthClothing.toFixed(0)} this month”`, emoji: "🔹" });
+      behaviorItems.push({ text: `“Clothing spend tracked at $${thisMonthClothing.toFixed(0)} this month”` });
     }
     
     if (behaviorItems.length > 0) {
@@ -169,10 +168,10 @@ export function SmartInsights({ records, viewingDate }: SmartInsightsProps) {
     // Habit Insights
     const habitItems: InsightItem[] = [];
     if (avgMilkGap > 0) {
-       habitItems.push({ text: `“You buy milk every ${Math.round(avgMilkGap)} days (consistent run rate)”`, emoji: "🔹" });
+       habitItems.push({ text: `“You buy milk every ${Math.round(avgMilkGap)} days (consistent run rate)”` });
     }
     if (impulseCount > 2) {
-       habitItems.push({ text: `“${impulseCount} impulse purchases identified this week”`, emoji: "🔹" });
+       habitItems.push({ text: `“${impulseCount} impulse purchases identified this week”` });
     }
     
     if (habitItems.length > 0) {
@@ -187,7 +186,7 @@ export function SmartInsights({ records, viewingDate }: SmartInsightsProps) {
     // Optimization Insights
     const optItems: InsightItem[] = [];
     if (potentialSavings > 0 && bestVendor) {
-       optItems.push({ text: `“Buying from ${bestVendor} could save ~$${potentialSavings.toFixed(1)} based on recent comparisons”`, emoji: "🔹" });
+       optItems.push({ text: `“Buying from ${bestVendor} could save ~$${potentialSavings.toFixed(1)} based on recent comparisons”` });
     }
     
     if (optItems.length > 0) {
@@ -217,7 +216,7 @@ export function SmartInsights({ records, viewingDate }: SmartInsightsProps) {
             </svg>
           </div>
           <div className="flex flex-col">
-            <h2 className="text-2xl font-bold uppercase tracking-[0.2em] text-zinc-900 dark:text-zinc-100">Smart Insights</h2>
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Smart Insights</h2>
             <p className="text-xs text-zinc-500 uppercase tracking-widest font-bold">AI-Powered Optimization & Personal Spending Intelligence</p>
           </div>
         </div>
@@ -244,7 +243,7 @@ export function SmartInsights({ records, viewingDate }: SmartInsightsProps) {
               {section.items.map((item, iIdx) => (
                 <div key={iIdx} className="flex items-start gap-3 group/item">
                   <span className="mt-1 text-xs shrink-0 select-none text-zinc-500 group-hover/item:text-zinc-700 dark:group-hover/item:text-zinc-300 transition-colors">
-                    {item.emoji || "•"}
+                    •
                   </span>
                   <p className="text-sm font-medium text-zinc-600 dark:text-zinc-300 leading-relaxed group-hover/item:text-zinc-900 dark:group-hover/item:text-zinc-100 transition-colors">
                     {item.text}

@@ -111,7 +111,7 @@ export function InventoryTracker({ records }: InventoryTrackerProps) {
            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 dark:bg-amber-500/10 rounded-full blur-3xl -mr-10 -mt-20 pointer-events-none" />
            
            <div className="flex flex-col gap-2 relative z-10">
-              <h2 className="text-2xl font-bold uppercase tracking-[0.2em] text-zinc-900 dark:text-white">Smart Inventory</h2>
+              <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Smart Inventory</h2>
               <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium max-w-sm">Auto-advising based on consumption cycles and calendar purchases.</p>
            </div>
 

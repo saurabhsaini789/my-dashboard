@@ -221,8 +221,8 @@ export function AssetsSection() {
       {/* Heading & Summary Card */}
       <div className="flex flex-col gap-4 md:gap-6 px-1 md:px-2">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h2 className="text-lg md:text-2xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight">
-            Assets
+          <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+            Assets Portfolio
           </h2>
           <button 
             onClick={openAddModal}

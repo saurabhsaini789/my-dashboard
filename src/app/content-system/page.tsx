@@ -20,15 +20,13 @@ export default function ContentSystemPage() {
   return (
     <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-zinc-500/10 relative overflow-hidden">
       <PageContainer>
-        {/* Page Title & Strategic Description */}
-        <div className="flex flex-col gap-6 items-start">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-widest">
-              Content
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 uppercase tracking-widest mt-1">Strategic creation and distribution management</p>
-          </div>
-        </div>
+        {/* Page Title */}
+        <header className="flex flex-col items-start mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+            Content
+          </h1>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">Strategic creation and distribution management</p>
+        </header>
 
         {/* Insights - Actionable Guidance */}
         <div className="fade-in pt-4" style={{ animationDelay: '0.2s' }}>

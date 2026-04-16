@@ -8,10 +8,11 @@ import {
   ChevronUp,
   BookOpen, 
   CheckCircle2, 
-  Clock, 
   MoreVertical,
   Search,
-  Plus
+  Plus,
+  Book,
+  Clock
 } from 'lucide-react';
 import { MultiYearLogData, MonthlyEntry, YearlyLogData, LogBookEntry } from '@/types/books';
 import { getPrefixedKey } from '@/lib/keys';
@@ -260,15 +261,15 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
         <div className="flex items-center gap-6 text-xs font-bold uppercase tracking-widest text-zinc-400">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-teal-500"></span>
-            ✅ Completed
+            Completed
           </div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-blue-500"></span>
-            📖 Reading
+            Reading
           </div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-            ⏳ Planned
+            Planned
           </div>
         </div>
       </div>
@@ -279,10 +280,10 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
         <div className="grid grid-cols-12 border-b border-zinc-100 dark:border-zinc-800 text-[13px] uppercase font-black text-zinc-500 tracking-[0.2em] bg-zinc-50/30 dark:bg-zinc-900/10">
           <div className="col-span-2 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 text-center">Month</div>
           <div className="col-span-5 px-6 py-4 border-r border-zinc-100 dark:border-zinc-800 flex items-center justify-center gap-2">
-            English 📘
+            English <Book size={16} className="text-blue-500" />
           </div>
           <div className="col-span-5 px-6 py-4 flex items-center justify-center gap-2">
-            Hindi 📗
+            Hindi <Book size={16} className="text-emerald-500" />
           </div>
         </div>
 
@@ -386,7 +387,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
                   {/* English Section */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em]">English 📘</span>
+                      <span className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em] flex items-center gap-2">English <Book size={12} className="text-blue-500" /></span>
                       {!searchQuery && (
                         <button 
                           onClick={() => openAddModal(month, 'english')}
@@ -414,7 +415,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
                   {/* Hindi Section */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em]">Hindi 📗</span>
+                      <span className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em] flex items-center gap-2">Hindi <Book size={12} className="text-emerald-500" /></span>
                       {!searchQuery && (
                         <button 
                           onClick={() => openAddModal(month, 'hindi')}

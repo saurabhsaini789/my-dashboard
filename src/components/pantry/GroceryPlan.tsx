@@ -12,19 +12,19 @@ import { DynamicForm } from '../ui/DynamicForm';interface GroceryPlanProps {
 }
 
 const DEFAULT_CATEGORIES = [
-  '🥛 Dairy & Refrigerated',
-  '🥩 Protein (Meat & Alternatives)',
-  '🌾 Grains & Staples',
-  '🥕 Vegetables',
-  '🍎 Fruits',
-  '🧂 Essentials',
-  '🧼 Household Items',
-  '📦 Other'
+  'Dairy & Refrigerated',
+  'Protein (Meat & Alternatives)',
+  'Grains & Staples',
+  'Vegetables',
+  'Fruits',
+  'Essentials',
+  'Household Items',
+  'Other'
 ];
 
 const MOCK_ITEMS: GroceryPlanItem[] = [
   // Dairy & Refrigerated
-  { id: 'h1', name: 'Dishwasher Soap', category: '🧼 Household Items', plannedQuantity: 1, unitSize: 'Pack', frequency: 'Monthly', idealTiming: '', expectedPrice: 8, checkedUnits: [], consumptionDays: 30 }
+  { id: 'h1', name: 'Dishwasher Soap', category: 'Household Items', plannedQuantity: 1, unitSize: 'Pack', frequency: 'Monthly', idealTiming: '', expectedPrice: 8, checkedUnits: [], consumptionDays: 30 }
 ];
 
 export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
@@ -251,14 +251,16 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
     saveItems(newItems);
   };
 
-  // Group items by category for the table
   const groupedItems = useMemo(() => {
     const groups: Record<string, GroceryPlanItem[]> = {};
     DEFAULT_CATEGORIES.forEach(c => groups[c] = []);
     items.forEach(item => {
-      const cat = item.category || '📦 Other';
-      if (!groups[cat]) groups[cat] = [];
-      groups[cat].push(item);
+      const cat = item.category || 'Other';
+      // Strip emojis from the category name from legacy items
+      const cleanCat = cat.replace(/[\u1000-\uFFFF]+/g, '').trim();
+      const finalCat = DEFAULT_CATEGORIES.find(c => c === cleanCat) || cleanCat;
+      if (!groups[finalCat]) groups[finalCat] = [];
+      groups[finalCat].push(item);
     });
     return groups;
   }, [items]);
@@ -273,7 +275,7 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
          <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 dark:bg-teal-500/10 rounded-full blur-3xl -mr-10 -mt-20 pointer-events-none" />
          
          <div className="flex flex-col gap-1 relative z-10 w-full md:w-auto text-center md:text-left">
-            <h2 className="text-sm md:text-xl lg:text-2xl font-black uppercase tracking-[0.2em] whitespace-nowrap text-zinc-900 dark:text-white">Monthly Grocery Plan</h2>
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Monthly Grocery Plan</h2>
             <p className="hidden md:block text-sm text-zinc-500 dark:text-zinc-400 font-medium max-w-sm">Compact table tracking for planned food budget vs actual spending.</p>
          </div>
 
@@ -316,7 +318,7 @@ export function GroceryPlan({ records, viewingDate }: GroceryPlanProps) {
               }}
               className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-xl text-xs font-bold uppercase tracking-widest transition-all text-zinc-600 dark:text-zinc-300 shadow-sm"
             >
-              {isFormOpen ? 'Cancel' : '➕ Add Item'}
+              {isFormOpen ? 'Cancel' : '+ Add Item'}
             </button>
          </div>
 

@@ -75,21 +75,21 @@ export default function BooksPage() {
 
   return (
     <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/30 font-sans p-4 md:p-8 xl:p-12 transition-colors duration-200">
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="mx-auto w-full max-w-7xl">
         {/* Header Section */}
-        <header className="mb-20 text-left flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
-          <div className="space-y-4">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+        <header className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex flex-col items-start">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
               Books
             </h1>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-6 max-w-xl leading-relaxed">Track your reading journey, yearly progress, and distilled wisdom.</p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2 max-w-xl">Track your reading journey, yearly progress, and distilled wisdom.</p>
           </div>
         </header>
 
         {/* Section 1: Reading Plan */}
         <section className="w-full relative fade-in">
-          <div className="mb-10 px-2">
-            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <div className="mb-10">
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
               Reading plan
             </h2>
           </div>
@@ -99,8 +99,8 @@ export default function BooksPage() {
 
         {/* Section 2: Yearly Reading Log */}
         <section className="w-full relative mt-32 fade-in">
-          <div className="mb-10 px-2">
-            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <div className="mb-10">
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
               Yearly reading log
             </h2>
           </div>
@@ -110,8 +110,8 @@ export default function BooksPage() {
 
         {/* Section 3: Completed Books */}
         <section className="w-full relative mt-32 fade-in">
-          <div className="mb-10 px-2">
-            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <div className="mb-10">
+            <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
               Completed books
             </h2>
           </div>
