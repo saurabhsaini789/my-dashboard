@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Quotes } from '@/components/widgets/Quotes';
 import { GoalsSummary } from '@/components/widgets/GoalsSummary';
 import { TasksCalendar } from '@/components/widgets/TasksCalendar';
+import { GrowthOverview } from '@/components/widgets/GrowthOverview';
 import { OneNoteJournal } from '@/components/widgets/OneNoteJournal';
 import { getPrefixedKey } from '@/lib/keys';
 import { PageTitle, SectionTitle, Text, Description } from '@/components/ui/Text';
@@ -299,6 +300,10 @@ export default function Home() {
                         })()}
                     </div>
                 </div>
+
+                <section className="w-full fade-in mb-14" style={{ animationDelay: '50ms' }}>
+                    <GrowthOverview />
+                </section>
 
                 {/* Top Section: Quotes */}
                 <section className="w-full fade-in mb-14">
