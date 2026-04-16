@@ -284,6 +284,194 @@ export function DataLoader() {
       setSyncedItem('MEDICINE_INVENTORY', JSON.stringify(SEED_MEDICINE));
       setSyncedItem('medicine_inventory_seeded_v1', 'true');
     }
+
+    // --- Travel Medical Kit Seeding ---
+    if (typeof window !== 'undefined' && !localStorage.getItem(getPrefixedKey('travel_medical_kit_seeded_v1'))) {
+      const SEED_TRAVEL_KIT: MedicineItem[] = [
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Paracetamol / Ibuprofen',
+          category: 'Pain Relief & Inflammation',
+          purpose: 'Pain, fever relief',
+          whenToUse: 'Headache, body pain, fever',
+          quantity: 8,
+          targetQuantity: 10,
+          expiryDate: '2027-04-16',
+          instructions: 'As per label',
+          notes: 'Strip, not full bottle'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Sciatica Medication',
+          category: 'Chronic Conditions',
+          purpose: 'Nerve pain control',
+          whenToUse: 'Sciatica flare-up',
+          quantity: 1,
+          targetQuantity: 1,
+          expiryDate: '2027-04-16',
+          instructions: 'As prescribed',
+          notes: 'Critical'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Blood Pressure Medication',
+          category: 'Chronic Conditions',
+          purpose: 'Control BP',
+          whenToUse: 'Daily use',
+          quantity: 1,
+          targetQuantity: 1,
+          expiryDate: '2027-04-16',
+          instructions: 'As prescribed',
+          notes: 'Critical'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Diabetes Medication',
+          category: 'Chronic Conditions',
+          purpose: 'Control sugar',
+          whenToUse: 'Daily use',
+          quantity: 1,
+          targetQuantity: 1,
+          expiryDate: '2027-04-16',
+          instructions: 'As prescribed',
+          notes: 'Critical'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Glucose Tablets / Sugar Sachets',
+          category: 'Chronic Conditions',
+          purpose: 'Raise blood sugar',
+          whenToUse: 'Low sugar episode',
+          quantity: 5,
+          targetQuantity: 6,
+          expiryDate: '2027-04-16',
+          instructions: 'Immediate use',
+          notes: 'Must have'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Antacid',
+          category: 'Digestive Care',
+          purpose: 'Reduce acidity',
+          whenToUse: 'Heartburn, acidity',
+          quantity: 5,
+          targetQuantity: 6,
+          expiryDate: '2027-04-16',
+          instructions: 'After meals',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Gas Relief Medicine',
+          category: 'Digestive Care',
+          purpose: 'Reduce bloating',
+          whenToUse: 'Gas discomfort',
+          quantity: 5,
+          targetQuantity: 6,
+          expiryDate: '2027-04-16',
+          instructions: 'As needed',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'ORS (Oral Rehydration Salts)',
+          category: 'General Health Essentials',
+          purpose: 'Prevent dehydration',
+          whenToUse: 'Diarrhea, fatigue',
+          quantity: 3,
+          targetQuantity: 4,
+          expiryDate: '2027-04-16',
+          instructions: 'Mix with clean water',
+          notes: 'Essential'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Cough Tablets / Small Syrup',
+          category: 'Cold, Cough & Flu',
+          purpose: 'Relieve cough',
+          whenToUse: 'Cough symptoms',
+          quantity: 1,
+          targetQuantity: 1,
+          expiryDate: '2027-04-16',
+          instructions: 'As per label',
+          notes: 'Prefer tablets for travel'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Cold & Flu Tablets',
+          category: 'Cold, Cough & Flu',
+          purpose: 'Relieve symptoms',
+          whenToUse: 'Runny nose, congestion',
+          quantity: 5,
+          targetQuantity: 6,
+          expiryDate: '2027-04-16',
+          instructions: 'As needed',
+          notes: ''
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Tooth Pain Relief',
+          category: 'Dental Care',
+          purpose: 'Relieve toothache',
+          whenToUse: 'Sudden dental pain',
+          quantity: 3,
+          targetQuantity: 4,
+          expiryDate: '2027-04-16',
+          instructions: 'As needed',
+          notes: 'Useful backup'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Period Pain Relief',
+          category: 'Women’s Health',
+          purpose: 'Reduce cramps',
+          whenToUse: 'Menstrual pain',
+          quantity: 5,
+          targetQuantity: 6,
+          expiryDate: '2027-04-16',
+          instructions: 'As needed',
+          notes: 'If applicable'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Eye Drops (Small)',
+          category: 'Eye & Minor Care',
+          purpose: 'Relieve irritation',
+          whenToUse: 'Dryness, irritation',
+          quantity: 1,
+          targetQuantity: 1,
+          expiryDate: '2027-04-16',
+          instructions: 'As needed',
+          notes: 'Travel-size'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Basic Bandages',
+          category: 'External Use (Topicals)',
+          purpose: 'Cover small cuts',
+          whenToUse: 'Minor injuries',
+          quantity: 7,
+          targetQuantity: 10,
+          expiryDate: '2027-04-16',
+          instructions: 'Clean before applying',
+          notes: 'Minimal set'
+        },
+        {
+          id: crypto.randomUUID(),
+          itemName: 'Antiseptic (Small)',
+          category: 'External Use (Topicals)',
+          purpose: 'Clean wounds',
+          whenToUse: 'Cuts',
+          quantity: 1,
+          targetQuantity: 1,
+          expiryDate: '2027-04-16',
+          instructions: 'Apply before dressing',
+          notes: 'Travel-size'
+        }
+      ];
+      setSyncedItem('TRAVEL_MEDICAL_KIT', JSON.stringify(SEED_TRAVEL_KIT));
+      setSyncedItem('travel_medical_kit_seeded_v1', 'true');
+    }
   }, []);
 
   return null;
