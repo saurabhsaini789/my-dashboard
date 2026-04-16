@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { setSyncedItem } from "@/lib/storage";
 import { getPrefixedKey } from "@/lib/keys";
 import type { Project, Task } from "./widgets/ProjectModal";
-import type { MedicineItem } from "@/types/health-system";
+import type { MedicineItem, SupplementItem } from "@/types/health-system";
 import type { BusinessChannel } from "@/types/business";
 
 /**
