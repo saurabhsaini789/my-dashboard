@@ -465,13 +465,13 @@ export function DataLoader() {
       setSyncedItem('first_aid_mobile_seeded_v2', 'true');
     }
 
-    // --- Supplements Seeding ---
-    if (typeof window !== 'undefined' && !localStorage.getItem(getPrefixedKey('supplements_seeded_v1'))) {
+    // --- Supplements Seeding - BUMPED V2 ---
+    if (typeof window !== 'undefined' && !localStorage.getItem(getPrefixedKey('supplements_seeded_v2'))) {
       const SEED_SUPPLEMENTS: SupplementItem[] = [
         {
           id: crypto.randomUUID(),
           name: 'Multivitamin',
-          category: 'Vitamins',
+          category: 'Vitamin',
           purpose: 'General health support',
           whoUses: 'Both',
           frequency: 'Daily',
@@ -484,7 +484,7 @@ export function DataLoader() {
         {
           id: crypto.randomUUID(),
           name: 'Vitamin D',
-          category: 'Vitamins',
+          category: 'Vitamin',
           purpose: 'Bone health, immunity',
           whoUses: 'Both',
           frequency: 'Daily',
@@ -497,7 +497,7 @@ export function DataLoader() {
         {
           id: crypto.randomUUID(),
           name: 'Vitamin B12',
-          category: 'Vitamins',
+          category: 'Vitamin',
           purpose: 'Energy, nerve health',
           whoUses: 'Both',
           frequency: 'Daily/Weekly',
@@ -510,7 +510,7 @@ export function DataLoader() {
         {
           id: crypto.randomUUID(),
           name: 'Calcium',
-          category: 'Minerals',
+          category: 'Mineral',
           purpose: 'Bone strength',
           whoUses: 'Wife / Both',
           frequency: 'Daily',
@@ -523,7 +523,7 @@ export function DataLoader() {
         {
           id: crypto.randomUUID(),
           name: 'Magnesium',
-          category: 'Minerals',
+          category: 'Mineral',
           purpose: 'Muscle, nerve support',
           whoUses: 'You',
           frequency: 'Daily',
@@ -536,7 +536,7 @@ export function DataLoader() {
         {
           id: crypto.randomUUID(),
           name: 'Zinc',
-          category: 'Minerals',
+          category: 'Mineral',
           purpose: 'Immunity',
           whoUses: 'Both',
           frequency: 'Daily',
@@ -549,7 +549,7 @@ export function DataLoader() {
         {
           id: crypto.randomUUID(),
           name: 'Ashwagandha',
-          category: 'Herbal',
+          category: 'Herbal / Traditional',
           purpose: 'Stress, energy balance',
           whoUses: 'You / Both',
           frequency: 'Daily',
@@ -561,7 +561,7 @@ export function DataLoader() {
         }
       ];
       setSyncedItem('SUPPLEMENTS', JSON.stringify(SEED_SUPPLEMENTS));
-      setSyncedItem('supplements_seeded_v1', 'true');
+      setSyncedItem('supplements_seeded_v2', 'true');
     }
   }, []);
 
