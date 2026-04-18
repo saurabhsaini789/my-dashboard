@@ -9,6 +9,7 @@ interface FormSectionProps {
  children: React.ReactNode;
  isAdvanced?: boolean;
  accentColor?: AccentColor;
+ initiallyExpanded?: boolean;
 }
 
 const colorMap: Record<AccentColor, { text: string, hover: string }> = {
@@ -22,8 +23,8 @@ const colorMap: Record<AccentColor, { text: string, hover: string }> = {
  zinc: { text: 'text-zinc-600 dark:text-zinc-500', hover: 'group-hover:text-zinc-700 dark:group-hover:text-zinc-400' }
 };
 
-export const FormSection: React.FC<FormSectionProps> = ({ title, children, isAdvanced = false, accentColor = 'blue' }) => {
- const [isExpanded, setIsExpanded] = useState(!isAdvanced);
+export const FormSection: React.FC<FormSectionProps> = ({ title, children, isAdvanced = false, accentColor = 'blue', initiallyExpanded }) => {
+ const [isExpanded, setIsExpanded] = useState(initiallyExpanded ?? !isAdvanced);
  const colors = colorMap[accentColor] || colorMap.blue;
 
  return (

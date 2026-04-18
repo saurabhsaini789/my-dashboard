@@ -6,6 +6,12 @@
 - [x] Core Infrastructure
     - [x] Create `src/lib/sync-keys.ts` with standardized constants
 - [x] Integrate `SYNC_KEYS` registry in `src/lib/sync-keys.ts`
+- [x] Create `useSystemPulse.ts` hook
+- [x] Implement Unified Readiness Index logic
+- [x] Implement Priority Queue categorization logic
+- [x] Implement Strategic Milestone extraction logic
+- [x] Redesign homepage Status Container UI
+- [x] Verify functionality and responsiveness
 - [x] Update `useSync.ts` with legacy key migration logic
 - [x] Refactor `AssetsSection.tsx` to use standardized keys
 - [x] Refactor `LiabilitiesSection.tsx` to use standardized keys

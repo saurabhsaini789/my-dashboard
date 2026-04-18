@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Goals } from '@/components/widgets/Goals';
 import { GoalsSummary, type TimeFilter } from '@/components/widgets/GoalsSummary';
+import { GoalsInsights } from '@/components/widgets/GoalsInsights';
 import { PageTitle, SectionTitle, Description } from '@/components/ui/Text';
 
 export default function GoalsPage() {
@@ -12,6 +13,7 @@ export default function GoalsPage() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [view, setView] = useState<'grid' | 'gantt'>('grid');
+  const [showInsights, setShowInsights] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -29,6 +31,18 @@ export default function GoalsPage() {
             </PageTitle>
             <Description>Prioritize what matters most.</Description>
           </div>
+          
+          <button
+            onClick={() => setShowInsights(!showInsights)}
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-2xl text-sm font-bold transition-all shadow-sm border ${
+              showInsights 
+                ? 'bg-teal-600 border-teal-500 text-white shadow-teal-500/20 active:scale-95' 
+                : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-teal-500/50 hover:text-teal-600'
+            }`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83" /><path d="M22 12A10 10 0 0 0 12 2v10z" /></svg>
+            {showInsights ? 'Hide Insights' : 'Show Insights'}
+          </button>
         </header>
         
         {/* Overview Section */}
@@ -84,10 +98,26 @@ export default function GoalsPage() {
           />
         </section>
 
+        {/* Insights Section */}
+        {showInsights && (
+          <section className="w-full relative fade-in mb-14 animate-in slide-in-from-top-4 duration-500">
+            <div className="flex items-center gap-3 mb-8">
+              <SectionTitle className="mb-0 text-teal-600 dark:text-teal-400">Deep Insights</SectionTitle>
+              <div className="h-[1px] flex-1 bg-gradient-to-r from-teal-500/20 to-transparent"></div>
+            </div>
+            <GoalsInsights 
+              filter={filter} 
+              selectedMonth={selectedMonth} 
+              selectedYear={selectedYear} 
+            />
+          </section>
+        )}
+
         {/* Goals Tracker Section */}
         <section className="w-full relative fade-in">
           <div className="flex flex-row justify-between items-center gap-4 mb-8">
             <SectionTitle className="mb-0">Goals Tracker</SectionTitle>
+
             
             <div className="bg-zinc-100 dark:bg-zinc-800/50 p-1 rounded-xl flex items-center gap-1 shadow-inner">
               <button

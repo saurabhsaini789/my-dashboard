@@ -11,6 +11,7 @@ export interface FormSchemaSection {
  title: string;
  fields: FormSchemaField[];
  isAdvanced?: boolean;
+ initiallyExpanded?: boolean;
 }
 
 interface DynamicFormProps {
@@ -49,6 +50,7 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({
  key={section.id}
  title={section.title}
  isAdvanced={section.isAdvanced}
+ initiallyExpanded={section.initiallyExpanded}
  accentColor={accentColor}
  >
  {section.fields.map((field) => (

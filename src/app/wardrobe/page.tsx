@@ -2,358 +2,533 @@
 
 import React, { useState, useMemo } from 'react';
 import { useWardrobe } from '@/hooks/useWardrobe';
-import { WardrobeItem } from '@/types/wardrobe';
+import { WardrobeItem, PurchaseClassification, WARDROBE_CLASSIFICATIONS } from '@/types/wardrobe';
 import { WardrobeFormModal } from '@/components/wardrobe/WardrobeFormModal';
-import { Plus, Edit2, Trash2, Tag, Calendar, Activity, RefreshCw, Layers, DollarSign, Archive, Focus, LayoutGrid, List } from 'lucide-react';
+import { 
+  Plus, Edit2, Trash2, Tag, Calendar, Activity, RefreshCw, Layers, 
+  DollarSign, Archive, Focus, LayoutGrid, List, Shirt, Footprints, 
+  Watch, ShoppingBag, ArrowRight, CheckCircle2, XCircle, HelpCircle,
+  TrendingUp, TrendingDown, Star
+} from 'lucide-react';
 import { useSyncStatus } from '@/context/SyncContext';
 import { PageTitle, SectionTitle, Text, Description } from '@/components/ui/Text';
 
 export default function WardrobePage() {
- const { items, isLoaded, addItem, updateItem, deleteItem } = useWardrobe();
- const { syncStatus, isDevelopment } = useSyncStatus();
- const [isModalOpen, setIsModalOpen] = useState(false);
- const [editingItem, setEditingItem] = useState<WardrobeItem | null>(null);
- const [filterCategory, setFilterCategory] = useState<string>('ALL');
- const [viewType, setViewType] = useState<'grid' | 'table'>('grid');
+  const { items, isLoaded, addItem, updateItem, deleteItem } = useWardrobe();
+  const { syncStatus, isDevelopment } = useSyncStatus();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<WardrobeItem | null>(null);
+  const [filterCategory, setFilterCategory] = useState<string>('All');
+  const [viewType, setViewType] = useState<'grid' | 'table'>('grid');
 
- const handleEdit = (item: WardrobeItem) => {
- setEditingItem(item);
- setIsModalOpen(true);
- };
+  const handleEdit = (item: WardrobeItem) => {
+    setEditingItem(item);
+    setIsModalOpen(true);
+  };
 
- const handleAddNew = () => {
- setEditingItem(null);
- setIsModalOpen(true);
- };
+  const handleAddNew = () => {
+    setEditingItem(null);
+    setIsModalOpen(true);
+  };
 
- const handleDelete = (id: string) => {
- if (confirm('Are you sure you want to delete this item?')) {
- deleteItem(id);
- }
- };
+  const handleDelete = (id: string) => {
+    if (confirm('Are you sure you want to delete this item?')) {
+      deleteItem(id);
+    }
+  };
 
- const handleSave = (itemData: Omit<WardrobeItem, 'id' | 'createdAt'>) => {
- if (editingItem) {
- updateItem(editingItem.id, itemData);
- } else {
- addItem(itemData);
- }
- };
+  const handleMoveClassification = (id: string, classification: PurchaseClassification) => {
+    updateItem(id, { purchaseClassification: classification });
+  };
 
- // --- Metrics Calculations ---
- const activeCount = items.filter(i => i.status === 'Active').length;
- const activeRatio = items.length > 0 ? (activeCount / items.length) * 100 : 0;
- 
- const coreCount = items.filter(i => i.outfitRole?.startsWith('Core')).length;
- const supportCount = items.filter(i => i.outfitRole?.startsWith('Support')).length;
- const singleUseCount = items.filter(i => i.outfitRole?.startsWith('Single-use')).length;
+  const handleSave = (itemData: Omit<WardrobeItem, 'id' | 'createdAt'>) => {
+    if (editingItem) {
+      updateItem(editingItem.id, itemData);
+    } else {
+      addItem(itemData);
+    }
+  };
 
- const coreRatio = items.length > 0 ? (coreCount / items.length) * 100 : 0;
- const supportRatio = items.length > 0 ? (supportCount / items.length) * 100 : 0;
- const singleUseRatio = items.length > 0 ? (singleUseCount / items.length) * 100 : 0;
+  // --- Helpers ---
+  const calcValueScore = (item: WardrobeItem) => {
+    if (!item.cost || item.cost <= 0) return 0;
+    const start = new Date(item.purchaseDate).getTime();
+    if (isNaN(start)) return 0;
+    
+    const end = item.lastReplacedDate 
+      ? new Date(item.lastReplacedDate).getTime() 
+      : new Date().getTime();
+    
+    const diffDays = Math.max(1, (end - start) / (1000 * 60 * 60 * 24));
+    return diffDays / item.cost;
+  };
 
- const highFreqCount = items.filter(i => i.frequency?.startsWith('Very High') || i.frequency?.startsWith('High')).length;
- const highFreqRatio = items.length > 0 ? (highFreqCount / items.length) * 100 : 0;
+  const getCategoryIcon = (category: string, size = 16) => {
+    const c = category.toLowerCase();
+    if (c.includes('top')) return <Shirt size={size} />;
+    if (c.includes('footwear')) return <Footprints size={size} />;
+    if (c.includes('outerwear')) return <Layers size={size} />;
+    if (c.includes('accessories')) return <Watch size={size} />;
+    return <Tag size={size} />;
+  };
 
- const deadItems = items.filter(i => i.frequency?.startsWith('Low') || i.status === 'Inactive' || i.status === 'Stored (seasonal)');
- const replaceSoonItems = items.filter(i => i.condition === 'Replace Soon');
+  // --- Metrics Calculations ---
+  const activeCount = items.filter(i => i.status === 'Active').length;
+  const activeRatio = items.length > 0 ? (activeCount / items.length) * 100 : 0;
+  
+  const totalCost = items.reduce((a, b) => a + (Number(b.cost) || 0), 0);
+  const avgValueScore = items.length > 0 
+    ? items.reduce((acc, curr) => acc + calcValueScore(curr), 0) / items.length 
+    : 0;
 
- const versatilityScore = items.length > 0 ? items.reduce((acc, curr) => {
- if (curr.versatility?.startsWith('High')) return acc + 3;
- if (curr.versatility?.startsWith('Medium')) return acc + 2;
- return acc + 1;
- }, 0) / items.length : 0;
+  // --- Insights Logic ---
+  const categoryEfficiency = useMemo(() => {
+    const cats = Array.from(new Set(items.map(i => i.category)));
+    return cats.map(cat => {
+      const catItems = items.filter(i => i.category === cat);
+      const avgScore = catItems.reduce((acc, curr) => acc + calcValueScore(curr), 0) / catItems.length;
+      return { category: cat, score: avgScore };
+    }).sort((a, b) => b.score - a.score);
+  }, [items]);
 
- const totalCost = items.reduce((a, b) => a + (Number(b.cost) || 0), 0);
+  const replacementPipeline = useMemo(() => {
+    const now = new Date();
+    return items.filter(item => {
+      if (!item.replacementValue || !item.replacementUnit) return false;
+      const purchaseDate = new Date(item.purchaseDate);
+      const replacementDate = new Date(purchaseDate);
+      
+      if (item.replacementUnit === 'Days') replacementDate.setDate(purchaseDate.getDate() + item.replacementValue);
+      if (item.replacementUnit === 'Months') replacementDate.setMonth(purchaseDate.getMonth() + item.replacementValue);
+      if (item.replacementUnit === 'Years') replacementDate.setFullYear(purchaseDate.getFullYear() + item.replacementValue);
+      
+      return replacementDate < now && item.status === 'Active';
+    });
+  }, [items]);
 
- // Rough cost per wear estimation based on frequency over 1 year
- const calcCPW = (cost: number, freq: string) => {
- if (!cost) return 0;
- let wearsPerYear = 1;
- if (freq.startsWith('Very High')) wearsPerYear = 50;
- else if (freq.startsWith('High')) wearsPerYear = 25;
- else if (freq.startsWith('Medium')) wearsPerYear = 12;
- else if (freq.startsWith('Low')) wearsPerYear = 2; // conservative
- return cost / wearsPerYear;
- };
+  const spendingByReason = useMemo(() => {
+    const reasons = ['Replacement', 'New Need', 'Impulse', 'Upgrade'];
+    return reasons.map(reason => {
+      const total = items.filter(i => i.purchaseReason === reason)
+        .reduce((acc, curr) => acc + (Number(curr.cost) || 0), 0);
+      return { reason, total };
+    });
+  }, [items]);
 
- const avgCpw = items.length > 0 ? items.reduce((acc, curr) => acc + calcCPW(Number(curr.cost), curr.frequency), 0) / items.length : 0;
+  const categories = ['All', ...Array.from(new Set(items.map(i => i.category)))];
+  
+  // Segmentation Logic
+  const segmentedItems = useMemo(() => {
+    const filtered = filterCategory === 'All' 
+      ? items 
+      : items.filter(i => i.category === filterCategory);
 
- const categories = ['ALL', ...Array.from(new Set(items.map(i => i.category)))];
- const filteredItems = filterCategory === 'ALL' ? items : items.filter(i => i.category === filterCategory);
+    return {
+      fixed: filtered.filter(i => i.purchaseClassification === 'Fixed')
+        .sort((a, b) => calcValueScore(b) - calcValueScore(a)),
+      oneTime: filtered.filter(i => i.purchaseClassification === 'One-time'),
+      testing: filtered.filter(i => i.purchaseClassification === 'Testing' || !i.purchaseClassification)
+    };
+  }, [items, filterCategory]);
 
- if (!isLoaded) return <div className="text-center py-20 text-zinc-500">Loading wardrobe array...</div>;
+  if (!isLoaded) return <div className="text-center py-20 text-zinc-500">Loading wardrobe inventory...</div>;
 
- return (
- <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/30 font-sans p-4 md:p-8 xl:p-12 transition-colors duration-200">
- <div className="mx-auto w-full max-w-7xl space-y-10 relative z-10">
- {/* Header */}
- <header className="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
- <div className="flex flex-col items-start">
- <PageTitle>
- Wardrobe Inventory
- </PageTitle>
- <Description>Manage and optimize your clothing investments.</Description>
- </div>
- <button
- onClick={handleAddNew}
- className="flex items-center gap-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-5 py-2.5 rounded-xl font-medium hover:opacity-90 transition-opacity whitespace-nowrap shadow-sm"
- >
- <Plus size={18} />
- Add Item
- </button>
- </header>
+  const InsightsSection = () => {
+    if (items.length === 0) return null;
 
- {/* Metrics Dashboard */}
- {items.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-zinc-900/60 p-5 rounded-2xl border border-l-4 border-blue-100/50 dark:border-blue-900/30 shadow-sm transition-all hover:shadow-md flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-4">
-              <Text variant="label" as="h3">Wardrobe size</Text>
-              <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"><Layers size={18} /></div>
-            </div>
-            <Text variant="metric" as="div">{items.length}</Text>
-            <Text variant="label" as="div" className={`mt-2 ${activeRatio > 70 ? 'text-green-500' : 'text-amber-500'}`}>
-              {activeRatio.toFixed(0)}% Active ({activeCount} items)
-            </Text>
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+        {/* Efficiency Chart */}
+        <div className="bg-white dark:bg-zinc-900 shadow-sm border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-6 text-emerald-600 dark:text-emerald-400">
+            <TrendingUp size={18} />
+            <SectionTitle>Value Efficiency</SectionTitle>
           </div>
-
-          <div className="bg-white dark:bg-zinc-900/60 p-5 rounded-2xl border border-l-4 border-purple-100/50 dark:border-purple-900/30 shadow-sm transition-all hover:shadow-md flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-4">
-              <Text variant="label" as="h3">Composition</Text>
-              <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400"><Focus size={18} /></div>
-            </div>
-            <Text variant="metric" as="div">{coreRatio.toFixed(0)}% <Text variant="label" as="span" className="text-zinc-500">Core</Text></Text>
-            <div className="mt-2 flex gap-3">
-              <Text variant="label" as="span" className="text-zinc-500">{supportRatio.toFixed(0)}% Support</Text>
-              <Text variant="label" as="span" className={singleUseRatio > 10 ? 'text-red-500' : 'text-zinc-500'}>{singleUseRatio.toFixed(0)}% Single-use</Text>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-zinc-900/60 p-5 rounded-2xl border border-l-4 border-amber-100/50 dark:border-amber-900/30 shadow-sm transition-all hover:shadow-md flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-4">
-              <Text variant="label" as="h3">Utilization</Text>
-              <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400"><Activity size={18} /></div>
-            </div>
-            <Text variant="metric" as="div">{highFreqRatio.toFixed(0)}%</Text>
-            <div className="mt-2 flex justify-between">
-              <Text variant="label" as="span" className="text-zinc-500">High Freq.</Text>
-              <Text variant="label" as="span" className="font-semibold text-zinc-500">{versatilityScore.toFixed(1)}/3 Versatility</Text>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-zinc-900/60 p-5 rounded-2xl border border-l-4 border-emerald-100/50 dark:border-emerald-900/30 shadow-sm transition-all hover:shadow-md flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-4">
-              <Text variant="label" as="h3">Total value</Text>
-              <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"><DollarSign size={18} /></div>
-            </div>
-            <Text variant="metric" as="div">${totalCost.toFixed(0)}</Text>
-            <Text variant="label" as="div" className="mt-2 text-zinc-500">
-              ~${avgCpw.toFixed(2)} Avg Cost/Wear (1yr est.)
-            </Text>
+          <div className="space-y-4">
+            {categoryEfficiency.slice(0, 4).map(cat => (
+              <div key={cat.category} className="space-y-1.5">
+                <div className="flex justify-between text-xs font-bold">
+                  <span className="text-zinc-600 dark:text-zinc-400">{cat.category}</span>
+                  <span className="text-emerald-500">{cat.score.toFixed(1)} score</span>
+                </div>
+                <div className="h-1.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-emerald-500 rounded-full transition-all duration-1000" 
+                    style={{ width: `${Math.min(100, (cat.score / (avgValueScore * 2 + 0.1)) * 100)}%` }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
- )}
 
- {/* Actionable List Sections */}
- {items.length > 0 && (
- <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
- {/* Dead Items List */}
- {deadItems.length > 0 && (
- <div className="bg-rose-50/50 dark:bg-rose-950/10 border border-l-4 border-rose-100 dark:border-rose-900/30 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md">
- <Text variant="heading" as="h4" className="text-rose-800 dark:text-rose-400 mb-3 flex items-center gap-2">
- <Archive size={16} /> Declutter candidates ({deadItems.length})
- </Text>
- <ul className="space-y-2 max-h-48 overflow-y-auto">
- {deadItems.map(item => (
- <li key={`dead-${item.id}`} className="text-sm flex justify-between items-center text-zinc-700 dark:text-zinc-300">
- <span className="truncate">{item.itemName}</span>
- <span className="text-xs bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 px-2 py-0.5 rounded-md whitespace-nowrap ml-2">
- {item.frequency?.split(' ')[0]} / {item.status.split(' ')[0]}
- </span>
- </li>
- ))}
- </ul>
- </div>
- )}
+        {/* Replacement Pipeline */}
+        <div className="bg-white dark:bg-zinc-900 shadow-sm border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-6 text-amber-500">
+            <RefreshCw size={18} />
+            <SectionTitle>Replacement Pipeline</SectionTitle>
+          </div>
+          {replacementPipeline.length > 0 ? (
+            <div className="space-y-3 max-h-[180px] overflow-y-auto pr-2 custom-scrollbar">
+              {replacementPipeline.map(item => (
+                <div key={item.id} className="flex items-center justify-between p-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 group">
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className="text-amber-600 dark:text-amber-400 shrink-0">
+                      {getCategoryIcon(item.category, 14)}
+                    </div>
+                    <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">{item.itemName}</span>
+                  </div>
+                  <button 
+                    onClick={() => handleEdit(item)}
+                    className="p-1 px-2 text-[10px] bg-amber-500 text-white rounded-lg font-bold opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                  >
+                    RESOLVE
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="h-32 flex flex-col items-center justify-center text-zinc-400">
+              <CheckCircle2 size={32} className="mb-2 opacity-20" />
+              <p className="text-[10px] font-medium">All items within lifecycle</p>
+            </div>
+          )}
+        </div>
 
- {/* Replacement Pipeline List */}
- {replaceSoonItems.length > 0 && (
- <div className="bg-amber-50/50 dark:bg-amber-950/10 border border-l-4 border-amber-100 dark:border-amber-900/30 rounded-2xl p-5 shadow-sm transition-all hover:shadow-md">
- <Text variant="heading" as="h4" className="text-amber-800 dark:text-amber-400 mb-3 flex items-center gap-2">
- <RefreshCw size={16} /> Replacement pipeline ({replaceSoonItems.length})
- </Text>
- <ul className="space-y-2 max-h-48 overflow-y-auto">
- {replaceSoonItems.map(item => (
- <li key={`repl-${item.id}`} className="text-sm flex justify-between items-center text-zinc-700 dark:text-zinc-300">
- <span className="truncate">{item.itemName}</span>
- <span className="text-xs bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-md whitespace-nowrap ml-2">
- Replace Soon
- </span>
- </li>
- ))}
- </ul>
- </div>
- )}
- </div>
- )}
+        {/* Spending Habits */}
+        <div className="bg-white dark:bg-zinc-900 shadow-sm border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-6 text-blue-500">
+            <DollarSign size={18} />
+            <SectionTitle>Spending Habits</SectionTitle>
+          </div>
+          <div className="flex items-end gap-2 h-32 pt-4">
+            {spendingByReason.map(habit => (
+              <div key={habit.reason} className="flex-1 flex flex-col items-center gap-2 group">
+                <div className="relative w-full flex items-end justify-center h-full sm:px-1">
+                  <div 
+                    className={`w-full max-w-[32px] rounded-t-lg transition-all duration-1000 ${habit.reason === 'Impulse' ? 'bg-rose-500' : 'bg-blue-500 dark:bg-blue-600'}`}
+                    style={{ height: `${totalCost > 0 ? (habit.total / totalCost) * 100 : 0}%` }}
+                  />
+                  <div className="absolute -top-6 opacity-0 group-hover:opacity-100 transition-opacity bg-zinc-900 text-white text-[8px] py-0.5 px-1.5 rounded pointer-events-none whitespace-nowrap">
+                    ${habit.total}
+                  </div>
+                </div>
+                <span className="text-[10px] text-zinc-500 font-bold rotate-[-45deg] origin-top sm:rotate-0 truncate w-full text-center">
+                  {habit.reason}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
- {/* Main Inventory List */}
- <div className="space-y-4">
- <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4">
- <SectionTitle>Inventory</SectionTitle>
- <div className="flex gap-2 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0 hide-scrollbar items-center">
- {/* View Toggle */}
- <div className="flex items-center bg-zinc-100 dark:bg-zinc-800 rounded-lg p-1 mr-2 shrink-0">
- <button 
- onClick={() => setViewType('grid')}
- className={`p-1.5 rounded-md transition-colors ${viewType === 'grid' ? 'bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100' : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300'}`}
- >
- <LayoutGrid size={16} />
- </button>
- <button 
- onClick={() => setViewType('table')}
- className={`p-1.5 rounded-md transition-colors ${viewType === 'table' ? 'bg-white dark:bg-zinc-700 shadow-sm text-zinc-900 dark:text-zinc-100' : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300'}`}
- >
- <List size={16} />
- </button>
- </div>
- 
- {categories.map(cat => (
- <button
- key={cat}
- onClick={() => setFilterCategory(cat)}
- className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${ filterCategory === cat ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900' : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700' }`}
- >
- {cat}
- </button>
- ))}
- </div>
- </div>
+  const InventorySection = ({ title, description, items: SectionItems, icon: Icon, accentColor }: { 
+    title: string, 
+    description: string, 
+    items: WardrobeItem[], 
+    icon: any,
+    accentColor: string
+  }) => {
+    if (SectionItems.length === 0) return null;
 
- {filteredItems.length === 0 ? (
- <div className="text-center py-20 bg-zinc-50 dark:bg-zinc-900/30 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800">
- <p className="text-zinc-500">No items found in this category.</p>
- </div>
- ) : viewType === 'grid' ? (
- <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
- {filteredItems.map(item => (
-              <div 
-                key={item.id} 
-                className={`group p-4 rounded-xl border border-l-4 relative shadow-sm transition-all hover:shadow-md ${ 
-                  item.status === 'Inactive' || item.status === 'Discarded' 
-                    ? 'bg-zinc-50/50 border-zinc-200/50 dark:bg-zinc-900/20 dark:border-zinc-800/50 opacity-70' 
-                    : 'bg-white border-zinc-200 dark:bg-zinc-900/60 dark:border-zinc-800' 
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-3">
+          <div className={`p-2 rounded-lg bg-${accentColor}-50 dark:bg-${accentColor}-500/10 text-${accentColor}-600 dark:text-${accentColor}-400`}>
+            <Icon size={20} />
+          </div>
+          <div>
+            <SectionTitle>{title} ({SectionItems.length})</SectionTitle>
+            <p className="text-xs text-zinc-500">{description}</p>
+          </div>
+        </div>
+
+        {viewType === 'grid' ? (
+          <div className="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {SectionItems.map(item => {
+                const score = calcValueScore(item);
+                return (
+                  <div 
+                    key={item.id} 
+                    onClick={() => handleEdit(item)}
+                    className="group p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 relative shadow-sm transition-all hover:shadow-md cursor-pointer hover:border-zinc-300 dark:hover:border-zinc-700"
+                  >
+                    {/* ... item card content ... */}
+                    <div className="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleEdit(item); }} 
+                        className="p-1.5 text-zinc-400 hover:text-blue-500 rounded-lg"
+                      >
+                        <Edit2 size={14} />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }} 
+                        className="p-1.5 text-zinc-400 hover:text-rose-500 rounded-lg"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 text-zinc-400 shrink-0">
+                        {getCategoryIcon(item.category, 20)}
+                      </div>
+                      <div className="pr-12">
+                        <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">{item.itemName}</h3>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500 font-medium">{item.type}</span>
+                          {score > 0 && (
+                            <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                              <TrendingUp size={10} />
+                              {score.toFixed(1)}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Extended Details */}
+                    <div className="grid grid-cols-3 gap-2 mt-4 text-[10px]">
+                      <div className="p-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
+                        <p className="text-zinc-500 uppercase font-bold text-[8px] mb-1">Fit</p>
+                        <p className="font-medium truncate">{item.fit || '-'}</p>
+                      </div>
+                      <div className="p-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
+                        <p className="text-zinc-500 uppercase font-bold text-[8px] mb-1">Occasion</p>
+                        <p className="font-medium truncate">{item.occasion || '-'}</p>
+                      </div>
+                      <div className="p-1.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
+                        <p className="text-zinc-500 uppercase font-bold text-[8px] mb-1">Season</p>
+                        <p className="font-medium truncate">{item.season || '-'}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                      <div className="space-y-0.5">
+                        <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Cost</p>
+                        <p className="text-sm font-semibold">${item.cost}</p>
+                      </div>
+                      <div className="space-y-0.5">
+                        <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Reason</p>
+                        <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300 line-clamp-1">{item.purchaseReason || '-'}</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex gap-2">
+                      {title !== 'Fixed Essentials' && (
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleMoveClassification(item.id, 'Fixed'); }}
+                          className="flex-1 text-[10px] py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold hover:bg-emerald-100 transition-colors"
+                        >
+                          MOVE TO FIXED
+                        </button>
+                      )}
+                      {title !== 'One-time Reference' && (
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleMoveClassification(item.id, 'One-time'); }}
+                          className="flex-1 text-[10px] py-1.5 rounded-lg bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 font-bold hover:bg-rose-100 transition-colors"
+                        >
+                          DO NOT REBUY
+                        </button>
+                      )}
+                      {title === 'Fixed Essentials' && (
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleMoveClassification(item.id, 'Testing'); }}
+                          className="flex-1 text-[10px] py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-500 font-bold hover:bg-zinc-200 transition-colors"
+                        >
+                          REVERT TO TEST
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-sm">
+            <table className="min-w-full text-sm text-left sticky-header">
+              <thead className="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 uppercase text-[10px] tracking-wider font-bold sticky top-0 z-10">
+                <tr>
+                  <th className="px-4 py-3">Item</th>
+                  <th className="px-4 py-3">Type</th>
+                  <th className="px-4 py-3">Freq/Cond</th>
+                  <th className="px-4 py-3">Occasion</th>
+                  <th className="px-4 py-3">Score</th>
+                  <th className="px-4 py-3">Cost</th>
+                  <th className="px-4 py-3">Rating</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+                {SectionItems.map(item => (
+                  <tr 
+                    key={item.id} 
+                    onClick={() => handleEdit(item)}
+                    className="hover:bg-zinc-100/50 dark:hover:bg-white/5 transition-colors group cursor-pointer"
+                  >
+                    <td className="px-4 py-3 text-zinc-900 dark:text-zinc-100">
+                      <div className="flex items-center gap-3">
+                        <div className="text-zinc-400">{getCategoryIcon(item.category, 14)}</div>
+                        <span className="font-medium leading-none">{item.itemName}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-zinc-500">{item.type}</td>
+                    <td className="px-4 py-3 text-zinc-500">
+                      <span className="whitespace-nowrap">{item.frequency?.split(' ')[0]} / {item.condition}</span>
+                    </td>
+                    <td className="px-4 py-3 text-zinc-500">{item.occasion}</td>
+                    <td className="px-4 py-3">
+                      <span className={`font-bold ${calcValueScore(item) > avgValueScore ? 'text-emerald-500' : 'text-zinc-500'}`}>
+                        {calcValueScore(item).toFixed(1)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-zinc-500">${item.cost}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex text-amber-400 text-[10px]">
+                        {'★'.repeat(item.rating || 0)}{'☆'.repeat(5 - (item.rating || 0))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-teal-500/30 font-sans p-4 md:p-8 xl:p-12 transition-colors duration-200">
+      <div className="mx-auto w-full max-w-7xl space-y-10 relative z-10">
+        {/* Header */}
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex flex-col items-start">
+            <PageTitle>Wardrobe Intelligence</PageTitle>
+            <Description>Optimizing clothing infrastructure through value-mapping.</Description>
+          </div>
+        </header>
+
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white dark:bg-zinc-900/60 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+            <Text variant="label" className="mb-4 block">Wardrobe Size</Text>
+            <Text variant="metric">{items.length}</Text>
+            <Text variant="label" className={`mt-2 ${activeRatio > 70 ? 'text-green-500' : 'text-amber-500'}`}>
+              {activeRatio.toFixed(0)}% ACTIVE
+            </Text>
+          </div>
+          <div className="bg-white dark:bg-zinc-900/60 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+            <Text variant="label" className="mb-4 block">Total Investment</Text>
+            <Text variant="metric">${totalCost.toFixed(0)}</Text>
+            <Text variant="label" className="mt-2 text-zinc-500 uppercase">Replacement Cost</Text>
+          </div>
+          <div className="bg-white dark:bg-zinc-900/60 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+            <Text variant="label" className="mb-4 block">Avg Value Score</Text>
+            <Text variant="metric">{avgValueScore.toFixed(1)}</Text>
+            <Text variant="label" className="mt-2 text-zinc-500 uppercase">Days / Dollar</Text>
+          </div>
+          <div className="bg-white dark:bg-zinc-900/60 p-5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col justify-center">
+            <div className="flex items-center gap-2 text-emerald-500 font-bold text-lg">
+              <CheckCircle2 size={24} />
+              {segmentedItems.fixed.length} FIXED
+            </div>
+            <div className="flex items-center gap-2 text-rose-500 font-bold text-lg mt-2">
+              <XCircle size={24} />
+              {segmentedItems.oneTime.length} STOP
+            </div>
+          </div>
+        </div>
+
+        {/* Dynamic Insights Dashboard */}
+        <InsightsSection />
+
+        {/* Filter Bar */}
+        <div className="flex flex-col sm:flex-row justify-between items-center bg-white dark:bg-zinc-900/60 p-2 rounded-2xl border border-zinc-200 dark:border-zinc-800 gap-4">
+          <div className="flex gap-1 overflow-x-auto w-full sm:w-auto p-1 hide-scrollbar">
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setFilterCategory(cat)}
+                className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                  filterCategory === cat 
+                    ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-md' 
+                    : 'text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                 }`}
               >
- <div className="absolute top-4 right-4 flex gap-1 opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity group-hover:opacity-100">
- <button 
- onClick={() => handleEdit(item)}
- className="p-1.5 text-zinc-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
- >
- <Edit2 size={16} />
- </button>
- <button 
- onClick={() => handleDelete(item.id)}
- className="p-1.5 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors"
- >
- <Trash2 size={16} />
- </button>
- </div>
- 
- <div className="pr-16">
- <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-1">{item.itemName}</h3>
- <div className="flex items-center gap-2 mt-1 -ml-1">
- <span className="text-xs px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
- {item.type}
- </span>
- <div className="flex text-amber-400 text-xs">
- {'★'.repeat(item.rating || 0)}{'☆'.repeat(5 - (item.rating || 0))}
- </div>
- </div>
- </div>
+                {cat}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 p-1">
+            <button
+              onClick={handleAddNew}
+              className="flex items-center gap-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-3 py-1.5 rounded-xl text-xs font-bold hover:opacity-90 transition-opacity shadow-sm"
+            >
+              <Plus size={14} />
+              ADD
+            </button>
+            <div className="flex items-center bg-zinc-100 dark:bg-zinc-800 rounded-xl p-1 shrink-0">
+              <button 
+                onClick={() => setViewType('grid')}
+                className={`p-1.5 rounded-lg transition-colors ${viewType === 'grid' ? 'bg-white dark:bg-zinc-700 shadow-sm text-zinc-900' : 'text-zinc-500'}`}
+              >
+                <LayoutGrid size={14} />
+              </button>
+              <button 
+                onClick={() => setViewType('table')}
+                className={`p-1.5 rounded-lg transition-colors ${viewType === 'table' ? 'bg-white dark:bg-zinc-700 shadow-sm text-zinc-900' : 'text-zinc-500'}`}
+              >
+                <List size={14} />
+              </button>
+            </div>
+          </div>
+        </div>
 
- <div className="grid grid-cols-2 gap-y-3 gap-x-2 mt-5 text-sm">
- <div className="flex items-start gap-2">
- <Tag size={14} className="text-zinc-400 mt-0.5 shrink-0" />
- <div>
- <p className="text-zinc-900 dark:text-zinc-200 line-clamp-1">{item.outfitRole?.split(' ')[0]}</p>
- <p className="text-zinc-500 text-xs">Role</p>
- </div>
- </div>
- <div className="flex items-start gap-2">
- <Activity size={14} className="text-zinc-400 mt-0.5 shrink-0" />
- <div>
- <p className="text-zinc-900 dark:text-zinc-200 line-clamp-1">{item.frequency?.split(' ')[0]}</p>
- <p className="text-zinc-500 text-xs">Freq / {item.condition}</p>
- </div>
- </div>
- <div className="flex items-start gap-2">
- <DollarSign size={14} className="text-zinc-400 mt-0.5 shrink-0" />
- <div>
- <p className="text-zinc-900 dark:text-zinc-200">{item.cost > 0 ? `$${item.cost}` : '-'}</p>
- <p className="text-zinc-500 text-xs">Cost</p>
- </div>
- </div>
- <div className="flex items-start gap-2">
- <Calendar size={14} className="text-zinc-400 mt-0.5 shrink-0" />
- <div>
- <p className="text-zinc-900 dark:text-zinc-200 font-medium text-xs px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-md inline-block">
- {item.status?.split(' ')[0]}
- </p>
- </div>
- </div>
- </div>
- </div>
- ))}
- </div>
- ) : (
- <div className="overflow-x-auto rounded-xl border border-l-4 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 shadow-sm">
- <table className="min-w-full text-sm text-left">
- <thead className="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800 text-zinc-500">
- <tr>
- <th className="px-4 py-3"><Text variant="label" as="span">Item Name</Text></th>
- <th className="px-4 py-3"><Text variant="label" as="span">Type</Text></th>
- <th className="px-4 py-3"><Text variant="label" as="span">Cost</Text></th>
- <th className="px-4 py-3"><Text variant="label" as="span">Freq / Cond</Text></th>
- <th className="px-4 py-3"><Text variant="label" as="span">Rating</Text></th>
- <th className="px-4 py-3"><Text variant="label" as="span">Actions</Text></th>
- </tr>
- </thead>
- <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
- {filteredItems.map(item => (
- <tr key={item.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
- <td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-100">{item.itemName}</td>
- <td className="px-4 py-3 text-zinc-500">
- <div className="flex flex-wrap items-center gap-2">
- <span className="text-xs uppercase font-semibold px-2 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">{item.type}</span>
- {item.status !== 'Active' && <span className="text-xs uppercase font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">{item.status.split(' ')[0]}</span>}
- </div>
- </td>
- <td className="px-4 py-3 text-zinc-500">{item.cost > 0 ? `$${item.cost}` : '-'}</td>
- <td className="px-4 py-3 text-zinc-500">{item.frequency?.split(' ')[0]} / <span className={item.condition === 'Replace Soon' ? 'text-amber-500' : ''}>{item.condition}</span></td>
- <td className="px-4 py-3 text-amber-400 text-xs">{'★'.repeat(item.rating || 0)}{'☆'.repeat(5 - (item.rating || 0))}</td>
- <td className="px-4 py-3">
- <div className="flex gap-2">
- <button onClick={() => handleEdit(item)} className="p-1.5 text-zinc-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors"><Edit2 size={16} /></button>
- <button onClick={() => handleDelete(item.id)} className="p-1.5 text-zinc-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors"><Trash2 size={16} /></button>
- </div>
- </td>
- </tr>
- ))}
- </tbody>
- </table>
- </div>
- )}
- </div>
+        {/* Inventory Sections */}
+        <div className="space-y-16">
+          <InventorySection 
+            title="Fixed Essentials" 
+            description="High-value items that survived the test of time. Buy these again."
+            items={segmentedItems.fixed}
+            icon={CheckCircle2}
+            accentColor="emerald"
+          />
+          
+          <InventorySection 
+            title="General Inventory & Testing" 
+            description="New purchases or core items still being evaluated for long-term value."
+            items={segmentedItems.testing}
+            icon={HelpCircle}
+            accentColor="blue"
+          />
 
- <WardrobeFormModal
- isOpen={isModalOpen}
- onClose={() => setIsModalOpen(false)}
- onSave={handleSave}
- initialData={editingItem}
- />
- </div>
- </main>
- );
+          <InventorySection 
+            title="Referential Archive (One-time)" 
+            description="Failed experiments or one-time utility items. Do not rebuy."
+            items={segmentedItems.oneTime}
+            icon={XCircle}
+            accentColor="rose"
+          />
+        </div>
+
+        {items.length === 0 && (
+          <div className="text-center py-40 bg-white dark:bg-zinc-900/60 rounded-3xl border-2 border-dashed border-zinc-200 dark:border-zinc-800">
+            <ShoppingBag size={48} className="mx-auto text-zinc-300 mb-4" />
+            <p className="text-zinc-500 font-medium">Your inventory is empty. Start adding items to map their value.</p>
+          </div>
+        )}
+
+        <WardrobeFormModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSave}
+          initialData={editingItem}
+        />
+      </div>
+    </main>
+  );
 }

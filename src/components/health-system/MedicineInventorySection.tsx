@@ -95,7 +95,7 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
  };
 
  const getStatusStyles = (status: InventoryStatus) => {
- const base = "text-[11px] font-bold uppercase px-2 py-1 rounded-md inline-block";
+ const base = "text-[13px] font-bold uppercase px-2 py-1 rounded-md inline-block";
  switch (status) {
  case 'OK': 
  return `${base} text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400`;
@@ -260,7 +260,7 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
     <select 
       value={selectedCategory}
       onChange={(e) => setSelectedCategory(e.target.value)}
-      className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white text-[10px] sm:text-xs font-bold px-2 sm:px-4 h-[54px] rounded-2xl border-none focus:ring-2 focus:ring-zinc-500 appearance-none cursor-pointer min-w-[100px] sm:min-w-[140px] flex-1 sm:flex-none"
+      className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white text-xs font-bold px-2 sm:px-4 h-[54px] rounded-2xl border-none focus:ring-2 focus:ring-zinc-500 appearance-none cursor-pointer min-w-[100px] sm:min-w-[140px] flex-1 sm:flex-none"
     >
       <option value="All">ALL CATEGORIES</option>
       {MEDICINE_CATEGORIES.map(cat => (
@@ -325,7 +325,7 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
    {statusFilter !== 'ALL' && (
    <button 
    onClick={() => setStatusFilter('ALL')}
-   className="ml-auto text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 uppercase text-[10px] font-bold tracking-wider"
+   className="ml-auto text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 uppercase font-bold tracking-wider"
    >
    Clear Filter
    </button>
@@ -340,13 +340,13 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
        <table className="w-full text-left border-collapse">
          <thead className="bg-zinc-50 dark:bg-zinc-800">
            <tr className="border-b border-zinc-100 dark:border-zinc-800">
-             <Text variant="label" as="th" className="px-6 py-4 font-bold">Status</Text>
-             <Text variant="label" as="th" className="px-6 py-4 font-bold">Item Name</Text>
-             <Text variant="label" as="th" className="px-6 py-4 font-bold">Category</Text>
-             <Text variant="label" as="th" className="px-6 py-4 font-bold">Purpose / Use</Text>
-             <Text variant="label" as="th" className="px-6 py-4 font-bold">When to Use</Text>
-             <Text variant="label" as="th" className="px-6 py-4 font-bold text-center">Quantity</Text>
-             <Text variant="label" as="th" className="px-6 py-4 font-bold">Expiry</Text>
+             <Text variant="label" as="th" className="px-6 py-4 font-bold text-[13px]">Status</Text>
+             <Text variant="label" as="th" className="px-6 py-4 font-bold text-[13px]">Item Name</Text>
+             <Text variant="label" as="th" className="px-6 py-4 font-bold text-[13px]">Category</Text>
+             <Text variant="label" as="th" className="px-6 py-4 font-bold text-[13px]">Purpose / Use</Text>
+             <Text variant="label" as="th" className="px-6 py-4 font-bold text-[13px]">When to Use</Text>
+             <Text variant="label" as="th" className="px-6 py-4 font-bold text-[13px] text-center">Quantity</Text>
+             <Text variant="label" as="th" className="px-6 py-4 font-bold text-[13px]">Expiry</Text>
            </tr>
          </thead>
          <tbody>
@@ -375,17 +375,17 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
                      {item.category}
                    </Text>
                  </td>
-                 <td className="px-6 py-4 text-sm text-zinc-500 dark:text-zinc-400">
+                 <td className="px-6 py-4 text-[15px] text-zinc-500 dark:text-zinc-400">
                    {item.purpose}
                  </td>
-                 <td className="px-6 py-4 text-sm text-zinc-500 dark:text-zinc-400">
+                 <td className="px-6 py-4 text-[15px] text-zinc-500 dark:text-zinc-400">
                    {item.whenToUse}
                  </td>
-                 <td className="px-6 py-4 text-center text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                 <td className="px-6 py-4 text-center text-[15px] font-medium text-zinc-700 dark:text-zinc-300">
                    {item.quantity}
                  </td>
                  <td className="px-6 py-4">
-                   <span className={`text-sm font-medium ${status === 'EXPIRED' ? 'text-rose-500' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                   <span className={`text-[15px] font-medium ${status === 'EXPIRED' ? 'text-rose-500' : 'text-zinc-500 dark:text-zinc-400'}`}>
                      {new Date(item.expiryDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' })}
                    </span>
                  </td>
@@ -395,7 +395,7 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
              <tr>
                <td colSpan={7} className="px-8 py-20 text-center">
                  <div className="flex flex-col items-center gap-2">
-                   <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase">No items found.</span>
+                   <span className="text-sm text-zinc-500 dark:text-zinc-400 uppercase">No items found.</span>
                  </div>
                </td>
              </tr>
@@ -433,23 +433,23 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
 
               <div className="space-y-3">
                 <div className="flex flex-col">
-                  <Text variant="label" as="span" className="text-zinc-400">Purpose</Text>
-                  <Text variant="body" as="span" className="text-xs text-zinc-700 dark:text-zinc-300 line-clamp-2">{item.purpose}</Text>
+                  <Text variant="label" as="span" className="text-zinc-400 text-[13px]">Purpose</Text>
+                  <Text variant="body" as="span" className="text-[14px] text-zinc-700 dark:text-zinc-300 line-clamp-2">{item.purpose}</Text>
                 </div>
                 <div className="flex flex-col">
-                  <Text variant="label" as="span" className="text-zinc-400">When to use</Text>
-                  <Text variant="body" as="span" className="text-xs text-zinc-700 dark:text-zinc-300">{item.whenToUse}</Text>
+                  <Text variant="label" as="span" className="text-zinc-400 text-[13px]">When to use</Text>
+                  <Text variant="body" as="span" className="text-[14px] text-zinc-700 dark:text-zinc-300">{item.whenToUse}</Text>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
                 <div className="flex flex-col">
-                  <Text variant="label" as="span" className="text-zinc-400">Qty</Text>
-                  <Text variant="body" as="span" className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{item.quantity} / {item.targetQuantity}</Text>
+                  <Text variant="label" as="span" className="text-zinc-400 text-[13px]">Qty</Text>
+                  <Text variant="body" as="span" className="text-base font-bold text-zinc-700 dark:text-zinc-300">{item.quantity} / {item.targetQuantity}</Text>
                 </div>
                 <div className="flex flex-col items-end">
-                  <Text variant="label" as="span" className="text-zinc-400">Expiry</Text>
-                  <Text variant="body" as="span" className={`text-sm font-bold ${status === 'EXPIRED' ? 'text-rose-500' : 'text-zinc-700 dark:text-zinc-300'}`}>
+                  <Text variant="label" as="span" className="text-zinc-400 text-[13px]">Expiry</Text>
+                  <Text variant="body" as="span" className={`text-base font-bold ${status === 'EXPIRED' ? 'text-rose-500' : 'text-zinc-700 dark:text-zinc-300'}`}>
                     {new Date(item.expiryDate).toLocaleDateString(undefined, { month: 'short', year: '2-digit' })}
                   </Text>
                 </div>
@@ -458,7 +458,7 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
           );
         }) : (
           <div className="col-span-full p-12 text-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl">
-            <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase">No medications found</span>
+            <span className="text-sm text-zinc-500 dark:text-zinc-400 uppercase">No medications found</span>
           </div>
         )}
       </div>

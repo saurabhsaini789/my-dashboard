@@ -1,52 +1,52 @@
 export type WardrobeCategory = 
- | 'TOPS'
- | 'BOTTOMS'
- | 'OUTERWEAR / LAYERS'
- | 'INNERWEAR / BASE LAYERS'
- | 'FOOTWEAR'
- | 'TRADITIONAL / OCCASION'
- | 'ACCESSORIES';
+ | 'Tops'
+ | 'Bottoms'
+ | 'Outerwear / Layers'
+ | 'Innerwear / Base Layers'
+ | 'Footwear'
+ | 'Traditional / Occasion'
+ | 'Accessories';
 
 export const WARDROBE_CATEGORIES: WardrobeCategory[] = [
- 'TOPS',
- 'BOTTOMS',
- 'OUTERWEAR / LAYERS',
- 'INNERWEAR / BASE LAYERS',
- 'FOOTWEAR',
- 'TRADITIONAL / OCCASION',
- 'ACCESSORIES'
+  'Tops',
+  'Bottoms',
+  'Outerwear / Layers',
+  'Innerwear / Base Layers',
+  'Footwear',
+  'Traditional / Occasion',
+  'Accessories'
 ];
 
 export const CATEGORY_TYPES: Record<WardrobeCategory, string[]> = {
- 'TOPS': [
+  'Tops': [
  'T-Shirt (Solid)', 'T-Shirt (Graphic)', 'Polo Shirt', 
  'Casual Shirt (Full Sleeve)', 'Casual Shirt (Half Sleeve)', 
  'Formal Shirt (Full Sleeve)', 'Formal Shirt (Half Sleeve)', 
  'Henley', 'Tank Top / Vest'
  ],
- 'BOTTOMS': [
+  'Bottoms': [
  'Jeans (Slim)', 'Jeans (Regular)', 'Jeans (Relaxed)', 
  'Chinos', 'Formal Trousers', 'Casual Trousers', 
  'Joggers', 'Track Pants', 'Shorts (Casual)', 'Shorts (Athletic)'
  ],
- 'OUTERWEAR / LAYERS': [
+  'Outerwear / Layers': [
  'Hoodie', 'Sweater', 'Cardigan', 'Light Jacket', 
  'Winter Jacket (Heavy)', 'Coat / Overcoat', 
  'Blazer (Casual)', 'Blazer (Formal)', 'Windbreaker', 'Rain Jacket'
  ],
- 'INNERWEAR / BASE LAYERS': [
+  'Innerwear / Base Layers': [
  'Undershirt', 'Thermal Top', 'Thermal Bottom', 
  'Briefs', 'Boxers', 'Socks (Ankle)', 'Socks (Crew)', 'Socks (Winter/Thick)'
  ],
- 'FOOTWEAR': [
+  'Footwear': [
  'Sneakers (Casual)', 'Sneakers (Sport)', 'Running Shoes', 
  'Training Shoes', 'Formal Shoes (Black)', 'Formal Shoes (Brown)', 
  'Boots (Winter)', 'Boots (Casual)', 'Sandals', 'Slippers / Flip-flops'
  ],
- 'TRADITIONAL / OCCASION': [
+  'Traditional / Occasion': [
  'Kurta', 'Kurta Set (with pajama)', 'Pajama', 'Nehru Jacket', 'Sherwani'
  ],
- 'ACCESSORIES': [
+  'Accessories': [
  'Cap', 'Beanie (Winter Cap)', 'Scarf', 'Gloves', 'Belt (Formal)', 'Belt (Casual)'
  ]
 };
@@ -85,32 +85,43 @@ export const WARDROBE_VERSATILITIES = [
  'High (matches many outfits)', 'Medium', 'Low (limited use)'
 ];
 
-export const WARDROBE_PURCHASE_REASONS = [
- 'Replacement', 'New Need', 'Impulse', 'Upgrade'
-];
+export const WARDROBE_PURCHASE_REASONS = ['Replacement', 'New Need', 'Impulse', 'Upgrade'] as const;
+export type PurchaseReason = typeof WARDROBE_PURCHASE_REASONS[number];
+
+export const WARDROBE_REPLACEMENT_UNITS = ['Days', 'Months', 'Years'] as const;
+export type ReplacementUnit = typeof WARDROBE_REPLACEMENT_UNITS[number];
 
 export const WARDROBE_OUTFIT_ROLES = [
  'Core (used in many outfits)', 'Support (used sometimes)', 'Single-use (rare occasions)'
 ];
 
+export const WARDROBE_CLASSIFICATIONS = [
+  'Testing', 'Fixed', 'One-time'
+] as const;
+
+export type PurchaseClassification = typeof WARDROBE_CLASSIFICATIONS[number];
+
 export interface WardrobeItem {
- id: string;
- itemName: string;
- category: WardrobeCategory;
- type: string;
- colour: string;
- season: string;
- occasion: string;
- fit: string;
- frequency: string;
- status: string;
- condition: string;
- versatility: string;
- cost: number;
- purchaseReason: string;
- purchaseDate: string;
- outfitRole: string;
- replacementCycle: string;
- rating: number; // 1-5 rating, as requested by user
- createdAt: string;
+  id: string;
+  itemName: string;
+  category: WardrobeCategory;
+  type: string;
+  colour: string;
+  season: string;
+  occasion: string;
+  fit: string;
+  frequency: string;
+  status: string;
+  condition: string;
+  versatility: string;
+  cost: number;
+  purchaseReason: PurchaseReason;
+  purchaseDate: string;
+  lastReplacedDate?: string;
+  purchaseClassification: PurchaseClassification;
+  outfitRole: string;
+  replacementValue?: number;
+  replacementUnit?: ReplacementUnit;
+  rating: number; 
+  createdAt: string;
 }

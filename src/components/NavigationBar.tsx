@@ -46,19 +46,19 @@ export function NavigationBar() {
  </div>
 
  {/* Desktop Navigation */}
- <nav className="hidden sm:flex flex-wrap items-center justify-end gap-x-6">
+ <nav className="hidden sm:flex flex-wrap lg:flex-nowrap items-center justify-end gap-x-4 md:gap-x-6 lg:gap-x-2.5 xl:gap-x-6">
  {navLinks.map((link) => (
  <Link 
  key={link.path}
  href={link.path} 
- className={`text-sm font-semibold transition-colors ${pathname === link.path ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
+ className={`text-sm font-semibold transition-colors whitespace-nowrap ${pathname === link.path ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
  >
  {link.name}
  </Link>
  ))}
  <button 
  onClick={() => supabase.auth.signOut()}
- className="text-sm font-semibold text-zinc-500 hover:text-rose-500 dark:text-zinc-400 dark:hover:text-rose-400 transition-colors px-3 py-1.5 rounded-lg border border-transparent hover:border-rose-500/20 hover:bg-rose-500/5"
+ className="text-sm font-semibold text-zinc-500 hover:text-rose-500 dark:text-zinc-400 dark:hover:text-rose-400 transition-colors px-2 lg:px-2.5 xl:px-3 py-1.5 rounded-lg border border-transparent hover:border-rose-500/20 hover:bg-rose-500/5 whitespace-nowrap"
  >
  Sign Out
  </button>
@@ -66,13 +66,13 @@ export function NavigationBar() {
 
  {/* Mobile Navigation */}
  {mobileMenuOpen && (
- <nav className="flex sm:hidden flex-col items-center w-full gap-4 pt-4 pb-2">
+ <nav className="grid sm:hidden grid-cols-2 w-full gap-2 pt-4 pb-2">
  {navLinks.map((link) => (
  <Link 
  key={link.path}
  href={link.path} 
  onClick={() => setMobileMenuOpen(false)}
- className={`text-sm font-semibold transition-colors py-3 w-full text-center hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-xl ${pathname === link.path ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
+ className={`text-sm font-semibold transition-colors py-2 w-full text-center hover:bg-zinc-100 dark:hover:bg-zinc-900 rounded-xl ${pathname === link.path ? 'text-zinc-900 dark:text-white' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}
  >
  {link.name}
  </Link>
@@ -82,7 +82,7 @@ export function NavigationBar() {
  setMobileMenuOpen(false);
  supabase.auth.signOut();
  }}
- className="text-sm font-semibold text-zinc-500 hover:text-rose-500 dark:text-zinc-400 dark:hover:text-rose-400 transition-colors w-full py-2 border-t border-zinc-200 dark:border-zinc-800 mt-2"
+ className="col-span-2 text-sm font-semibold text-zinc-500 hover:text-rose-500 dark:text-zinc-400 dark:hover:text-rose-400 transition-colors w-full py-2 border-t border-zinc-200 dark:border-zinc-800 mt-2"
  >
  Sign Out
  </button>

@@ -5,10 +5,10 @@ import { getPrefixedKey } from '@/lib/keys';
 import { setSyncedItem } from '@/lib/storage';
 import { Modal } from '../ui/Modal';
 import { DynamicForm } from '../ui/DynamicForm';
-import { SupplementItem, SUPPLEMENT_CATEGORIES, type InventoryStatus } from '@/types/health-system';
+import { SupplementItem, SUPPLEMENT_CATEGORIES, FAMILY_MEMBERS, DOSE_UNITS, type InventoryStatus } from '@/types/health-system';
 import { Text, SectionTitle } from '../ui/Text';
 import { SYNC_KEYS } from '@/lib/sync-keys';
-import { LayoutGrid, List } from 'lucide-react';
+import { LayoutGrid, List, User, Plus, Trash2, Settings } from 'lucide-react';
 
 const STORAGE_KEY = SYNC_KEYS.HEALTH_SUPPLEMENTS;
 const VIEW_MODE_KEY = 'health-supplements-view-mode';
@@ -23,15 +23,22 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
  const [isModalOpen, setIsModalOpen] = useState(false);
  const [editingItem, setEditingItem] = useState<SupplementItem | null>(null);
  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+ const [selectedPerson, setSelectedPerson] = useState<string>('All');
  const [statusFilter, setStatusFilter] = useState<'ALL' | 'LOW' | 'MISSING' | 'EXPIRED'>('ALL');
  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+ const [familyMembers, setFamilyMembers] = useState<string[]>([]);
+ const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
+ const [newPersonName, setNewPersonName] = useState('');
 
  // Form State
  const [formData, setFormData] = useState({
  itemName: '',
  category: SUPPLEMENT_CATEGORIES[0],
+ person: 'Shared',
  purpose: '',
- dose: '',
+ doseAmount: '',
+ doseUnit: DOSE_UNITS[0],
+ doseOther: '',
  frequency: '',
  quantity: 0,
  targetQuantity: 1,
@@ -60,15 +67,35 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
    setViewMode(savedView);
  }
 
+ const savedFamily = localStorage.getItem(getPrefixedKey(SYNC_KEYS.HEALTH_FAMILY_MEMBERS));
+ if (savedFamily) {
+   try {
+     setFamilyMembers(JSON.parse(savedFamily));
+   } catch {
+     setFamilyMembers(FAMILY_MEMBERS);
+   }
+ } else {
+   setFamilyMembers(FAMILY_MEMBERS);
+ }
+
  setIsLoaded(true);
 
  const handleLocal = (e: any) => {
- if (e.detail && e.detail.key === STORAGE_KEY) {
- const val = localStorage.getItem(getPrefixedKey(STORAGE_KEY));
- if (val && val !== JSON.stringify(itemsRef.current)) {
- try { setItems(JSON.parse(val)); } catch (e) {}
- }
- }
+   if (e.detail && (e.detail.key === STORAGE_KEY || e.detail.key === SYNC_KEYS.HEALTH_FAMILY_MEMBERS)) {
+     const val = localStorage.getItem(getPrefixedKey(e.detail.key));
+     if (val) {
+       try {
+         const parsed = JSON.parse(val);
+         if (e.detail.key === STORAGE_KEY) {
+           if (JSON.stringify(parsed) !== JSON.stringify(itemsRef.current)) {
+             setItems(parsed);
+           }
+         } else {
+           setFamilyMembers(parsed);
+         }
+       } catch (e) {}
+     }
+   }
  };
 
  window.addEventListener('local-storage-change', handleLocal);
@@ -78,6 +105,20 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
  const toggleViewMode = (mode: 'grid' | 'table') => {
    setViewMode(mode);
    localStorage.setItem(VIEW_MODE_KEY, mode);
+ };
+
+ const addFamilyMember = () => {
+   if (!newPersonName.trim()) return;
+   const updated = [...familyMembers, newPersonName.trim()];
+   setFamilyMembers(updated);
+   setSyncedItem(SYNC_KEYS.HEALTH_FAMILY_MEMBERS, JSON.stringify(updated));
+   setNewPersonName('');
+ };
+
+ const removeFamilyMember = (name: string) => {
+   const updated = familyMembers.filter(m => m !== name);
+   setFamilyMembers(updated);
+   setSyncedItem(SYNC_KEYS.HEALTH_FAMILY_MEMBERS, JSON.stringify(updated));
  };
 
  /**
@@ -96,7 +137,7 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
  };
 
  const getStatusStyles = (status: InventoryStatus) => {
- const base = "text-[11px] font-bold uppercase px-2 py-1 rounded-md inline-block";
+ const base = "text-[13px] font-bold uppercase px-2 py-1 rounded-md inline-block";
  switch (status) {
  case 'OK': 
  return `${base} text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400`;
@@ -116,8 +157,11 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
  setFormData({
  itemName: '',
  category: SUPPLEMENT_CATEGORIES[0],
+ person: 'Shared',
  purpose: '',
- dose: '',
+ doseAmount: '',
+ doseUnit: DOSE_UNITS[0],
+ doseOther: '',
  frequency: '',
  quantity: 0,
  targetQuantity: 1,
@@ -128,32 +172,47 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
  setIsModalOpen(true);
  };
 
- const openEditModal = (item: SupplementItem) => {
- setEditingItem(item);
- setFormData({
- itemName: item.itemName,
- category: item.category,
- purpose: item.purpose,
- dose: item.dose,
- frequency: item.frequency,
- quantity: item.quantity,
- targetQuantity: item.targetQuantity,
- expiryDate: item.expiryDate,
- instructions: item.instructions,
- notes: item.notes || ''
- });
- setIsModalOpen(true);
- };
+  const openEditModal = (item: SupplementItem) => {
+    setEditingItem(item);
+    
+    // Parse dose (e.g. "500 mg")
+    const doseStr = item.dose || '';
+    const doseMatch = doseStr.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);
+    const amount = doseMatch ? doseMatch[1] : doseStr;
+    const unit = doseMatch ? doseMatch[2] : '';
+    const isStandardUnit = DOSE_UNITS.includes(unit);
+
+    setFormData({
+      itemName: item.itemName,
+      category: item.category,
+      person: item.person || 'Shared',
+      purpose: item.purpose,
+      doseAmount: amount,
+      doseUnit: isStandardUnit ? unit : (unit ? 'Other' : DOSE_UNITS[0]),
+      doseOther: isStandardUnit ? '' : unit,
+      frequency: item.frequency,
+      quantity: item.quantity,
+      targetQuantity: item.targetQuantity,
+      expiryDate: item.expiryDate,
+      instructions: item.instructions,
+      notes: item.notes || ''
+    });
+    setIsModalOpen(true);
+  };
 
  const handleSubmit = (e: React.FormEvent) => {
  e.preventDefault();
  
+ const finalUnit = formData.doseUnit === 'Other' ? formData.doseOther : formData.doseUnit;
+ const finalDose = `${formData.doseAmount} ${finalUnit}`.trim();
+
  const newItem: SupplementItem = {
  id: editingItem ? editingItem.id : crypto.randomUUID(),
  itemName: formData.itemName,
  category: formData.category,
+ person: formData.person,
  purpose: formData.purpose,
- dose: formData.dose,
+ dose: finalDose,
  frequency: formData.frequency,
  quantity: Number(formData.quantity),
  targetQuantity: Number(formData.targetQuantity),
@@ -201,11 +260,15 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
  ? externalFilter
  : statusFilter;
 
- const finalItems = effectiveFilter !== 'ALL'
- ? sortedItems.filter(item => getStatus(item) === effectiveFilter)
- : selectedCategory === 'All'
- ? sortedItems
- : sortedItems.filter(item => item.category === selectedCategory);
+ const categoryItems = selectedCategory === 'All'
+    ? sortedItems
+    : sortedItems.filter(item => item.category === selectedCategory);
+
+ const finalItems = (effectiveFilter !== 'ALL'
+    ? sortedItems.filter(item => getStatus(item) === effectiveFilter)
+    : categoryItems).filter(item => 
+      selectedPerson === 'All' ? true : (item.person === selectedPerson || (!item.person && selectedPerson === 'Shared'))
+    );
 
  const lowCount = items.filter(i => getStatus(i) === 'LOW').length;
  const missingCount = items.filter(i => getStatus(i) === 'MISSING').length;
@@ -262,9 +325,29 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
     </div>
 
     <select 
+      value={selectedPerson}
+      onChange={(e) => setSelectedPerson(e.target.value)}
+      className="bg-zinc-100 dark:bg-zinc-800 text-emerald-600 dark:text-emerald-400 text-xs font-bold px-2 sm:px-4 h-[54px] rounded-2xl border-none focus:ring-2 focus:ring-zinc-500 appearance-none cursor-pointer min-w-[100px] sm:min-w-[120px] flex-1 sm:flex-none"
+    >
+      <option value="All">FOR: ANYONE</option>
+      <option value="Shared">FOR: SHARED</option>
+      {familyMembers.map(person => (
+        <option key={person} value={person}>FOR: {person.toUpperCase()}</option>
+      ))}
+    </select>
+
+    <button 
+      onClick={() => setIsFamilyModalOpen(true)}
+      className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:text-emerald-600 dark:hover:text-emerald-400 p-4 rounded-2xl border-none transition-colors h-[54px]"
+      title="Manage Family Members"
+    >
+      <Settings size={20} />
+    </button>
+
+    <select 
       value={selectedCategory}
       onChange={(e) => setSelectedCategory(e.target.value)}
-      className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white text-[10px] sm:text-xs font-bold px-2 sm:px-4 h-[54px] rounded-2xl border-none focus:ring-2 focus:ring-zinc-500 appearance-none cursor-pointer min-w-[100px] sm:min-w-[140px] flex-1 sm:flex-none"
+      className="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white text-xs font-bold px-2 sm:px-4 h-[54px] rounded-2xl border-none focus:ring-2 focus:ring-zinc-500 appearance-none cursor-pointer min-w-[100px] sm:min-w-[140px] flex-1 sm:flex-none"
     >
       <option value="All">ALL CATEGORIES</option>
       {SUPPLEMENT_CATEGORIES.map(cat => (
@@ -329,7 +412,7 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
    {statusFilter !== 'ALL' && (
    <button 
    onClick={() => setStatusFilter('ALL')}
-   className="ml-auto text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 uppercase text-[10px] font-bold tracking-wider"
+   className="ml-auto text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 uppercase text-xs font-bold tracking-wider"
    >
    Clear Filter
    </button>
@@ -344,13 +427,14 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
        <table className="w-full text-left border-collapse">
          <thead className="bg-zinc-50 dark:bg-zinc-800">
            <tr className="border-b border-zinc-100 dark:border-zinc-800">
-             <th className="px-6 py-4 text-[11px] uppercase text-zinc-500 font-bold">Status</th>
-             <th className="px-6 py-4 text-[11px] uppercase text-zinc-500 font-bold">Supplement Name</th>
-             <th className="px-6 py-4 text-[11px] uppercase text-zinc-500 font-bold">Category</th>
-             <th className="px-6 py-4 text-[11px] uppercase text-zinc-500 font-bold">Purpose / Use</th>
-             <th className="px-6 py-4 text-[11px] uppercase text-zinc-500 font-bold">Dosage</th>
-             <th className="px-6 py-4 text-[11px] uppercase text-zinc-500 font-bold text-center">Quantity</th>
-             <th className="px-6 py-4 text-[11px] uppercase text-zinc-500 font-bold">Expiry</th>
+             <th className="px-6 py-4 text-[13px] uppercase text-zinc-500 font-bold">Status</th>
+             <th className="px-6 py-4 text-[13px] uppercase text-zinc-500 font-bold">Supplement Name</th>
+             <th className="px-6 py-4 text-[13px] uppercase text-zinc-500 font-bold">Category</th>
+             <th className="px-6 py-4 text-[13px] uppercase text-zinc-500 font-bold">Person</th>
+             <th className="px-6 py-4 text-[13px] uppercase text-zinc-500 font-bold">Purpose / Use</th>
+             <th className="px-6 py-4 text-[13px] uppercase text-zinc-500 font-bold">Dosage</th>
+             <th className="px-6 py-4 text-[13px] uppercase text-zinc-500 font-bold text-center">Quantity</th>
+             <th className="px-6 py-4 text-[13px] uppercase text-zinc-500 font-bold">Expiry</th>
            </tr>
          </thead>
          <tbody>
@@ -379,17 +463,22 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
                      {item.category}
                    </Text>
                  </td>
-                 <td className="px-6 py-4 text-sm text-zinc-500 dark:text-zinc-400">
+                 <td className="px-6 py-4">
+                   <Text variant="label" as="span" className="text-emerald-600 dark:text-emerald-400 font-bold">
+                     {item.person || 'Shared'}
+                   </Text>
+                 </td>
+                 <td className="px-6 py-4 text-[15px] text-zinc-500 dark:text-zinc-400">
                    {item.purpose}
                  </td>
-                 <td className="px-6 py-4 text-sm text-zinc-500 dark:text-zinc-400">
+                 <td className="px-6 py-4 text-[15px] text-zinc-500 dark:text-zinc-400">
                    {item.dose} {item.frequency}
                  </td>
-                 <td className="px-6 py-4 text-center text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                 <td className="px-6 py-4 text-center text-[15px] font-medium text-zinc-700 dark:text-zinc-300">
                    {item.quantity}
                  </td>
                  <td className="px-6 py-4">
-                   <span className={`text-sm font-medium ${status === 'EXPIRED' ? 'text-rose-500' : 'text-zinc-500 dark:text-zinc-400'}`}>
+                   <span className={`text-[15px] font-medium ${status === 'EXPIRED' ? 'text-rose-500' : 'text-zinc-500 dark:text-zinc-400'}`}>
                      {new Date(item.expiryDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' })}
                    </span>
                  </td>
@@ -399,7 +488,7 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
              <tr>
                <td colSpan={7} className="px-8 py-20 text-center">
                  <div className="flex flex-col items-center gap-2">
-                   <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase">No supplements found.</span>
+                   <span className="text-sm text-zinc-500 dark:text-zinc-400 uppercase">No supplements found.</span>
                  </div>
                </td>
              </tr>
@@ -426,9 +515,13 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
                   <Text variant="title" as="span" className="text-lg">
                     {item.itemName}
                   </Text>
-                  <Text variant="label" as="span" className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 px-2 py-0.5 rounded-md w-fit">
+                  <Text variant="label" as="span" className="border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800 px-2 py-0.5 rounded-md w-fit text-[13px]">
                     {item.category}
                   </Text>
+                  <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                    <User size={14} />
+                    <span className="text-[13px] font-bold uppercase tracking-wider">{item.person || 'Shared'}</span>
+                  </div>
                 </div>
                 <span className={statusStyle}>
                   {status}
@@ -437,23 +530,23 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
 
               <div className="space-y-3">
                 <div className="flex flex-col">
-                  <span className="text-[11px] font-bold text-zinc-400 uppercase">Purpose</span>
-                  <span className="text-xs text-zinc-700 dark:text-zinc-300 line-clamp-2">{item.purpose}</span>
+                  <span className="text-[13px] font-bold text-zinc-400 uppercase">Purpose</span>
+                  <span className="text-[14px] text-zinc-700 dark:text-zinc-300 line-clamp-2">{item.purpose}</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[11px] font-bold text-zinc-400 uppercase">Dosage</span>
-                  <span className="text-xs text-zinc-700 dark:text-zinc-300">{item.dose} {item.frequency}</span>
+                  <span className="text-[13px] font-bold text-zinc-400 uppercase">Dosage</span>
+                  <span className="text-[14px] text-zinc-700 dark:text-zinc-300">{item.dose} {item.frequency}</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
                 <div className="flex flex-col">
-                  <Text variant="label" as="span" className="text-zinc-400">Qty</Text>
-                  <Text variant="body" as="span" className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{item.quantity} / {item.targetQuantity}</Text>
+                  <Text variant="label" as="span" className="text-zinc-400 text-[13px]">Qty</Text>
+                  <Text variant="body" as="span" className="text-base font-bold text-zinc-700 dark:text-zinc-300">{item.quantity} / {item.targetQuantity}</Text>
                 </div>
                 <div className="flex flex-col items-end">
-                  <Text variant="label" as="span" className="text-zinc-400">Expiry</Text>
-                  <Text variant="body" as="span" className={`text-sm font-bold ${status === 'EXPIRED' ? 'text-rose-500' : 'text-zinc-700 dark:text-zinc-300'}`}>
+                  <Text variant="label" as="span" className="text-zinc-400 text-[13px]">Expiry</Text>
+                  <Text variant="body" as="span" className={`text-base font-bold ${status === 'EXPIRED' ? 'text-rose-500' : 'text-zinc-700 dark:text-zinc-300'}`}>
                     {new Date(item.expiryDate).toLocaleDateString(undefined, { month: 'short', year: '2-digit' })}
                   </Text>
                 </div>
@@ -462,7 +555,7 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
           );
         }) : (
           <div className="col-span-full p-12 text-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl">
-            <span className="text-xs text-zinc-500 dark:text-zinc-400 uppercase">No supplements found</span>
+            <span className="text-sm text-zinc-500 dark:text-zinc-400 uppercase">No supplements found</span>
           </div>
         )}
       </div>
@@ -483,21 +576,32 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
  {
  id: 'sup_info',
  title: '',
- fields: [
- { name: 'itemName', label: 'Supplement Name', type: 'text', required: true, fullWidth: true },
- {
- name: 'category', label: 'Category', type: 'select',
- options: SUPPLEMENT_CATEGORIES.map(c => ({ label: c, value: c }))
- },
- { name: 'purpose', label: 'Purpose / Use', type: 'text', required: true },
- { name: 'dose', label: 'Dosage (e.g. 500mg)', type: 'text', required: true },
- { name: 'frequency', label: 'Frequency (e.g. 1/day)', type: 'text', required: true },
- { name: 'quantity', label: 'Current Quantity', type: 'number', min: 0, required: true },
- { name: 'targetQuantity', label: 'Target Quantity', type: 'number', min: 1, required: true },
- { name: 'expiryDate', label: 'Expiry Date', type: 'date', required: true },
- { name: 'instructions', label: 'Instructions', type: 'text', fullWidth: true },
- { name: 'notes', label: 'Notes', type: 'text', fullWidth: true }
- ]
+    fields: [
+    { name: 'itemName', label: 'Supplement Name', type: 'text', required: true, fullWidth: true },
+    {
+    name: 'category', label: 'Category', type: 'select',
+    options: SUPPLEMENT_CATEGORIES.map(c => ({ label: c, value: c }))
+    },
+    {
+    name: 'person', label: 'Who is taking this?', type: 'select',
+    options: ['Shared', ...familyMembers].map(p => ({ label: p, value: p }))
+    },
+    { name: 'purpose', label: 'Purpose / Use', type: 'text', required: true },
+    { name: 'doseAmount', label: 'Dosage Amount', type: 'text', required: true },
+    {
+    name: 'doseUnit', label: 'Unit', type: 'select',
+    options: [...DOSE_UNITS, 'Other'].map(u => ({ label: u, value: u }))
+    },
+    ...(formData.doseUnit === 'Other' ? [
+    { name: 'doseOther', label: 'Custom Unit', type: 'text', required: true }
+    ] : []),
+    { name: 'frequency', label: 'Frequency (e.g. 1/day)', type: 'text', required: true },
+    { name: 'quantity', label: 'Current Quantity', type: 'number', min: 0, required: true },
+    { name: 'targetQuantity', label: 'Target Quantity', type: 'number', min: 1, required: true },
+    { name: 'expiryDate', label: 'Expiry Date', type: 'date', required: true },
+    { name: 'instructions', label: 'Instructions', type: 'text', fullWidth: true },
+    { name: 'notes', label: 'Notes', type: 'text', fullWidth: true }
+    ]
  }
  ]}
  formData={formData}
@@ -516,6 +620,54 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
  </button>
  </div>
  )}
+ </Modal>
+
+ {/* Family Management Modal */}
+ <Modal
+   isOpen={isFamilyModalOpen}
+   onClose={() => setIsFamilyModalOpen(false)}
+   title="Manage Family Members"
+ >
+   <div className="space-y-6">
+     <div className="flex gap-2">
+       <input 
+         type="text"
+         value={newPersonName}
+         onChange={(e) => setNewPersonName(e.target.value)}
+         placeholder="New person name..."
+         className="flex-1 bg-zinc-100 dark:bg-zinc-800 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500"
+         onKeyDown={(e) => e.key === 'Enter' && addFamilyMember()}
+       />
+       <button
+         onClick={addFamilyMember}
+         className="bg-emerald-600 text-white p-3 rounded-xl hover:bg-emerald-700 transition-colors"
+       >
+         <Plus size={20} />
+       </button>
+     </div>
+
+     <div className="space-y-2">
+       {familyMembers.map(name => (
+         <div key={name} className="flex items-center justify-between p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+           <span className="font-semibold text-zinc-900 dark:text-zinc-100">{name}</span>
+           <button
+             onClick={() => removeFamilyMember(name)}
+             className="text-rose-500 hover:text-rose-700 p-1 transition-colors"
+             title="Remove person"
+           >
+             <Trash2 size={18} />
+           </button>
+         </div>
+       ))}
+       {familyMembers.length === 0 && (
+         <p className="text-center py-4 text-zinc-400 text-sm">No personal members added yet.</p>
+       )}
+     </div>
+     
+     <p className="text-[12px] text-zinc-400 italic">
+       * "Shared" is a permanent category and cannot be removed.
+     </p>
+   </div>
  </Modal>
  </section>
  );

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { getPrefixedKey } from "@/lib/keys";
 import { Text, SectionTitle } from "@/components/ui/Text";
-import { Flame, Trophy, AlertTriangle } from 'lucide-react';
+import { Flame, Trophy, AlertTriangle, TrendingUp, TrendingDown, Star, Activity, Users } from 'lucide-react';
 
 export type TimeFilter = '1 Day' | '7 Days' | '1 Month' | '6 Months' | '1 Year' | 'Custom Month';
 
@@ -29,6 +29,14 @@ export function HabitsOverview({ filter, selectedMonth, selectedYear }: HabitsOv
   const [topHabits, setTopHabits] = useState<HabitInsight[]>([]);
   const [bottomHabits, setBottomHabits] = useState<HabitInsight[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // New insight states
+  const [perfectDays, setPerfectDays] = useState(0);
+  const [activeHabitsCount, setActiveHabitsCount] = useState(0);
+  const [lastMonthRate, setLastMonthRate] = useState<number | null>(null);
+  const [thisMonthRate, setThisMonthRate] = useState<number | null>(null);
+  const [allTimeBestStreak, setAllTimeBestStreak] = useState<HabitInsight | null>(null);
+  const [worstDayOfWeek, setWorstDayOfWeek] = useState<{ day: string; missRate: number } | null>(null);
 
   useEffect(() => {
     const loadData = () => {
@@ -216,6 +224,110 @@ export function HabitsOverview({ filter, selectedMonth, selectedYear }: HabitsOv
       } else {
         setBestStreak(null);
       }
+
+      // ── NEW INSIGHTS ────────────────────────────────────────
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            // Active habits count
+            const mKey = `${selectedYear}-${selectedMonth}`;
+            const active = parsed.filter((h: any) => {
+              if (!h.monthScope || h.monthScope.length === 0) return true;
+              return h.monthScope.includes(mKey);
+            });
+            setActiveHabitsCount(active.length);
+
+            // Perfect Days (all active habits done that day)
+            if (filter === 'Custom Month') {
+              const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+              let perfectCount = 0;
+              for (let d = 1; d <= daysInMonth; d++) {
+                const dateOfRecord = new Date(selectedYear, selectedMonth, d);
+                if (dateOfRecord > today) continue;
+                const allDone = active.length > 0 && active.every((h: any) => {
+                  const s = h.records?.[mKey]?.[d - 1];
+                  return s === 'done';
+                });
+                if (allDone) perfectCount++;
+              }
+              setPerfectDays(perfectCount);
+
+              // Month trend: this month vs last month (only for Custom Month mode)
+              const lastMonthDate = new Date(selectedYear, selectedMonth - 1, 1);
+              const lastMKey = `${lastMonthDate.getFullYear()}-${lastMonthDate.getMonth()}`;
+              const lastDaysInMonth = new Date(lastMonthDate.getFullYear(), lastMonthDate.getMonth() + 1, 0).getDate();
+              let lDone = 0, lMissed = 0;
+              parsed.forEach((h: any) => {
+                const isActiveInLast = !h.monthScope || h.monthScope.length === 0 || h.monthScope.includes(lastMKey);
+                if (!isActiveInLast) return;
+                for (let d = 0; d < lastDaysInMonth; d++) {
+                  const s = h.records?.[lastMKey]?.[d];
+                  if (s === 'done') lDone++;
+                  else if (s === 'missed') lMissed++;
+                }
+              });
+              const lTotal = lDone + lMissed;
+              setLastMonthRate(lTotal > 0 ? Math.round((lDone / lTotal) * 100) : null);
+              const curTotal = cCount + mCount;
+              setThisMonthRate(curTotal > 0 ? Math.round((cCount / curTotal) * 100) : null);
+            } else {
+              setPerfectDays(0);
+              setLastMonthRate(null);
+              setThisMonthRate(null);
+            }
+
+            // All-time best streak (across all habits, ever)
+            let globalBestStreak = 0;
+            let globalBestHabit = '';
+            parsed.forEach((h: any) => {
+              let tempS = 0;
+              let best = 0;
+              const allKeys = Object.keys(h.records || {}).sort();
+              for (const k of allKeys) {
+                const days: string[] = h.records[k] || [];
+                for (const s of days) {
+                  if (s === 'done') { tempS++; best = Math.max(best, tempS); }
+                  else tempS = 0;
+                }
+              }
+              if (best > globalBestStreak) {
+                globalBestStreak = best;
+                globalBestHabit = h.name;
+              }
+            });
+            if (globalBestStreak > 0) {
+              setAllTimeBestStreak({ name: globalBestHabit, value: globalBestStreak });
+            } else {
+              setAllTimeBestStreak(null);
+            }
+
+            // Worst day of week (most misses by weekday, across all habits all time)
+            const dowMiss: number[] = Array(7).fill(0);
+            const dowTotal: number[] = Array(7).fill(0);
+            const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            parsed.forEach((h: any) => {
+              Object.entries(h.records || {}).forEach(([k, days]: [string, any]) => {
+                const [yr, mo] = k.split('-').map(Number);
+                (days as string[]).forEach((s, dIdx) => {
+                  if (s !== 'done' && s !== 'missed') return;
+                  const dow = new Date(yr, mo, dIdx + 1).getDay();
+                  dowTotal[dow]++;
+                  if (s === 'missed') dowMiss[dow]++;
+                });
+              });
+            });
+            let worstIdx = -1;
+            let worstRate = -1;
+            dowTotal.forEach((total, i) => {
+              if (total < 3) return;
+              const rate = dowMiss[i] / total;
+              if (rate > worstRate) { worstRate = rate; worstIdx = i; }
+            });
+            setWorstDayOfWeek(worstIdx >= 0 ? { day: DAY_NAMES[worstIdx], missRate: Math.round(worstRate * 100) } : null);
+          }
+        } catch (e) {}
+      }
     };
 
     loadData();
@@ -319,6 +431,90 @@ export function HabitsOverview({ filter, selectedMonth, selectedYear }: HabitsOv
             )}
           </div>
         </div>
+      </div>
+
+      {/* ── Additional Insights Row ─────────────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+
+        {/* Perfect Days */}
+        <div className="bg-white dark:bg-zinc-900/60 border border-yellow-100 dark:border-yellow-900/50 border-l-4 rounded-xl p-5 flex flex-col gap-2 transition-all shadow-sm hover:shadow-md sm:hover:-translate-y-0.5">
+          <div className="flex items-center gap-2">
+            <Star className="w-5 h-5 text-yellow-500" />
+            <Text variant="label" as="h3" className="text-yellow-800 dark:text-yellow-400">Perfect Days</Text>
+          </div>
+          <Text variant="metric" as="span" className="text-yellow-600 dark:text-yellow-400">{perfectDays}</Text>
+          <Text variant="bodySmall" muted as="span">
+            {filter === 'Custom Month' ? 'Days all habits were done' : 'Select a month to see this'}
+          </Text>
+        </div>
+
+        {/* Active Habits */}
+        <div className="bg-white dark:bg-zinc-900/60 border border-indigo-100 dark:border-indigo-900/50 border-l-4 rounded-xl p-5 flex flex-col gap-2 transition-all shadow-sm hover:shadow-md sm:hover:-translate-y-0.5">
+          <div className="flex items-center gap-2">
+            <Users className="w-5 h-5 text-indigo-500" />
+            <Text variant="label" as="h3" className="text-indigo-800 dark:text-indigo-400">Active Habits</Text>
+          </div>
+          <Text variant="metric" as="span" className="text-indigo-600 dark:text-indigo-400">{activeHabitsCount}</Text>
+          <Text variant="bodySmall" muted as="span">Habits active this period</Text>
+        </div>
+
+        {/* Monthly Trend */}
+        <div className="bg-white dark:bg-zinc-900/60 border border-cyan-100 dark:border-cyan-900/50 border-l-4 rounded-xl p-5 flex flex-col gap-2 transition-all shadow-sm hover:shadow-md sm:hover:-translate-y-0.5">
+          <div className="flex items-center gap-2">
+            {(thisMonthRate !== null && lastMonthRate !== null && thisMonthRate >= lastMonthRate)
+              ? <TrendingUp className="w-5 h-5 text-emerald-500" />
+              : <TrendingDown className="w-5 h-5 text-rose-500" />}
+            <Text variant="label" as="h3" className="text-cyan-800 dark:text-cyan-400">Month Trend</Text>
+          </div>
+          {thisMonthRate !== null && lastMonthRate !== null ? (
+            <>
+              <div className="flex items-baseline gap-2">
+                <Text variant="metric" as="span" className={thisMonthRate >= lastMonthRate ? 'text-emerald-500' : 'text-rose-500'}>
+                  {thisMonthRate >= lastMonthRate ? '+' : ''}{thisMonthRate - lastMonthRate}%
+                </Text>
+                <Text variant="bodySmall" muted as="span">vs last month</Text>
+              </div>
+              <Text variant="bodySmall" muted as="span">{lastMonthRate}% last → {thisMonthRate}% now</Text>
+            </>
+          ) : (
+            <Text variant="bodySmall" muted as="span" className="italic">
+              {filter === 'Custom Month' ? 'Not enough data' : 'Select a month'}
+            </Text>
+          )}
+        </div>
+
+        {/* All-time Best Streak */}
+        <div className="bg-white dark:bg-zinc-900/60 border border-purple-100 dark:border-purple-900/50 border-l-4 rounded-xl p-5 flex flex-col gap-2 transition-all shadow-sm hover:shadow-md sm:hover:-translate-y-0.5">
+          <div className="flex items-center gap-2">
+            <Activity className="w-5 h-5 text-purple-500" />
+            <Text variant="label" as="h3" className="text-purple-800 dark:text-purple-400">All-time Streak</Text>
+          </div>
+          {allTimeBestStreak ? (
+            <>
+              <Text variant="metric" as="span" className="text-purple-600 dark:text-purple-400">{allTimeBestStreak.value} Days</Text>
+              <Text variant="bodySmall" muted as="span" className="truncate">{allTimeBestStreak.name}</Text>
+            </>
+          ) : (
+            <Text variant="bodySmall" muted as="span" className="italic">No streaks yet</Text>
+          )}
+        </div>
+
+        {/* Worst Day of Week */}
+        <div className="bg-white dark:bg-zinc-900/60 border border-rose-100 dark:border-rose-900/50 border-l-4 rounded-xl p-5 flex flex-col gap-2 transition-all shadow-sm hover:shadow-md sm:hover:-translate-y-0.5">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-rose-400" />
+            <Text variant="label" as="h3" className="text-rose-800 dark:text-rose-400">Weakest Day</Text>
+          </div>
+          {worstDayOfWeek ? (
+            <>
+              <Text variant="metric" as="span" className="text-rose-600 dark:text-rose-400">{worstDayOfWeek.day}</Text>
+              <Text variant="bodySmall" muted as="span">{worstDayOfWeek.missRate}% miss rate historically</Text>
+            </>
+          ) : (
+            <Text variant="bodySmall" muted as="span" className="italic">Not enough data yet</Text>
+          )}
+        </div>
+
       </div>
     </div>
   );

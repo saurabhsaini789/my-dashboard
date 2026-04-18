@@ -28,23 +28,24 @@ export interface MedicineItem {
 ========================= */
 
 export interface SupplementItem {
- id: string;
+  id: string;
 
- itemName: string;
- category: string;
+  itemName: string;
+  category: string;
+  person: string; // Who is taking this
 
- purpose: string;
- frequency: string;
- dose: string;
+  purpose: string;
+  frequency: string;
+  dose: string;
 
- quantity: number;
- targetQuantity: number;
+  quantity: number;
+  targetQuantity: number;
 
- expiryDate: string;
+  expiryDate: string;
 
- instructions: string;
+  instructions: string;
 
- notes?: string;
+  notes?: string;
 }
 
 /* =========================
@@ -65,10 +66,28 @@ export const MEDICINE_CATEGORIES = [
 ];
 
 export const SUPPLEMENT_CATEGORIES = [
- 'Multivitamin',
- 'Vitamin',
- 'Mineral',
- 'Herbal / Traditional',
- 'Protein / Nutrition',
- 'Specialty Supplement'
+  'Multivitamin',
+  'Vitamin',
+  'Mineral',
+  'Herbal / Traditional',
+  'Protein / Nutrition',
+  'Specialty Supplement'
+];
+
+export const DOSE_UNITS = [
+  'mg',
+  'mcg',
+  'g',
+  'IU',
+  'mL',
+  'drops',
+  'capsules',
+  'tablets',
+  'Other'
+];
+
+// Initial seed for family members
+export const FAMILY_MEMBERS = [
+  'Saurabh',
+  'Neha',
 ];

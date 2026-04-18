@@ -7,6 +7,8 @@ import { TravelMedicalKitSection } from '@/components/health-system/TravelMedica
 import { FirstAidHomeSection } from '@/components/health-system/FirstAidHomeSection';
 import { FirstAidMobileSection } from '@/components/health-system/FirstAidMobileSection';
 import { SupplementSection } from '@/components/health-system/SupplementSection';
+import { HealthInsightsPanel } from '@/components/health-system/HealthInsightsPanel';
+import { SupplementRoutineSection } from '@/components/health-system/SupplementRoutineSection';
 import { PageContainer } from '@/components/PageContainer';
 import { getPrefixedKey } from '@/lib/keys';
 import { PageTitle, Text, Description } from '@/components/ui/Text';
@@ -49,6 +51,14 @@ export default function HealthSystemPage() {
           </div>
         </header>
 
+        {/* Health Insights Panel */}
+        <div className="fade-in" style={{ animationDelay: '0.1s' }}>
+          <HealthInsightsPanel
+            activeFilter={globalStatusFilter}
+            onFilterChange={setGlobalStatusFilter}
+          />
+        </div>
+
         {/* Medicine Inventory Section - Animated Entry */}
         <div ref={medicineRef} className="fade-in mb-14" style={{ animationDelay: '0.2s' }}>
           <MedicineInventorySection externalFilter={globalStatusFilter} />
@@ -68,6 +78,10 @@ export default function HealthSystemPage() {
 
         <div className="fade-in mb-14" style={{ animationDelay: '1.8s' }}>
           <SupplementSection externalFilter={globalStatusFilter} />
+        </div>
+
+        <div className="fade-in mb-14" style={{ animationDelay: '2.0s' }}>
+          <SupplementRoutineSection />
         </div>
       </PageContainer>
 
