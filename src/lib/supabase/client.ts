@@ -1,8 +1,9 @@
 "use client";
 
 import { createBrowserClient } from '@supabase/ssr';
+import { SupabaseClient } from '@supabase/supabase-js';
 
-let clientInstance: any | null = null;
+let clientInstance: SupabaseClient | null = null;
 
 export function createClient() {
   if (clientInstance) return clientInstance;

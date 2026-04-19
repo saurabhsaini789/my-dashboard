@@ -36,7 +36,7 @@ export function useSync() {
         setSyncStatus('idle');
       } else {
         setSyncStatus('unauthenticated');
-        hasSyncedFromServer.current = false;
+        syncStartTime.current = 0;
         // Optionally clear cache here if needed, but AuthGuard handles cleanup
       }
     });
@@ -47,9 +47,8 @@ export function useSync() {
   // --- 1. Push Local Changes to Supabase ---
   const pushToSupabase = useCallback(async (key: string, taggedValue: string | null) => {
     if (!session || !session.user) return;
-    if (isSyncingFromRemote.current && !hasSyncedFromServer.current) return;
-    if (!hasSyncedFromServer.current) {
-      console.warn(`[Sync] Push blocked for ${key}: Initial pull not complete.`);
+    if (isPushLocked.current) {
+      console.warn(`[Sync] Push blocked for ${key}: Initial hydration lock active.`);
       return;
     }
     if (IS_PUSH_DISABLED) {
