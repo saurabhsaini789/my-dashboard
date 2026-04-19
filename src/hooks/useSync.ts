@@ -15,8 +15,8 @@ export function useSync() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
   const isSyncingFromRemote = useRef(false);
-  const hasSyncedFromServer = useRef(false);
   const isPushLocked = useRef(false);
+  const syncStartTime = useRef(0);
   
   // Kill switch for rest sync rollout
   const IS_PUSH_DISABLED = process.env.NEXT_PUBLIC_DISABLE_REST_SYNC === 'true';
@@ -177,18 +177,18 @@ export function useSync() {
         }
       }
 
-      // Safety Lock: Prevent any pushes for 5 seconds to let components hydrate
+      // Safety Lock: Prevent any pushes for 10 seconds to let components hydrate
       isPushLocked.current = true;
       isSyncingFromRemote.current = false;
-      hasSyncedFromServer.current = true; // UNLOCK PULLING
+      syncStartTime.current = Date.now();
       
       setIsReady(true);
       setSyncStatus('connected');
       
       setTimeout(() => {
         isPushLocked.current = false;
-        console.log('[Sync] Migration safety lock released.');
-      }, 5000);
+        console.log('[Sync] Initial hydration lock released.');
+      }, 10000);
       
       setTimeout(() => setSyncStatus('idle'), 1000);
     };
@@ -211,7 +211,21 @@ export function useSync() {
 
     const handleLocalUpdate = (e: CustomEvent | Event) => {
       const event = e as CustomEvent<{ key: string, value: string }>;
-      if (event.detail && ALL_SYNC_KEYS.includes(event.detail.key) && !isSyncingFromRemote.current && !isPushLocked.current) {
+      
+      // Strict loop prevention:
+      // 1. Must be a valid sync key
+      // 2. We must not be currently pulling from remote
+      // 3. We must not be in the initial hydration lock (10s)
+      // 4. Double check: The update must have happened after the last remote pull ended
+      const timeSinceSync = Date.now() - syncStartTime.current;
+      
+      if (
+        event.detail && 
+        ALL_SYNC_KEYS.includes(event.detail.key) && 
+        !isSyncingFromRemote.current && 
+        !isPushLocked.current &&
+        timeSinceSync > 100 // Buffer to catch late events from the pull set
+      ) {
         pushToSupabase(event.detail.key, event.detail.value);
       }
     };
