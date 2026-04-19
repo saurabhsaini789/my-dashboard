@@ -48,11 +48,12 @@ export function BusinessChannelsSection() {
       const migrated = channels.map(c => {
         if (!c.schedules || (c as any).postingFrequency !== undefined) {
           const legacy = c as any;
+          const status = (['Active', 'Paused', 'Idea'].includes(legacy.status) ? legacy.status : 'Active') as 'Active' | 'Paused' | 'Idea';
           return {
             id: legacy.id,
             name: legacy.name,
             platform: legacy.platform,
-            status: legacy.status,
+            status: status,
             about: legacy.about,
             rowColor: legacy.rowColor,
             schedules: [{
@@ -62,7 +63,7 @@ export function BusinessChannelsSection() {
               lastPostedDate: legacy.lastPostedDate || new Date().toISOString().split('T')[0],
               nextPostDueDate: legacy.nextPostDueDate || new Date().toISOString().split('T')[0]
             }]
-          };
+          } as BusinessChannel;
         }
         return c;
       });
@@ -159,11 +160,14 @@ export function BusinessChannelsSection() {
     const today = new Date(); today.setHours(0,0,0,0);
     let mostUrgentDiff = Infinity;
     
-    c.schedules.forEach(s => {
-      const due = new Date(s.nextPostDueDate || ''); due.setHours(0,0,0,0);
+    for (const s of c.schedules) {
+      if (!s.nextPostDueDate) continue;
+      const due = new Date(s.nextPostDueDate);
+      if (isNaN(due.getTime())) continue;
+      due.setHours(0,0,0,0);
       const diff = Math.ceil((due.getTime() - today.getTime()) / 86400000);
       if (diff < mostUrgentDiff) mostUrgentDiff = diff;
-    });
+    }
 
     if (mostUrgentDiff < 0) return { l: 'Overdue', c: 'text-rose-500' };
     if (mostUrgentDiff <= 1) return { l: 'Due Soon', c: 'text-amber-500' };

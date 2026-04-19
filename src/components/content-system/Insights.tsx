@@ -29,14 +29,16 @@ export function Insights() {
     const overdueChannels: BusinessChannel[] = [];
     const dueTomorrowChannels: BusinessChannel[] = [];
     
-    activeChannels.forEach(c => {
-      if (!c.schedules) return;
+    for (const c of activeChannels) {
+      if (!c.schedules) continue;
       let channelHasOverdue = false;
       let channelHasTomorrow = false;
       
-      c.schedules.forEach(s => {
+      for (const s of c.schedules) {
+        if (!s.nextPostDueDate) continue;
         totalSchedules++;
-        const due = new Date(s.nextPostDueDate || '');
+        const due = new Date(s.nextPostDueDate);
+        if (isNaN(due.getTime())) continue;
         due.setHours(0, 0, 0, 0);
         
         if (due >= today) {
@@ -48,11 +50,11 @@ export function Insights() {
         if (due.getTime() === tomorrow.getTime()) {
           channelHasTomorrow = true;
         }
-      });
+      }
       
       if (channelHasOverdue) overdueChannels.push(c);
       if (channelHasTomorrow) dueTomorrowChannels.push(c);
-    });
+    }
 
     if (totalSchedules > 0) {
       insights.push({
@@ -76,15 +78,18 @@ export function Insights() {
     let mostRecentDate = 0;
     let mostConsistentChannel: BusinessChannel | null = null;
     
-    activeChannels.forEach(c => {
-      c.schedules?.forEach(s => {
-        const d = new Date(s.lastPostedDate || 0).getTime();
+    for (const c of activeChannels) {
+      if (!c.schedules) continue;
+      for (const s of c.schedules) {
+        if (!s.lastPostedDate) continue;
+        const d = new Date(s.lastPostedDate).getTime();
+        if (isNaN(d)) continue;
         if (d > mostRecentDate) {
           mostRecentDate = d;
           mostConsistentChannel = c;
         }
-      });
-    });
+      }
+    }
 
     if (mostConsistentChannel && mostRecentDate >= sevenDaysAgo.getTime()) {
       insights.push({
