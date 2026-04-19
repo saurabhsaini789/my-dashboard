@@ -18,72 +18,95 @@ export function Insights() {
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
     const sevenDaysAgo = new Date(today);
     sevenDaysAgo.setDate(today.getDate() - 7);
 
-    const onTrackChannels = activeChannels.filter(c => {
-      const due = new Date(c.nextPostDueDate || '');
-      due.setHours(0, 0, 0, 0);
-      return due >= today;
-    }).length;
-
-    insights.push({
-      type: onTrackChannels === activeChannels.length ? 'positive' : 'warning',
-      icon: <TrendingUp size={16} />,
-      message: `You are on track for ${onTrackChannels} out of ${activeChannels.length} active channels this week.`
+    // Track schedules instead of just channels
+    let totalSchedules = 0;
+    let onTrackSchedules = 0;
+    const overdueChannels: BusinessChannel[] = [];
+    const dueTomorrowChannels: BusinessChannel[] = [];
+    
+    activeChannels.forEach(c => {
+      if (!c.schedules) return;
+      let channelHasOverdue = false;
+      let channelHasTomorrow = false;
+      
+      c.schedules.forEach(s => {
+        totalSchedules++;
+        const due = new Date(s.nextPostDueDate || '');
+        due.setHours(0, 0, 0, 0);
+        
+        if (due >= today) {
+          onTrackSchedules++;
+        } else {
+          channelHasOverdue = true;
+        }
+        
+        if (due.getTime() === tomorrow.getTime()) {
+          channelHasTomorrow = true;
+        }
+      });
+      
+      if (channelHasOverdue) overdueChannels.push(c);
+      if (channelHasTomorrow) dueTomorrowChannels.push(c);
     });
 
-    const overdue = activeChannels.filter(c => {
-      const due = new Date(c.nextPostDueDate || '');
-      due.setHours(0, 0, 0, 0);
-      return due < today;
-    });
+    if (totalSchedules > 0) {
+      insights.push({
+        type: onTrackSchedules === totalSchedules ? 'positive' : 'warning',
+        icon: <TrendingUp size={16} />,
+        message: `You are on track for ${onTrackSchedules} out of ${totalSchedules} post schedules this week.`
+      });
+    }
 
-    if (overdue.length > 0) {
+    if (overdueChannels.length > 0) {
       insights.push({
         type: 'urgent',
         icon: <AlertCircle size={16} />,
-        message: overdue.length === 1 
-          ? `"${overdue[0].name}" is overdue. Post now to maintain momentum.` 
-          : `${overdue.length} channels are overdue. Your consistency is dropping.`
+        message: overdueChannels.length === 1 
+          ? `"${overdueChannels[0].name}" has overdue posts. Update now to maintain momentum.` 
+          : `${overdueChannels.length} channels have overdue schedules. Consistency is dropping.`
       });
     }
 
-    const mostConsistent = activeChannels.reduce((prev, curr) => {
-      const prevDate = new Date(prev.lastPostedDate || 0);
-      const currDate = new Date(curr.lastPostedDate || 0);
-      return currDate > prevDate ? curr : prev;
-    }, activeChannels[0]);
+    // Most consistent: find channel with most recent post across all schedules
+    let mostRecentDate = 0;
+    let mostConsistentChannel: BusinessChannel | null = null;
+    
+    activeChannels.forEach(c => {
+      c.schedules?.forEach(s => {
+        const d = new Date(s.lastPostedDate || 0).getTime();
+        if (d > mostRecentDate) {
+          mostRecentDate = d;
+          mostConsistentChannel = c;
+        }
+      });
+    });
 
-    if (mostConsistent && new Date(mostConsistent.lastPostedDate || 0) >= sevenDaysAgo) {
+    if (mostConsistentChannel && mostRecentDate >= sevenDaysAgo.getTime()) {
       insights.push({
         type: 'positive',
         icon: <Sparkles size={16} />,
-        message: `"${mostConsistent.name}" is your most consistent channel right now. Keep it up!`
+        message: `"${mostConsistentChannel.name}" is your most active channel lately. Great momentum!`
       });
     }
 
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-    const dueTomorrow = activeChannels.filter(c => {
-      const due = new Date(c.nextPostDueDate || '');
-      due.setHours(0, 0, 0, 0);
-      return due.getTime() === tomorrow.getTime();
-    });
-
-    if (dueTomorrow.length > 0) {
+    if (dueTomorrowChannels.length > 0) {
       insights.push({
         type: 'warning',
         icon: <Clock size={16} />,
-        message: `Preparation: ${dueTomorrow.length} ${dueTomorrow.length === 1 ? 'post is' : 'posts are'} due tomorrow.`
+        message: `Preparation: ${dueTomorrowChannels.length} ${dueTomorrowChannels.length === 1 ? 'channel has' : 'channels have'} posts due tomorrow.`
       });
     }
 
-    if (overdue.length === 0 && onTrackChannels === activeChannels.length) {
+    if (overdueChannels.length === 0 && onTrackSchedules === totalSchedules && totalSchedules > 0) {
       insights.push({
         type: 'positive',
         icon: <CheckCircle2 size={16} />,
-        message: "Perfect Streak! All channels are currently on schedule."
+        message: "Perfect Streak! All post types are currently on schedule."
       });
     }
 

@@ -26,17 +26,20 @@ export const setSyncedItem = (key: string, value: string, userId?: string) => {
 
   // Tag the data if userId is available
   if (targetUserId) {
+    let parsedValue;
     try {
-      const parsed = JSON.parse(value);
-      const tagged: TaggedData<any> = {
-        u: targetUserId,
-        t: Date.now(),
-        d: parsed
-      };
-      finalValue = JSON.stringify(tagged);
+      parsedValue = JSON.parse(value);
     } catch {
-      // If not JSON, we store as is
+      // If it's not valid JSON (like a raw string 'grid'), we treat the value as the raw data
+      parsedValue = value;
     }
+
+    const tagged: TaggedData<any> = {
+      u: targetUserId,
+      t: Date.now(),
+      d: parsedValue
+    };
+    finalValue = JSON.stringify(tagged);
   }
 
   localStorage.setItem(prefixedKey, finalValue);

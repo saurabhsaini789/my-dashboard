@@ -93,20 +93,54 @@ export function InventoryTracker({ records }: InventoryTrackerProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {inventoryStatus.map(i => (
-            <div key={i.id} className="p-6 bg-zinc-50 dark:bg-zinc-800/30 border border-zinc-100 rounded-2xl">
-              <div className="flex justify-between mb-4">
-                <span className="font-bold">{i.name}</span>
-                <span className={`text-[10px] px-2 py-0.5 rounded ${i.status==='Fresh'?'bg-teal-50 text-teal-600':i.status==='Low'?'bg-amber-50 text-amber-600':'bg-rose-50 text-rose-600'}`}>{i.status}</span>
+        {viewMode === 'grid' ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {inventoryStatus.map(i => (
+              <div key={i.id} className="p-6 bg-zinc-50 dark:bg-zinc-800/30 border border-zinc-100 rounded-2xl">
+                <div className="flex justify-between mb-4">
+                  <span className="font-bold">{i.name}</span>
+                  <span className={`text-[10px] px-2 py-0.5 rounded ${i.status==='Fresh'?'bg-teal-50 text-teal-600':i.status==='Low'?'bg-amber-50 text-amber-600':'bg-rose-50 text-rose-600'}`}>{i.status}</span>
+                </div>
+                <div className="w-full h-1 bg-zinc-100 dark:bg-zinc-700 rounded-full overflow-hidden mb-2">
+                  <div className={`h-full ${i.status==='Fresh'?'bg-teal-500':i.status==='Low'?'bg-amber-500':'bg-rose-500'}`} style={{width:`${i.progress}%`}}/>
+                </div>
+                <div className="text-[10px] text-zinc-400">Last: {i.latestPurchaseDate ? i.latestPurchaseDate.toLocaleDateString() : 'Never'}</div>
               </div>
-              <div className="w-full h-1 bg-zinc-100 dark:bg-zinc-700 rounded-full overflow-hidden mb-2">
-                <div className={`h-full ${i.status==='Fresh'?'bg-teal-500':i.status==='Low'?'bg-amber-500':'bg-rose-500'}`} style={{width:`${i.progress}%`}}/>
-              </div>
-              <div className="text-[10px] text-zinc-400">Last: {i.latestPurchaseDate ? i.latestPurchaseDate.toLocaleDateString() : 'Never'}</div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-100 rounded-2xl overflow-hidden shadow-sm">
+            <table className="w-full text-left">
+              <thead className="bg-zinc-50 dark:bg-zinc-800 text-[10px] text-zinc-500 font-bold uppercase">
+                <tr>
+                  <th className="px-6 py-4">Item</th>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4">Progress / Remaining</th>
+                  <th className="px-6 py-4 text-right">Last Purchase</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                {inventoryStatus.map(i => (
+                  <tr key={i.id} className="hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4"><span className="font-bold text-sm">{i.name}</span></td>
+                    <td className="px-6 py-4"><span className={`text-[10px] font-bold uppercase px-2 py-1 rounded ${i.status==='Fresh'?'bg-teal-50 text-teal-600':i.status==='Low'?'bg-amber-50 text-amber-600':'bg-rose-50 text-rose-600'}`}>{i.status}</span></td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-24 h-1.5 bg-zinc-100 dark:bg-zinc-700 rounded-full overflow-hidden shrink-0">
+                          <div className={`h-full ${i.status==='Fresh'?'bg-teal-500':i.status==='Low'?'bg-amber-500':'bg-rose-500'}`} style={{width:`${i.progress}%`}}/>
+                        </div>
+                        <span className="text-[10px] font-bold text-zinc-400">{i.daysRemaining !== Infinity ? `${Math.round(i.daysRemaining)} days` : '∞'}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right transform group-hover:scale-105 transition-transform">
+                      <span className="text-xs font-bold text-zinc-500">{i.latestPurchaseDate ? i.latestPurchaseDate.toLocaleDateString() : 'Never'}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

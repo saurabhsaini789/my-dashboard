@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Info, CheckCircle2, LayoutGrid, List } from 'lucide-react';
+import { Plus, Edit2, Info, CheckCircle2, LayoutGrid, List, Trash2, AlertCircle, X, Calendar } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { setSyncedItem } from '@/lib/storage';
 import { SYNC_KEYS } from '@/lib/sync-keys';
 import { Modal } from '../ui/Modal';
 import { DynamicForm } from '../ui/DynamicForm';
-import { DEFAULT_PLATFORMS, CONTENT_TYPES, type BusinessChannel, type ContentIdea } from '@/types/business';
+import { DEFAULT_PLATFORMS, POST_TYPES, type BusinessChannel, type ContentIdea, type ContentTypeSchedule } from '@/types/business';
 import { Text, SectionTitle } from '../ui/Text';
 import { useStorageSubscription } from '@/hooks/useStorageSubscription';
 
@@ -22,8 +22,13 @@ export function BusinessChannelsSection() {
   const viewMode = useStorageSubscription<'table' | 'grid'>('content_system_view_mode', 'table');
   
   const [formData, setFormData] = useState({
-    name: '', platform: 'Instagram', customPlatform: '', contentType: 'Posts', customContentType: '', status: 'Active' as any, postingFrequency: 1, lastPostedDate: new Date().toISOString().split('T')[0], rowColor: '', about: ''
+    name: '', platform: 'Instagram', customPlatform: '', status: 'Active' as any, rowColor: '', about: '',
+    schedules: [] as ContentTypeSchedule[]
   });
+
+  const [newScheduleType, setNewScheduleType] = useState('Post');
+  const [customScheduleType, setCustomScheduleType] = useState('');
+  const [newFrequency, setNewFrequency] = useState(1);
 
   const LIGHT_COLORS = [
     { name: 'Default', value: '', dot: 'bg-zinc-200' },
@@ -37,25 +42,49 @@ export function BusinessChannelsSection() {
   ];
 
   useEffect(() => {
-    // Component mount logic
-  }, []);
+    // Migration Logic: Convert legacy channels to new schedule format
+    const needsMigration = channels.some(c => !c.schedules || (c as any).postingFrequency !== undefined);
+    if (needsMigration) {
+      const migrated = channels.map(c => {
+        if (!c.schedules || (c as any).postingFrequency !== undefined) {
+          const legacy = c as any;
+          return {
+            id: legacy.id,
+            name: legacy.name,
+            platform: legacy.platform,
+            status: legacy.status,
+            about: legacy.about,
+            rowColor: legacy.rowColor,
+            schedules: [{
+              id: crypto.randomUUID(),
+              type: legacy.contentType || 'Post',
+              frequency: legacy.postingFrequency || 1,
+              lastPostedDate: legacy.lastPostedDate || new Date().toISOString().split('T')[0],
+              nextPostDueDate: legacy.nextPostDueDate || new Date().toISOString().split('T')[0]
+            }]
+          };
+        }
+        return c;
+      });
+      setSyncedItem(SYNC_KEYS.FINANCES_BUSINESS, JSON.stringify(migrated));
+    }
+  }, [channels]);
 
   const toggleViewMode = (mode: 'table' | 'grid') => { setSyncedItem('content_system_view_mode', mode); };
 
   const openAddModal = () => {
     setEditingChannel(null);
-    setFormData({ name: '', platform: 'Instagram', customPlatform: '', contentType: 'Posts', customContentType: '', status: 'Active', postingFrequency: 1, lastPostedDate: new Date().toISOString().split('T')[0], rowColor: '', about: '' });
+    setFormData({ name: '', platform: 'Instagram', customPlatform: '', status: 'Active', rowColor: '', about: '', schedules: [] });
     setIsModalOpen(true);
   };
 
   const openEditModal = (channel: BusinessChannel) => {
     setEditingChannel(channel);
     const isStandardPlatform = DEFAULT_PLATFORMS.includes(channel.platform);
-    const isStandardType = CONTENT_TYPES.includes(channel.contentType || '');
     setFormData({
       name: channel.name, platform: isStandardPlatform ? channel.platform : 'Other', customPlatform: isStandardPlatform ? '' : channel.platform,
-      contentType: isStandardType ? (channel.contentType || 'Posts') : 'Other', customContentType: isStandardType ? '' : (channel.contentType || ''),
-      status: channel.status, postingFrequency: channel.postingFrequency, lastPostedDate: channel.lastPostedDate, rowColor: channel.rowColor || '', about: channel.about || ''
+      status: channel.status, rowColor: channel.rowColor || '', about: channel.about || '',
+      schedules: [...channel.schedules]
     });
     setIsModalOpen(true);
   };
@@ -63,15 +92,12 @@ export function BusinessChannelsSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const platform = formData.platform === 'Other' ? formData.customPlatform : formData.platform;
-    const contentType = formData.contentType === 'Other' ? formData.customContentType : formData.contentType;
-    const nextDate = new Date(formData.lastPostedDate);
-    nextDate.setDate(nextDate.getDate() + formData.postingFrequency);
-
+    
     const newItem: BusinessChannel = {
       id: editingChannel ? editingChannel.id : crypto.randomUUID(),
-      name: formData.name, platform: platform || 'Other', contentType: contentType || 'Other', status: formData.status,
-      postingFrequency: formData.postingFrequency, lastPostedDate: formData.lastPostedDate, nextPostDueDate: nextDate.toISOString().split('T')[0],
-      rowColor: formData.rowColor, about: formData.about
+      name: formData.name, platform: platform || 'Other', status: formData.status,
+      rowColor: formData.rowColor, about: formData.about,
+      schedules: formData.schedules
     };
 
     const updated = editingChannel ? channels.map(c => c.id === editingChannel.id ? newItem : c) : [newItem, ...channels];
@@ -79,17 +105,41 @@ export function BusinessChannelsSection() {
     setIsModalOpen(false);
   };
 
-  const markAsPosted = (id: string, ideaId?: string) => {
+  const addSchedule = () => {
+    const type = newScheduleType === 'Other' ? customScheduleType : newScheduleType;
+    if (!type) return;
+    const newSched: ContentTypeSchedule = {
+      id: crypto.randomUUID(),
+      type,
+      frequency: newFrequency,
+      lastPostedDate: new Date().toISOString().split('T')[0],
+      nextPostDueDate: new Date().toISOString().split('T')[0]
+    };
+    setFormData(prev => ({ ...prev, schedules: [...prev.schedules, newSched] }));
+    setCustomScheduleType('');
+  };
+
+  const removeSchedule = (id: string) => {
+    setFormData(prev => ({ ...prev, schedules: prev.schedules.filter(s => s.id !== id) }));
+  };
+
+  const markAsPosted = (channelId: string, scheduleId: string, ideaId?: string) => {
     if (!ideaId) {
-      if (ideas.filter(i => i.channelId === id && i.status === 'Pending').length > 0) {
-        setSelectedChannelForPost(id); setIsIdeaModalOpen(true); return;
+      if (ideas.filter(i => i.channelId === channelId && i.status === 'Pending').length > 0) {
+        setSelectedChannelForPost(channelId); setIsIdeaModalOpen(true); return;
       }
     }
     const today = new Date().toISOString().split('T')[0];
     const updatedChannels = channels.map(c => {
-      if (c.id === id) {
-        const next = new Date(); next.setDate(next.getDate() + c.postingFrequency);
-        return { ...c, lastPostedDate: today, nextPostDueDate: next.toISOString().split('T')[0] };
+      if (c.id === channelId) {
+        const updatedSchedules = c.schedules.map(s => {
+          if (s.id === scheduleId) {
+            const next = new Date(); next.setDate(next.getDate() + s.frequency);
+            return { ...s, lastPostedDate: today, nextPostDueDate: next.toISOString().split('T')[0] };
+          }
+          return s;
+        });
+        return { ...c, schedules: updatedSchedules };
       }
       return c;
     });
@@ -104,11 +154,19 @@ export function BusinessChannelsSection() {
 
   const getStatus = (c: BusinessChannel) => {
     if (c.status !== 'Active') return { l: 'Draft', c: 'text-zinc-400' };
+    if (!c.schedules || c.schedules.length === 0) return { l: 'No Schedule', c: 'text-zinc-400' };
+    
     const today = new Date(); today.setHours(0,0,0,0);
-    const due = new Date(c.nextPostDueDate || ''); due.setHours(0,0,0,0);
-    const diff = Math.ceil((due.getTime() - today.getTime()) / 86400000);
-    if (diff < 0) return { l: 'Overdue', c: 'text-rose-500' };
-    if (diff <= 1) return { l: 'Due Soon', c: 'text-amber-500' };
+    let mostUrgentDiff = Infinity;
+    
+    c.schedules.forEach(s => {
+      const due = new Date(s.nextPostDueDate || ''); due.setHours(0,0,0,0);
+      const diff = Math.ceil((due.getTime() - today.getTime()) / 86400000);
+      if (diff < mostUrgentDiff) mostUrgentDiff = diff;
+    });
+
+    if (mostUrgentDiff < 0) return { l: 'Overdue', c: 'text-rose-500' };
+    if (mostUrgentDiff <= 1) return { l: 'Due Soon', c: 'text-amber-500' };
     return { l: 'On Track', c: 'text-emerald-500' };
   };
 
@@ -129,7 +187,7 @@ export function BusinessChannelsSection() {
         <div className="bg-white dark:bg-zinc-900 border border-zinc-100 rounded-2xl overflow-hidden shadow-sm">
           <table className="w-full text-left">
             <thead className="bg-zinc-50 dark:bg-zinc-800 text-[10px] font-bold uppercase text-zinc-400">
-              <tr><th className="px-6 py-4">Status</th><th className="px-6 py-4">Channel</th><th className="px-6 py-4">Platform</th><th className="px-6 py-4">Frequency</th><th className="px-6 py-4">Next Due</th><th className="px-6 py-4"></th></tr>
+              <tr><th className="px-6 py-4">Status</th><th className="px-6 py-4">Channel</th><th className="px-6 py-4">Platform</th><th className="px-6 py-4">Schedules</th><th className="px-6 py-4"></th></tr>
             </thead>
             <tbody className="text-sm font-bold">
               {channels.map(c => {
@@ -139,10 +197,15 @@ export function BusinessChannelsSection() {
                     <td className="px-6 py-4"><span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full ${s.c} bg-zinc-50`}>{s.l}</span></td>
                     <td className="px-6 py-4">{c.name}</td>
                     <td className="px-6 py-4 text-zinc-400">{c.platform}</td>
-                    <td className="px-6 py-4 text-center">{c.postingFrequency}d</td>
-                    <td className="px-6 py-4"><span className={s.l==='Overdue'?'text-rose-500':''}>{new Date(c.nextPostDueDate||'').toLocaleDateString(undefined, {month:'short', day:'numeric'})}</span></td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-wrap gap-1">
+                        {c.schedules?.map(sched => (
+                          <span key={sched.id} className="text-[10px] bg-zinc-100 px-2 py-0.5 rounded text-zinc-500">{sched.type} ({sched.frequency}d)</span>
+                        ))}
+                        {(!c.schedules || c.schedules.length === 0) && <span className="text-zinc-300 italic">None</span>}
+                      </div>
+                    </td>
                     <td className="px-6 py-4 text-right flex gap-2 justify-end">
-                      {c.status==='Active' && <button onClick={()=>markAsPosted(c.id)} className="p-2 bg-zinc-900 text-white rounded-xl"><CheckCircle2 size={14}/></button>}
                       <button onClick={()=>openEditModal(c)} className="p-2 bg-zinc-100 rounded-xl text-zinc-400"><Edit2 size={14}/></button>
                     </td>
                   </tr>
@@ -161,13 +224,23 @@ export function BusinessChannelsSection() {
                   <div><Text variant="body" className="font-bold text-lg">{c.name}</Text><span className="text-[10px] font-bold uppercase text-zinc-400">{c.platform}</span></div>
                   <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full ${s.c} bg-zinc-50`}>{s.l}</span>
                 </div>
-                <div className="grid grid-cols-2 gap-4 py-4 border-t border-zinc-50 text-xs font-bold">
-                  <div><span className="text-zinc-400">FREQ</span><div>{c.postingFrequency}d</div></div>
-                  <div className="text-right"><span className="text-zinc-400">DUE</span><div className={s.l==='Overdue'?'text-rose-500':''}>{new Date(c.nextPostDueDate||'').toLocaleDateString(undefined, {month:'short', day:'numeric'})}</div></div>
+                <div className="flex flex-col gap-2 py-4 border-t border-zinc-50">
+                  <span className="text-[10px] font-bold uppercase text-zinc-400">Schedules</span>
+                  <div className="space-y-1.5">
+                    {c.schedules?.map(sched => {
+                      const due = new Date(sched.nextPostDueDate);
+                      const isOverdue = due < new Date();
+                      return (
+                        <div key={sched.id} className="flex justify-between items-center text-xs font-bold">
+                          <span className="text-zinc-600">{sched.type}</span>
+                          <span className={isOverdue ? 'text-rose-500' : 'text-zinc-400'}>{sched.frequency}d • {due.toLocaleDateString(undefined, {month:'short', day:'numeric'})}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="flex gap-2 mt-4">
-                  {c.status==='Active' && <button onClick={()=>markAsPosted(c.id)} className="flex-1 bg-zinc-900 text-white py-3 rounded-xl font-bold text-xs">POSTED</button>}
-                  <button onClick={()=>openEditModal(c)} className="p-3 bg-zinc-100 rounded-xl text-zinc-400"><Edit2 size={16}/></button>
+                <div className="flex gap-2 mt-2">
+                  <button onClick={()=>openEditModal(c)} className="w-full py-3 bg-zinc-100 rounded-xl text-zinc-400 flex items-center justify-center gap-2 font-bold text-xs"><Edit2 size={14}/> EDIT CHANNEL</button>
                 </div>
               </div>
             );
@@ -180,25 +253,117 @@ export function BusinessChannelsSection() {
           sections={[{ id:'c', fields:[
             { name:'name', label:'Name', type:'text', required:true, fullWidth:true },
             { name:'platform', label:'Platform', type:'select', options:DEFAULT_PLATFORMS.map(p=>({label:p,value:p})) },
-            { name:'postingFrequency', label:'Freq (Days)', type:'number', required:true },
-            { name:'lastPostedDate', label:'Last Post', type:'date', required:true },
             { name:'about', label:'Description', type:'textarea', fullWidth:true }
           ]}]}
           formData={formData}
           onChange={(n,v)=>setFormData(p=>({...p,[n]:v}))}
         />
-        <div className="flex gap-2 mt-4">
-          {['Active', 'Paused', 'Idea'].map(s => <button key={s} type="button" onClick={()=>setFormData({...formData, status:s as any})} className={`flex-1 py-2 rounded-xl text-xs font-bold border ${formData.status===s?'bg-zinc-900 text-white':'bg-zinc-50 text-zinc-400'}`}>{s}</button>)}
+        {/* Custom Schedule Manager */}
+        <div className="mt-8 pt-8 border-t border-zinc-100">
+          <div className="flex items-center gap-2 mb-4">
+            <Calendar size={18} className="text-zinc-400" />
+            <span className="text-xs font-bold uppercase text-zinc-900">Post Schedules</span>
+          </div>
+
+          <div className="space-y-3 mb-6">
+            {formData.schedules.map(sched => (
+              <div key={sched.id} className="flex items-center justify-between p-3 bg-zinc-50 rounded-2xl border border-zinc-100 group">
+                <div className="flex flex-col">
+                  <span className="text-sm font-bold text-zinc-900">{sched.type}</span>
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase">Every {sched.frequency} days</span>
+                </div>
+                <button type="button" onClick={() => removeSchedule(sched.id)} className="p-2 text-zinc-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all">
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+            {formData.schedules.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-8 bg-zinc-50/50 rounded-3xl border border-dashed border-zinc-200">
+                <AlertCircle size={24} className="text-zinc-200 mb-2" />
+                <span className="text-[10px] font-bold text-zinc-400 uppercase">No schedules added yet</span>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-3 p-4 bg-zinc-100/50 rounded-3xl border border-zinc-100">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-bold text-zinc-400 uppercase px-1">Post Type</span>
+                <select 
+                  value={newScheduleType} 
+                  onChange={(e) => setNewScheduleType(e.target.value)}
+                  className="w-full bg-white border border-zinc-100 px-3 py-2.5 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-zinc-900/5 transition-all"
+                >
+                  {POST_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-bold text-zinc-400 uppercase px-1">Frequency (Days)</span>
+                <input 
+                  type="number" 
+                  value={newFrequency} 
+                  onChange={(e) => setNewFrequency(parseInt(e.target.value) || 1)}
+                  className="w-full bg-white border border-zinc-100 px-3 py-2.5 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-zinc-900/5 transition-all"
+                  min="1"
+                />
+              </div>
+            </div>
+            
+            {newScheduleType === 'Other' && (
+              <div className="flex flex-col gap-1.5 animate-in fade-in slide-in-from-top-1">
+                <span className="text-[10px] font-bold text-zinc-400 uppercase px-1">Other Type Name</span>
+                <input 
+                  type="text" 
+                  value={customScheduleType} 
+                  onChange={(e) => setCustomScheduleType(e.target.value)}
+                  placeholder="e.g. Webinar"
+                  className="w-full bg-white border border-zinc-100 px-3 py-2.5 rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-zinc-900/5 transition-all"
+                />
+              </div>
+            )}
+
+            <button 
+              type="button" 
+              onClick={addSchedule}
+              className="mt-1 w-full bg-zinc-900 text-white py-3 rounded-2xl text-[10px] font-bold uppercase tracking-wider hover:shadow-lg transition-all active:scale-[0.98]"
+            >
+              + Add Schedule
+            </button>
+          </div>
         </div>
-        {editingChannel && <button type="button" onClick={()=>setSyncedItem(SYNC_KEYS.FINANCES_BUSINESS, JSON.stringify(channels.filter(c=>c.id!==editingChannel.id)))} className="mt-4 text-[10px] font-bold text-rose-500 uppercase">Delete Channel</button>}
+
+        <div className="flex gap-2 mt-8">
+          {['Active', 'Paused', 'Idea'].map(s => (
+            <button 
+              key={s} 
+              type="button" 
+              onClick={()=>setFormData({...formData, status:s as any})} 
+              className={`flex-1 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-wider border transition-all ${formData.status===s?'bg-zinc-900 text-white border-zinc-900 shadow-lg':'bg-zinc-50 text-zinc-400 border-zinc-100 hover:bg-zinc-100'}`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+        
+        {editingChannel && (
+          <div className="flex justify-center mt-6">
+            <button 
+              type="button" 
+              onClick={()=>setSyncedItem(SYNC_KEYS.FINANCES_BUSINESS, JSON.stringify(channels.filter(c=>c.id!==editingChannel.id)))} 
+              className="text-[10px] font-bold text-rose-500 uppercase tracking-widest hover:bg-rose-50 px-4 py-2 rounded-xl transition-all"
+            >
+              Delete Channel
+            </button>
+          </div>
+        )}
       </Modal>
 
       <Modal isOpen={isIdeaModalOpen} onClose={()=>setIsIdeaModalOpen(false)} title="Select Idea">
         <div className="space-y-3">
           {ideas.filter(i => i.channelId === selectedChannelForPost && i.status === 'Pending').map(i => (
-            <button key={i.id} onClick={()=>markAsPosted(selectedChannelForPost!, i.id)} className="w-full p-4 rounded-xl border hover:border-emerald-500 transition-all text-sm font-bold text-left">{i.title}</button>
+            <button key={i.id} onClick={()=>markAsPosted(selectedChannelForPost!, 'todo', i.id)} className="w-full p-4 rounded-xl border hover:border-emerald-500 transition-all text-sm font-bold text-left">{i.title}</button>
           ))}
-          <button onClick={()=>markAsPosted(selectedChannelForPost!, 'none')} className="w-full p-4 rounded-xl border border-dashed text-zinc-400 text-xs font-bold">Post without idea</button>
+          <button onClick={()=>markAsPosted(selectedChannelForPost!, 'todo', 'none')} className="w-full p-4 rounded-xl border border-dashed text-zinc-400 text-xs font-bold">Post without idea</button>
         </div>
       </Modal>
     </section>

@@ -38,6 +38,7 @@ const STATUS_OPTIONS: Status[] = ['None', 'Planned', 'Reading', 'Completed'];
 
 export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntry, language: 'English' | 'Hindi') => void }) {
   const data = useStorageSubscription<MultiYearLogData>(SYNC_KEYS.BOOKS_YEARLY_LOG, {});
+  const booksQueue = useStorageSubscription<any[]>(SYNC_KEYS.BOOKS_QUEUE, []);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
@@ -86,7 +87,7 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
     setModalState({ isOpen: true, month, type });
   };
 
-  const handleModalSave = (title: string, author: string, status: Status) => {
+  const handleModalSave = (title: string, author: string, status: Status, originalQueueId?: string) => {
     if (!modalState) return;
     const { month, type } = modalState;
     
@@ -100,12 +101,20 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
       author,
       category: modalState.category,
       status,
-      originalQueueId: modalState.originalQueueId
+      originalQueueId
     };
     
     monthData[key] = [...monthData[key], newBook];
     yearData[month] = monthData;
     saveLog({ ...data, [currentYear]: yearData });
+
+    // Remove from queue if it was pulled
+    if (originalQueueId) {
+      const updatedQueue = booksQueue.filter(b => b.id !== originalQueueId);
+      const reindexed = updatedQueue.map((b, i) => ({ ...b, order: i + 1 }));
+      setSyncedItem(SYNC_KEYS.BOOKS_QUEUE, JSON.stringify(reindexed));
+    }
+
     setModalState(null);
   };
 
@@ -165,18 +174,30 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
             return (
               <div key={month} className="grid grid-cols-12 hover:bg-zinc-50/50 transition-colors group/row">
                 <Text variant="label" as="div" className="col-span-2 px-6 py-4 border-r flex items-center justify-center font-bold text-zinc-400 uppercase">{month.slice(0, 3)}</Text>
-                <div className="col-span-5 px-4 py-4 border-r flex flex-col gap-3">
-                  <div className="flex items-center justify-between">
-                    {!searchQuery && <button onClick={() => openAddModal(month, 'english')} className="w-6 h-6 flex items-center justify-center rounded-lg border border-dashed border-zinc-300 text-zinc-400 hover:text-teal-500 hover:border-teal-500/50 transition-all"><Plus size={12} /></button>}
-                  </div>
+                <div className="col-span-5 px-4 py-4 border-r grid grid-cols-2 gap-x-4 gap-y-3 items-start content-start">
+                  {!searchQuery && (
+                    <button 
+                      onClick={() => openAddModal(month, 'english')} 
+                      className="flex items-center justify-start px-4 gap-2 h-9 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-400 hover:text-teal-500 hover:border-teal-500/50 hover:bg-teal-50/50 dark:hover:bg-teal-500/5 transition-all group"
+                    >
+                      <Plus size={14} className="group-hover:rotate-90 transition-transform duration-300" />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Add English</span>
+                    </button>
+                  )}
                   {filteredEnglish.map(book => (
                     <EditableBookRow key={book.id} book={book} onUpdate={(u) => updateBook(month, 'english', book.id, u)} onRemove={() => removeBook(month, 'english', book.id)} placeholder="Title..." />
                   ))}
                 </div>
-                <div className="col-span-5 px-4 py-4 flex flex-col gap-3">
-                  <div className="flex items-center justify-between">
-                    {!searchQuery && <button onClick={() => openAddModal(month, 'hindi')} className="w-6 h-6 flex items-center justify-center rounded-lg border border-dashed border-zinc-300 text-zinc-400 hover:text-rose-500 hover:border-rose-500/50 transition-all"><Plus size={12} /></button>}
-                  </div>
+                <div className="col-span-5 px-4 py-4 grid grid-cols-2 gap-x-4 gap-y-3 items-start content-start">
+                  {!searchQuery && (
+                    <button 
+                      onClick={() => openAddModal(month, 'hindi')} 
+                      className="flex items-center justify-start px-4 gap-2 h-9 rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-zinc-400 hover:text-rose-500 hover:border-rose-500/50 hover:bg-rose-50/50 dark:hover:bg-rose-500/5 transition-all group"
+                    >
+                      <Plus size={14} className="group-hover:rotate-90 transition-transform duration-300" />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Add Hindi</span>
+                    </button>
+                  )}
                   {filteredHindi.map(book => (
                     <EditableBookRow key={book.id} book={book} onUpdate={(u) => updateBook(month, 'hindi', book.id, u)} onRemove={() => removeBook(month, 'hindi', book.id)} placeholder="Title..." />
                   ))}
@@ -216,7 +237,8 @@ export function YearlyReadingLog({ onPromote }: { onPromote?: (book: LogBookEntr
           month={modalState.month}
           type={modalState.type}
           onClose={() => setModalState(null)}
-          onSave={(t, a, s) => handleModalSave(t, a, s)}
+          onSave={(t, a, s, qid) => handleModalSave(t, a, s, qid)}
+          booksQueue={booksQueue}
         />
       )}
     </div>
@@ -240,20 +262,27 @@ function EditableBookRow({ book, onUpdate, onRemove, placeholder }: {
     setIsEditing(false);
   };
 
+  const statusOptions = [
+    { id: 'Planned' as Status, Icon: Clock, active: "text-amber-600 bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20" },
+    { id: 'Reading' as Status, Icon: BookOpen, active: "text-blue-600 bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20" },
+    { id: 'Completed' as Status, Icon: CheckCircle2, active: "text-teal-600 bg-teal-50 dark:bg-teal-500/10 border-teal-200 dark:border-teal-500/20" }
+  ];
+
   return (
-    <div className="flex items-center gap-2 group/book animate-in fade-in slide-in-from-left-2 duration-300 w-full">
-      <div className="flex-shrink-0 group/status relative">
-        <button className={`w-7 h-7 flex items-center justify-center rounded-lg transition-all border ${ book.status === 'None' ? 'border-zinc-200 text-zinc-300' : 'border-emerald-100 bg-emerald-50 text-emerald-600' }`}>
-          {STATUS_ICONS[book.status] || <Plus size={12} />}
-        </button>
-        <div className="absolute left-0 top-full mt-1 z-20 hidden group-hover/status:flex flex-col bg-white dark:bg-zinc-900 border border-zinc-200 rounded-xl shadow-xl p-1 w-32">
-          {STATUS_OPTIONS.map((opt) => (
-            <button key={opt} onClick={() => onUpdate({ status: opt })} className="flex items-center gap-2 px-3 py-2 rounded-lg text-[10px] font-bold uppercase hover:bg-zinc-100 transition-colors">
-              {STATUS_ICONS[opt] || <div className="w-3.5 h-3.5 border border-zinc-200 rounded-full"></div>}
-              {opt}
+    <div className="flex items-center gap-2 group/book animate-in fade-in slide-in-from-left-2 duration-300 w-full p-1 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors">
+      <div className="flex-shrink-0 flex items-center gap-0.5 bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 p-0.5 rounded-lg shadow-sm">
+        {statusOptions.map(({ id, Icon, active }) => {
+          const isActive = book.status === id;
+          return (
+            <button
+              key={id}
+              onClick={() => onUpdate({ status: isActive ? 'None' : id })}
+              className={`w-6 h-6 flex items-center justify-center rounded-md transition-all border ${ isActive ? active : 'text-zinc-300 dark:text-zinc-700 border-transparent hover:text-zinc-400' }`}
+            >
+              <Icon size={12} />
             </button>
-          ))}
-        </div>
+          );
+        })}
       </div>
 
       <div className="flex-1 min-w-0">
@@ -263,9 +292,9 @@ function EditableBookRow({ book, onUpdate, onRemove, placeholder }: {
             <input value={localAuthor} onChange={(e) => setLocalAuthor(e.target.value)} onBlur={handleSubmit} onKeyDown={(e) => e.key === 'Enter' && handleSubmit()} className="w-full bg-zinc-50 dark:bg-zinc-900/50 rounded px-2 py-0.5 text-[10px] uppercase font-bold text-zinc-500" />
           </div>
         ) : (
-          <div onClick={() => setIsEditing(true)} className="cursor-pointer transition-colors flex items-center gap-1.5 min-w-0">
-            <Text variant="body" as="span" className={`text-sm sm:text-base font-bold truncate ${ book.title ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-300 italic' }`}>{book.title || placeholder}</Text>
-            {book.author && <Text variant="label" as="span" className="font-bold text-zinc-400 text-xs truncate">— {book.author}</Text>}
+          <div onClick={() => setIsEditing(true)} className="cursor-pointer transition-colors flex flex-col min-w-0">
+            <Text variant="body" as="span" className={`text-xs font-bold truncate leading-tight ${ book.title ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-300 italic' }`}>{book.title || placeholder}</Text>
+            {book.author && <span className="font-bold text-zinc-400 text-[9px] uppercase truncate tracking-tight">{book.author}</span>}
           </div>
         )}
       </div>
@@ -275,20 +304,75 @@ function EditableBookRow({ book, onUpdate, onRemove, placeholder }: {
   );
 }
 
-function AddLogBookModal({ month, type, onClose, onSave }: { month: string; type: 'english' | 'hindi'; onClose: () => void; onSave: (title: string, author: string, status: Status) => void; }) {
+function AddLogBookModal({ month, type, onClose, onSave, booksQueue }: { 
+  month: string; 
+  type: 'english' | 'hindi'; 
+  onClose: () => void; 
+  onSave: (title: string, author: string, status: Status, originalQueueId?: string) => void; 
+  booksQueue: any[];
+}) {
   const [formData, setFormData] = useState({ title: '', author: '', status: 'Planned' });
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); if (formData.title.trim()) onSave(formData.title.trim(), formData.author.trim(), formData.status as Status); };
+  const [selectedQueueId, setSelectedQueueId] = useState<string | null>(null);
+
+  const handleSubmit = (e: React.FormEvent) => { 
+    e.preventDefault(); 
+    if (formData.title.trim()) {
+      onSave(formData.title.trim(), formData.author.trim(), formData.status as Status, selectedQueueId || undefined); 
+    }
+  };
+
+  const filteredQueue = booksQueue.filter(b => b.language.toLowerCase() === type.toLowerCase());
+
   return (
     <Modal isOpen={true} onClose={onClose} title={`Add to ${month} log`} onSubmit={handleSubmit}>
-      <DynamicForm
-        sections={[{ id:'log', title: 'Book Details', fields:[
-          { name: 'title', label: 'Book Name', type: 'text', required: true },
-          { name: 'author', label: 'Author', type: 'text' },
-          { name: 'status', label: 'Status', type: 'select', options: STATUS_OPTIONS.map(opt=>({value:opt, label:opt})) }
-        ]}]}
-        formData={formData}
-        onChange={(n, v) => setFormData(p=>({...p, [n]: v}))}
-      />
+      <div className="flex flex-col gap-6">
+        {filteredQueue.length > 0 && (
+          <div className="flex flex-col gap-3">
+            <Text variant="label" as="div" className="uppercase font-bold text-zinc-400 text-[10px] tracking-wider">Quick Add from Reading Plan</Text>
+            <div className="grid grid-cols-1 gap-2">
+              {filteredQueue.map((book) => (
+                <button
+                  key={book.id}
+                  type="button"
+                  onClick={() => {
+                    setFormData({ title: book.name, author: book.author, status: 'Planned' });
+                    setSelectedQueueId(book.id);
+                  }}
+                  className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all ${
+                    selectedQueueId === book.id 
+                      ? 'border-teal-500 bg-teal-50/50 dark:bg-teal-500/10' 
+                      : 'border-zinc-100 dark:border-zinc-800 hover:border-zinc-200 dark:hover:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-900/50'
+                  }`}
+                >
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{book.name}</span>
+                    <span className="text-[10px] text-zinc-500 font-bold uppercase">{book.author}</span>
+                  </div>
+                  <Plus size={14} className={selectedQueueId === book.id ? 'text-teal-500' : 'text-zinc-300'} />
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-4 py-2">
+              <div className="h-px flex-1 bg-zinc-100 dark:bg-zinc-800"></div>
+              <span className="text-[10px] font-bold text-zinc-300 uppercase">Or manual entry</span>
+              <div className="h-px flex-1 bg-zinc-100 dark:bg-zinc-800"></div>
+            </div>
+          </div>
+        )}
+
+        <DynamicForm
+          sections={[{ id:'log', title: 'Book Details', fields:[
+            { name: 'title', label: 'Book Name', type: 'text', required: true },
+            { name: 'author', label: 'Author', type: 'text' },
+            { name: 'status', label: 'Status', type: 'select', options: STATUS_OPTIONS.map(opt=>({value:opt, label:opt})) }
+          ]}]}
+          formData={formData}
+          onChange={(n, v) => {
+            setFormData(p=>({...p, [n]: v}));
+            if (n === 'title') setSelectedQueueId(null);
+          }}
+        />
+      </div>
     </Modal>
   );
 }

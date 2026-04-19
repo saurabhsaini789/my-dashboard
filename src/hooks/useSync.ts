@@ -17,6 +17,7 @@ export function useSync() {
   const isSyncingFromRemote = useRef(false);
   const isPushLocked = useRef(false);
   const syncStartTime = useRef(0);
+  const currentSyncId = useRef(0);
   
   // Kill switch for rest sync rollout
   const IS_PUSH_DISABLED = process.env.NEXT_PUBLIC_DISABLE_REST_SYNC === 'true';
@@ -121,47 +122,74 @@ export function useSync() {
 
   // --- 2. Pull Initial Data from Supabase ---
   useEffect(() => {
-    const initSync = async () => {
+    const initSync = async (syncId: number) => {
       if (!session) return;
       
-      console.log('[Sync] Initializing authoritative pull from Supabase...');
+      console.log(`[Sync] Initializing authoritative pull (id: ${syncId})...`);
       setSyncStatus('initializing');
 
-      // 0. Pull from Supabase (PRIMARY SOURCE OF TRUTH)
-      const { data: remoteData, error } = await supabase
-        .from('dashboard_data')
-        .select('*')
-        .eq('user_id', session.user.id);
+      let projectRemoteData: any[] = [];
 
-      if (error) {
-        console.error('[Sync] Failed to pull initial cloud data:', error.message);
-        setErrorMessage(error.message);
-        setSyncStatus('error');
-        setIsReady(true);
-        return;
-      }
+      try {
+        // 0. Pull from Supabase (PRIMARY SOURCE OF TRUTH)
+        const { data: remoteData, error } = await supabase
+          .from('dashboard_data')
+          .select('*')
+          .eq('user_id', session.user.id);
 
-      // Filter for keys that belong to this project/dashboard
-      const projectID = process.env.NEXT_PUBLIC_DASHBOARD_ID;
-      const projectRemoteData = remoteData?.filter(r => 
-        projectID ? r.key.startsWith(`${projectID}:`) : !r.key.includes(':')
-      ) || [];
-
-      // Load remote data into local storage (TAGGED with userId)
-      isSyncingFromRemote.current = true;
-      projectRemoteData.forEach((row) => {
-        const parts = row.key.split(':');
-        const baseKey = parts[parts.length - 1];
-        if (baseKey && ALL_SYNC_KEYS.includes(baseKey)) {
-          // Wrap in tagged format before storing locally
-          setSyncedItem(baseKey, JSON.stringify(row.value), session.user.id);
+        // Stale check after await
+        if (syncId !== currentSyncId.current) {
+          console.log(`[Sync] Aborting pull (id: ${syncId}): Stale.`);
+          return;
         }
-      });
+
+        if (error) {
+          // Gracefully handle lock broken error if a newer sync has taken over
+          if (error.message?.includes('Lock broken') && syncId !== currentSyncId.current) {
+            console.log(`[Sync] Lock stolen by newer request (id: ${syncId}). Ignoring.`);
+            return;
+          }
+          
+          console.error('[Sync] Failed to pull initial cloud data:', error.message);
+          setErrorMessage(error.message);
+          setSyncStatus('error');
+          setIsReady(true);
+          return;
+        }
+
+        // Filter for keys that belong to this project/dashboard
+        const projectID = process.env.NEXT_PUBLIC_DASHBOARD_ID;
+        projectRemoteData = remoteData?.filter(r => 
+          projectID ? r.key.startsWith(`${projectID}:`) : !r.key.includes(':')
+        ) || [];
+
+        // Load remote data into local storage (TAGGED with userId)
+        isSyncingFromRemote.current = true;
+        projectRemoteData.forEach((row) => {
+          const parts = row.key.split(':');
+          const baseKey = parts[parts.length - 1];
+          if (baseKey && ALL_SYNC_KEYS.includes(baseKey)) {
+            // Wrap in tagged format before storing locally
+            setSyncedItem(baseKey, JSON.stringify(row.value), session.user.id);
+          }
+        });
+      } catch (e: any) {
+        if (e.message?.includes('Lock broken') && syncId !== currentSyncId.current) {
+          console.log(`[Sync] Catching and ignoring lock stolen error (id: ${syncId}).`);
+          return;
+        }
+        console.error('[Sync] Critical error during pull:', e);
+        setErrorMessage(e.message);
+        setSyncStatus('error');
+      }
       
       // 1. Initial Migration (Local untagged data -> Cloud)
       // Only happens for keys NOT already on remote
-      const remoteKeysMap = new Map(projectRemoteData.map(r => [r.key, r.value]));
+      const remoteKeysMap = new Map(projectRemoteData.map((r: any) => [r.key, r.value]));
       for (const baseKey of ALL_SYNC_KEYS) {
+        // Final stale check before migration loop
+        if (syncId !== currentSyncId.current) return;
+
         const prefixedKey = getPrefixedKey(baseKey);
         if (!remoteKeysMap.has(prefixedKey)) {
           const localVal = localStorage.getItem(prefixedKey);
@@ -193,8 +221,14 @@ export function useSync() {
     };
 
     if (session) {
-      initSync();
+      currentSyncId.current += 1;
+      initSync(currentSyncId.current);
     }
+
+    return () => {
+      // Small ref increment on cleanup to signal abort for any in-flight initSync
+      currentSyncId.current += 1;
+    };
   }, [session, pushToSupabase]);
 
   // --- 3. Listen for Local Storage Changes ---

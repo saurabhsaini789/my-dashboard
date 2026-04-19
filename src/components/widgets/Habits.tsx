@@ -202,7 +202,13 @@ export function Habits({ onHabitSelect }: HabitsProps = {}) {
         const container = scrollContainerRef.current;
         const todayElement = container?.querySelector(`[data-date-index="${todayDateIndex}"]`) as HTMLElement;
         if (todayElement) {
-          const scrollPosition = todayElement.offsetLeft - container.offsetWidth / 2 + todayElement.offsetWidth / 2;
+          const isMobile = window.innerWidth < 768;
+          // On mobile, scroll so today is "in front" (after the 150px sticky column)
+          // On desktop, continue centering today
+          const scrollPosition = isMobile 
+            ? todayElement.offsetLeft - 150 
+            : todayElement.offsetLeft - container.offsetWidth / 2 + todayElement.offsetWidth / 2;
+          
           container.scrollTo({ left: scrollPosition, behavior: 'smooth' });
         }
     }
@@ -252,8 +258,8 @@ export function Habits({ onHabitSelect }: HabitsProps = {}) {
             <thead>
               <tr className="bg-zinc-50 border-b">
                 <th className="p-4 sticky left-0 z-30 bg-zinc-50 border-r min-w-[150px]">Habit</th>
-                {datesOfMonth.map((d, i) => <th key={i} className={`p-2 text-center text-[10px] min-w-[40px] ${isCurrentViewRealTodayMonth && i === todayDateIndex ? 'bg-teal-50 text-teal-600' : ''}`}>{d.dayName}<br/>{d.date}</th>)}
-                <th className="p-4 sticky right-0 z-20 bg-zinc-50 border-l text-right">Score</th>
+                {datesOfMonth.map((d, i) => <th key={i} data-date-index={i} className={`p-2 text-center text-[10px] min-w-[40px] ${isCurrentViewRealTodayMonth && i === todayDateIndex ? 'bg-teal-50 text-teal-600' : ''}`}>{d.dayName}<br/>{d.date}</th>)}
+                <th className="p-4 sticky right-0 z-20 bg-zinc-50 border-l text-right hidden md:table-cell">Score</th>
               </tr>
             </thead>
             <tbody>
@@ -267,11 +273,22 @@ export function Habits({ onHabitSelect }: HabitsProps = {}) {
                   <tr key={h.id} className="hover:bg-zinc-50 border-b">
                     <td className="p-4 sticky left-0 z-20 bg-white group-hover:bg-zinc-50 border-r">
                       <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-center gap-2">
+                        <div 
+                          className="flex items-center gap-2 cursor-pointer hover:text-teal-600 transition-colors"
+                          onClick={() => onHabitSelect?.(h)}
+                        >
                           {streak >= 2 && <span className="text-[10px] bg-orange-50 text-orange-500 px-1.5 py-0.5 rounded-full"><Flame className="w-2.5 h-2.5 inline" />{streak}</span>}
                           <span className="text-sm">{h.name}</span>
                         </div>
-                        <button onClick={() => setHabitToDelete(h)} className="text-zinc-300 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setHabitToDelete(h);
+                          }} 
+                          className="text-zinc-300 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     </td>
                     {datesOfMonth.map((_, i) => {
@@ -284,7 +301,7 @@ export function Habits({ onHabitSelect }: HabitsProps = {}) {
                         </td>
                       );
                     })}
-                    <td className="p-4 sticky right-0 z-10 bg-white border-l text-right">
+                    <td className="p-4 sticky right-0 z-10 bg-white border-l text-right hidden md:table-cell">
                       <span className={`px-2 py-0.5 rounded-full text-xs ${score > 0 ? 'bg-emerald-50 text-emerald-600' : score < 0 ? 'bg-rose-50 text-rose-600' : 'bg-zinc-100'}`}>
                         {score > 0 ? `+${score}` : score}
                       </span>

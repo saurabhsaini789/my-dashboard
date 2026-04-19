@@ -74,20 +74,51 @@ export function GroceryPlan({ records, viewingDate, onDateChange }: GroceryPlanP
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map(item => (
-            <div key={item.id} className="p-5 bg-zinc-50 dark:bg-zinc-800/30 rounded-2xl border border-zinc-50 relative group">
-              <div className="flex justify-between mb-4">
-                <div className="flex flex-col"><span className="font-bold">{item.name}</span><span className="text-[10px] font-bold text-zinc-400 uppercase">{item.category}</span></div>
-                <div className="text-right"><span className="text-lg font-bold text-teal-600">${((item.expectedPrice||0)*(item.plannedQuantity||0)).toLocaleString()}</span></div>
+        {viewMode === 'card' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {items.map(item => (
+              <div key={item.id} className="p-5 bg-zinc-50 dark:bg-zinc-800/30 rounded-2xl border border-zinc-50 relative group">
+                <div className="flex justify-between mb-4">
+                  <div className="flex flex-col"><span className="font-bold">{item.name}</span><span className="text-[10px] font-bold text-zinc-400 uppercase">{item.category}</span></div>
+                  <div className="text-right"><span className="text-lg font-bold text-teal-600">${((item.expectedPrice||0)*(item.plannedQuantity||0)).toLocaleString()}</span></div>
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t border-zinc-100">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase">{item.plannedQuantity} {item.unitSize} • {item.frequency}</span>
+                  <button onClick={() => { setEditingItem(item); setFormData({ name: item.name, category: item.category || DEFAULT_CATEGORIES[0], plannedQuantity: String(item.plannedQuantity), unitSize: item.unitSize||'', frequency: item.frequency || 'Weekly', idealTiming: item.idealTiming||'', expectedPrice: String(item.expectedPrice), consumptionDays: String(item.consumptionDays||'') }); setIsFormOpen(true); }} className="text-[10px] font-bold uppercase text-zinc-400 opacity-0 group-hover:opacity-100">Edit</button>
+                </div>
               </div>
-              <div className="flex justify-between items-center pt-4 border-t border-zinc-100">
-                <span className="text-[10px] font-bold text-zinc-400 uppercase">{item.plannedQuantity} {item.unitSize} • {item.frequency}</span>
-                <button onClick={() => { setEditingItem(item); setFormData({ name: item.name, category: item.category || DEFAULT_CATEGORIES[0], plannedQuantity: String(item.plannedQuantity), unitSize: item.unitSize||'', frequency: item.frequency || 'Weekly', idealTiming: item.idealTiming||'', expectedPrice: String(item.expectedPrice), consumptionDays: String(item.consumptionDays||'') }); setIsFormOpen(true); }} className="text-[10px] font-bold uppercase text-zinc-400 opacity-0 group-hover:opacity-100">Edit</button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-zinc-50 dark:bg-zinc-800 text-[10px] text-zinc-500 font-bold uppercase">
+                <tr>
+                  <th className="px-6 py-4">Item</th>
+                  <th className="px-6 py-4">Category</th>
+                  <th className="px-6 py-4 text-center">Qty</th>
+                  <th className="px-6 py-4 text-right">Price</th>
+                  <th className="px-6 py-4 text-right">Total</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                {items.map(item => (
+                  <tr key={item.id} onClick={() => { setEditingItem(item); setFormData({ name: item.name, category: item.category || DEFAULT_CATEGORIES[0], plannedQuantity: String(item.plannedQuantity), unitSize: item.unitSize||'', frequency: item.frequency || 'Weekly', idealTiming: item.idealTiming||'', expectedPrice: String(item.expectedPrice), consumptionDays: String(item.consumptionDays||'') }); setIsFormOpen(true); }} className="hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors cursor-pointer group">
+                    <td className="px-6 py-4"><span className="font-bold text-sm">{item.name}</span></td>
+                    <td className="px-6 py-4"><span className="text-[10px] font-bold text-zinc-400 uppercase">{item.category}</span></td>
+                    <td className="px-6 py-4 text-center text-xs font-bold text-zinc-500">{item.plannedQuantity} {item.unitSize}</td>
+                    <td className="px-6 py-4 text-right text-xs font-bold text-zinc-500">${(item.expectedPrice || 0).toLocaleString()}</td>
+                    <td className="px-6 py-4 text-right"><span className="font-bold text-teal-600">${((item.expectedPrice||0)*(item.plannedQuantity||0)).toLocaleString()}</span></td>
+                    <td className="px-6 py-4 text-right">
+                      <button className="text-[10px] font-bold uppercase text-zinc-400 opacity-0 group-hover:opacity-100">Edit</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       <Modal isOpen={isFormOpen} onClose={() => { setIsFormOpen(false); setEditingItem(null); }} title="Grocery Item" onSubmit={handleSubmit}>

@@ -68,33 +68,76 @@ export function Quotes() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {isAdding && (
-          <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100 animate-in zoom-in duration-200">
-            <form onSubmit={handleAddQuote} className="flex flex-col gap-3">
-              <textarea autoFocus placeholder="Quote..." value={newQuoteText} onChange={e=>setNewQuoteText(e.target.value)} className="bg-white p-3 rounded-xl text-xs font-bold outline-none border border-zinc-100 min-h-[80px]"/>
-              <div className="flex gap-2">
-                <input placeholder="Author" value={newQuoteAuthor} onChange={e=>setNewQuoteAuthor(e.target.value)} className="bg-white px-3 py-2 rounded-xl text-xs font-bold flex-1 outline-none border border-zinc-100"/>
-                <button type="submit" className="bg-teal-600 text-white px-3 py-2 rounded-xl text-xs font-bold">SAVE</button>
-              </div>
-            </form>
-          </div>
-        )}
-        {quotes.map(q => (
-          <div key={q.id} onClick={() => { setSelectedQuoteId(q.id); setEditValue(q.text); setEditAuthor(q.author); }} className={`p-6 bg-white dark:bg-zinc-900 border border-zinc-100 rounded-2xl shadow-sm cursor-pointer hover:border-teal-500 transition-all ${selectedQuoteId===q.id?'ring-2 ring-teal-500/20 shadow-md':''}`}>
-            <p className="text-lg italic font-bold mb-4">"{q.text}"</p>
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-bold text-zinc-400">— {q.author}</span>
-              {selectedQuoteId===q.id && (
+      {viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {isAdding && (
+            <div className="p-4 bg-zinc-50 rounded-2xl border border-zinc-100 animate-in zoom-in duration-200">
+              <form onSubmit={handleAddQuote} className="flex flex-col gap-3">
+                <textarea autoFocus placeholder="Quote..." value={newQuoteText} onChange={e=>setNewQuoteText(e.target.value)} className="bg-white p-3 rounded-xl text-xs font-bold outline-none border border-zinc-100 min-h-[80px]"/>
                 <div className="flex gap-2">
-                  <button onClick={(e)=>{e.stopPropagation(); setEditingQuoteId(q.id);}} className="text-zinc-400 hover:text-teal-600"><Edit2 size={14}/></button>
-                  <button onClick={(e)=>{e.stopPropagation(); handleDeleteQuote(q.id);}} className="text-zinc-400 hover:text-rose-500"><Trash2 size={14}/></button>
+                  <input placeholder="Author" value={newQuoteAuthor} onChange={e=>setNewQuoteAuthor(e.target.value)} className="bg-white px-3 py-2 rounded-xl text-xs font-bold flex-1 outline-none border border-zinc-100"/>
+                  <button type="submit" className="bg-teal-600 text-white px-3 py-2 rounded-xl text-xs font-bold">SAVE</button>
                 </div>
-              )}
+              </form>
             </div>
-          </div>
-        ))}
-      </div>
+          )}
+          {quotes.map(q => (
+            <div key={q.id} onClick={() => { setSelectedQuoteId(q.id); setEditValue(q.text); setEditAuthor(q.author); }} className={`p-6 bg-white dark:bg-zinc-900 border border-zinc-100 rounded-2xl shadow-sm cursor-pointer hover:border-teal-500 transition-all ${selectedQuoteId===q.id?'ring-2 ring-teal-500/20 shadow-md':''}`}>
+              <p className="text-lg italic font-bold mb-4">"{q.text}"</p>
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-bold text-zinc-400">— {q.author}</span>
+                {selectedQuoteId===q.id && (
+                  <div className="flex gap-2">
+                    <button onClick={(e)=>{e.stopPropagation(); setEditingQuoteId(q.id);}} className="text-zinc-400 hover:text-teal-600"><Edit2 size={14}/></button>
+                    <button onClick={(e)=>{e.stopPropagation(); handleDeleteQuote(q.id);}} className="text-zinc-400 hover:text-rose-500"><Trash2 size={14}/></button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-100 rounded-2xl overflow-hidden shadow-sm">
+          <table className="w-full text-left">
+            <thead className="bg-zinc-50 dark:bg-zinc-800 text-[10px] text-zinc-500 font-bold">
+              <tr>
+                <th className="px-6 py-4">Quote</th>
+                <th className="px-6 py-4">Author</th>
+                <th className="px-6 py-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              {isAdding && (
+                <tr className="bg-teal-50/30">
+                  <td colSpan={3} className="px-6 py-4">
+                    <form onSubmit={handleAddQuote} className="flex gap-4">
+                      <input autoFocus placeholder="Quote..." value={newQuoteText} onChange={e=>setNewQuoteText(e.target.value)} className="bg-white px-4 py-2 rounded-xl text-xs font-bold flex-1 border border-zinc-100 outline-none"/>
+                      <input placeholder="Author" value={newQuoteAuthor} onChange={e=>setNewQuoteAuthor(e.target.value)} className="bg-white px-4 py-2 rounded-xl text-xs font-bold w-40 border border-zinc-100 outline-none"/>
+                      <button type="submit" className="bg-teal-600 text-white px-6 py-2 rounded-xl text-xs font-bold">SAVE</button>
+                    </form>
+                  </td>
+                </tr>
+              )}
+              {quotes.map(q => (
+                <tr key={q.id} onClick={() => { setEditingQuoteId(q.id); setEditValue(q.text); setEditAuthor(q.author); }} className="hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors cursor-pointer group">
+                  <td className="px-6 py-4">
+                    <p className="text-sm font-bold italic line-clamp-1">"{q.text}"</p>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-[10px] font-bold text-zinc-500">{q.author}</span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={(e)=>{e.stopPropagation(); setEditingQuoteId(q.id); setEditValue(q.text); setEditAuthor(q.author);}} className="text-zinc-400 hover:text-teal-600"><Edit2 size={14}/></button>
+                      <button onClick={(e)=>{e.stopPropagation(); handleDeleteQuote(q.id);}} className="text-zinc-400 hover:text-rose-500"><Trash2 size={14}/></button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {editingQuoteId && (
         <Modal isOpen={!!editingQuoteId} onClose={()=>setEditingQuoteId(null)} title="Edit Quote">
