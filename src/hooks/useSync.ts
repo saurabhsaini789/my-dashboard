@@ -155,8 +155,11 @@ export function useSync() {
         const parts = row.key.split(':');
         const baseKey = parts[parts.length - 1];
         if (baseKey && ALL_SYNC_KEYS.includes(baseKey)) {
+          console.log(`[Sync] Writing to LocalStorage: ${row.key} -> ${baseKey}`);
           // Wrap in tagged format before storing locally
           setSyncedItem(baseKey, JSON.stringify(row.value), session.user.id);
+        } else {
+          console.warn(`[Sync] Ignored key from cloud (not in SYNC_KEYS): ${row.key}`);
         }
       });
       

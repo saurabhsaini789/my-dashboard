@@ -74,5 +74,5 @@ export function clearUserCache() {
   }
   
   keysToRemove.forEach(k => localStorage.removeItem(k));
-  console.log(`[Security] Cleared ${keysToRemove.length} cached keys.`);
+  console.log(`[Security] Cleared ${keysToRemove.length} cached project keys (Prefix: '${prefix}').`);
 }

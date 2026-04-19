@@ -61,6 +61,10 @@ export function useStorageSubscription<T>(key: string, defaultValue: T): T {
     const prefixedKey = getPrefixedKey(key);
     const rawVal = localStorage.getItem(prefixedKey);
     
+    if (cache.current.initialized && rawVal && !cache.current.raw) {
+      console.log(`[Storage:${key}] Found new data in storage for ${prefixedKey}`);
+    }
+
     // 1. If raw string hasn't changed, return cached reference
     if (cache.current.initialized && rawVal === cache.current.raw) {
       return cache.current.parsed;
@@ -73,8 +77,12 @@ export function useStorageSubscription<T>(key: string, defaultValue: T): T {
       nextVal = defaultValue;
     } else if (userId) {
       const validated = validateLocalData<T>(rawVal, userId);
+      if (validated === null) {
+        console.warn(`[Storage:${key}] Validation failed for ${prefixedKey}. Data might be for a different user.`);
+      }
       nextVal = validated !== null ? validated : defaultValue;
     } else if (rawVal && rawVal.includes('"u":"')) {
+      console.log(`[Storage:${key}] Tagged data found but userId not available yet. Returning default.`);
       nextVal = defaultValue;
     } else {
       try {
