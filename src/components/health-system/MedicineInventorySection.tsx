@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { setSyncedItem } from '@/lib/storage';
 import { Modal } from '../ui/Modal';
 import { DynamicForm } from '../ui/DynamicForm';
 import { MedicineItem, MEDICINE_CATEGORIES, type InventoryStatus } from '@/types/health-system';
 import { Text, SectionTitle } from '../ui/Text';
 import { SYNC_KEYS } from '@/lib/sync-keys';
-import { LayoutGrid, List } from 'lucide-react';
+import { LayoutGrid, List, Search } from 'lucide-react';
 import { useStorageSubscription } from '@/hooks/useStorageSubscription';
 
 const STORAGE_KEY = SYNC_KEYS.HEALTH_MEDICINE;
@@ -28,6 +28,7 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
   const [editingItem, setEditingItem] = useState<MedicineItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' | 'OK'>('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
   const viewMode = useStorageSubscription<'grid' | 'table'>(VIEW_MODE_KEY, 'grid');
 
   const [formData, setFormData] = useState({
@@ -137,7 +138,23 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
   const sortedItems = [...items].sort((a, b) => priorityMap[getStatus(a)] - priorityMap[getStatus(b)]);
 
   const effectiveFilter = externalFilter && externalFilter !== 'ALL' ? externalFilter : statusFilter;
-  const finalItems = effectiveFilter !== 'ALL' ? sortedItems.filter(i => getStatus(i) === effectiveFilter) : (selectedCategory === 'All' ? sortedItems : sortedItems.filter(i => i.category === selectedCategory));
+  
+  const finalItems = useMemo(() => {
+    let filtered = effectiveFilter !== 'ALL' 
+      ? sortedItems.filter(i => getStatus(i) === effectiveFilter) 
+      : (selectedCategory === 'All' ? sortedItems : sortedItems.filter(i => i.category === selectedCategory));
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(i => 
+        i.itemName.toLowerCase().includes(q) ||
+        i.purpose.toLowerCase().includes(q) ||
+        (i.saltDetails || '').toLowerCase().includes(q) ||
+        (i.notes || '').toLowerCase().includes(q)
+      );
+    }
+    return filtered;
+  }, [sortedItems, effectiveFilter, selectedCategory, searchQuery]);
 
   const lowCount = items.filter(i => getStatus(i) === 'LOW').length;
   const missingCount = items.filter(i => getStatus(i) === 'MISSING').length;
@@ -158,6 +175,16 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
             <option value="All">ALL CATEGORIES</option>
             {MEDICINE_CATEGORIES.map(c => <option key={c} value={c}>{c.toUpperCase()}</option>)}
           </select>
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-rose-500 transition-colors" size={18} />
+            <input 
+              type="text" 
+              placeholder="Search inventory..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-zinc-100 dark:bg-zinc-800 text-xs font-bold rounded-2xl h-[54px] pl-12 pr-4 border-none min-w-[200px] outline-none focus:ring-2 focus:ring-rose-500/20 transition-all"
+            />
+          </div>
           <button onClick={openAddModal} className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-bold px-6 h-[54px] rounded-2xl hover:scale-105 transition-all">ADD MEDICINE</button>
         </div>
       </div>

@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { setSyncedItem } from '@/lib/storage';
 import { Modal } from '../ui/Modal';
 import { DynamicForm } from '../ui/DynamicForm';
 import { SupplementItem, SUPPLEMENT_CATEGORIES, FAMILY_MEMBERS, DOSE_UNITS, type InventoryStatus } from '@/types/health-system';
 import { Text, SectionTitle } from '../ui/Text';
 import { SYNC_KEYS } from '@/lib/sync-keys';
-import { LayoutGrid, List, User, Plus, Trash2, Settings } from 'lucide-react';
+import { LayoutGrid, List, User, Plus, Trash2, Settings, Search } from 'lucide-react';
 import { useStorageSubscription } from '@/hooks/useStorageSubscription';
 
 const STORAGE_KEY = SYNC_KEYS.HEALTH_SUPPLEMENTS;
@@ -26,6 +26,7 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedPerson, setSelectedPerson] = useState<string>('All');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' | 'OK'>('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
   const viewMode = useStorageSubscription<'grid' | 'table'>(VIEW_MODE_KEY, 'grid');
   const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
   const [newPersonName, setNewPersonName] = useState('');
@@ -144,12 +145,26 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
   });
 
   const effectiveFilter = externalFilter && externalFilter !== 'ALL' ? externalFilter : statusFilter;
-  const filtered = sortedItems.filter(i => {
-    const matchesCat = selectedCategory === 'All' || i.category === selectedCategory;
-    const matchesPerson = selectedPerson === 'All' || i.person === selectedPerson || (!i.person && selectedPerson === 'Shared');
-    const matchesStatus = effectiveFilter === 'ALL' || getStatus(i) === effectiveFilter;
-    return matchesCat && matchesPerson && matchesStatus;
-  });
+  
+  const filtered = useMemo(() => {
+    let baseFiltered = sortedItems.filter(i => {
+      const matchesCat = selectedCategory === 'All' || i.category === selectedCategory;
+      const matchesPerson = selectedPerson === 'All' || i.person === selectedPerson || (!i.person && selectedPerson === 'Shared');
+      const matchesStatus = effectiveFilter === 'ALL' || getStatus(i) === effectiveFilter;
+      return matchesCat && matchesPerson && matchesStatus;
+    });
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      baseFiltered = baseFiltered.filter(i => 
+        i.itemName.toLowerCase().includes(q) ||
+        (i.purpose || '').toLowerCase().includes(q) ||
+        (i.dose || '').toLowerCase().includes(q) ||
+        (i.notes || '').toLowerCase().includes(q)
+      );
+    }
+    return baseFiltered;
+  }, [sortedItems, selectedCategory, selectedPerson, effectiveFilter, searchQuery]);
 
   const stats = {
     low: items.filter(i => getStatus(i) === 'LOW').length,
@@ -166,11 +181,21 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
             <button onClick={() => toggleViewMode('grid')} className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-emerald-600' : 'text-zinc-500'}`}><LayoutGrid size={18} /></button>
             <button onClick={() => toggleViewMode('table')} className={`p-2 rounded-lg transition-all ${viewMode === 'table' ? 'bg-white shadow-sm text-emerald-600' : 'text-zinc-500'}`}><List size={18} /></button>
           </div>
-          <select value={selectedPerson} onChange={e => setSelectedPerson(e.target.value)} className="bg-zinc-100 rounded-2xl h-[54px] px-4 text-xs border-none cursor-pointer">
+          <select value={selectedPerson} onChange={e => setSelectedPerson(e.target.value)} className="bg-zinc-100 rounded-2xl h-[54px] px-4 text-xs border-none cursor-pointer outline-none">
             <option value="All">Anyone</option>
             <option value="Shared">Shared</option>
             {familyMembers.map(m => <option key={m} value={m}>{m}</option>)}
           </select>
+          <div className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-emerald-600 transition-colors" size={18} />
+            <input 
+              type="text" 
+              placeholder="Search supplements..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-zinc-100 text-xs font-bold rounded-2xl h-[54px] pl-12 pr-4 border-none min-w-[200px] outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-bold"
+            />
+          </div>
           <button onClick={() => setIsFamilyModalOpen(true)} className="bg-zinc-100 p-4 rounded-2xl h-[54px] text-zinc-500"><Settings size={20} /></button>
           <button onClick={openAddModal} className="bg-zinc-900 text-white text-xs px-8 py-4 rounded-2xl h-[54px] transition-all hover:scale-105">+ ADD</button>
         </div>
