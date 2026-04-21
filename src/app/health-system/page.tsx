@@ -16,14 +16,14 @@ import { PageTitle, Text, Description } from '@/components/ui/Text';
 export default function HealthSystemPage() {
   const searchParams = useSearchParams();
 
-  const getInitialFilter = (): 'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' => {
+  const getInitialFilter = (): 'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' | 'OK' => {
     const param = searchParams.get('filter')?.toUpperCase();
-    if (param === 'EXPIRED' || param === 'MISSING' || param === 'LOW') return param;
+    if (param === 'EXPIRED' || param === 'MISSING' || param === 'LOW' || param === 'OK') return param as any;
     return 'ALL';
   };
 
   const [globalStatusFilter, setGlobalStatusFilter] = useState<
-    'ALL' | 'LOW' | 'MISSING' | 'EXPIRED'
+    'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' | 'OK'
   >(getInitialFilter());
   const medicineRef = useRef<HTMLDivElement | null>(null);
 

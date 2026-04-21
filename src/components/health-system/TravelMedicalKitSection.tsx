@@ -14,7 +14,7 @@ const STORAGE_KEY = SYNC_KEYS.HEALTH_TRAVEL_KIT;
 const VIEW_MODE_KEY = 'health-travel-kit-view-mode';
 
 interface TravelMedicalKitSectionProps {
-  externalFilter?: 'ALL' | 'LOW' | 'MISSING' | 'EXPIRED';
+  externalFilter?: 'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' | 'OK';
 }
 
 export function TravelMedicalKitSection({ externalFilter }: TravelMedicalKitSectionProps) {
@@ -23,8 +23,8 @@ export function TravelMedicalKitSection({ externalFilter }: TravelMedicalKitSect
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<MedicineItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [statusFilter, setStatusFilter] = useState<'ALL' | 'LOW' | 'MISSING' | 'EXPIRED'>('ALL');
-  const viewMode = useStorageSubscription<'grid' | 'table'>('health-travel-view-mode', 'grid');
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' | 'OK'>('ALL');
+  const viewMode = useStorageSubscription<'grid' | 'table'>(VIEW_MODE_KEY, 'grid');
 
   const [formData, setFormData] = useState({
     itemName: '',

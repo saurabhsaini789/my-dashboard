@@ -6,7 +6,7 @@ import { MedicineItem, SupplementItem, MEDICINE_CATEGORIES, SUPPLEMENT_CATEGORIE
 import { Activity, Clock, ShoppingCart, BarChart2, ChevronDown, ChevronUp, CheckCircle2 } from 'lucide-react';
 import { useStorageSubscription } from '@/hooks/useStorageSubscription';
 
-type StatusFilter = 'ALL' | 'LOW' | 'MISSING' | 'EXPIRED';
+type StatusFilter = 'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' | 'OK';
 type InsightTab = 'expiry' | 'categories' | 'restock';
 
 interface HealthInsightsPanelProps {
@@ -124,12 +124,21 @@ export function HealthInsightsPanel({ activeFilter, onFilterChange }: HealthInsi
               <span className="text-[10px] font-bold text-zinc-400 uppercase mb-2">Readiness</span>
               <span className={`text-4xl font-bold ${readinessScore>=80?'text-emerald-500':readinessScore>=60?'text-amber-500':'text-rose-500'}`}>{readinessScore}%</span>
             </div>
-            {[{l:'items', v:totalItemsCount, c:'zinc'}, {l:'ok', v:totalOk, c:'emerald'}, {l:'low', v:totalLow, c:'amber'}, {l:'missing', v:totalMissing, c:'rose'}, {l:'expired', v:totalExpired, c:'zinc-500'}].map(s => (
-              <div key={s.l} onClick={()=>s.l!=='items'&&onFilterChange(s.l.toUpperCase() as any)} className={`bg-white dark:bg-zinc-900 p-6 rounded-2xl border ${activeFilter===s.l.toUpperCase()?'border-rose-500 ring-2 ring-rose-500/20':'border-zinc-100'} shadow-sm cursor-pointer`}>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">{s.l}</span>
-                <span className="text-3xl font-bold">{s.v}</span>
-              </div>
-            ))}
+            {[{l:'items', v:totalItemsCount, c:'zinc'}, {l:'ok', v:totalOk, c:'emerald'}, {l:'low', v:totalLow, c:'amber'}, {l:'missing', v:totalMissing, c:'rose'}, {l:'expired', v:totalExpired, c:'zinc-500'}].map(s => {
+              const filterValue = s.l === 'items' ? 'ALL' : s.l.toUpperCase() as StatusFilter;
+              const isActive = activeFilter === filterValue;
+              
+              return (
+                <div 
+                  key={s.l} 
+                  onClick={() => onFilterChange(filterValue)} 
+                  className={`bg-white dark:bg-zinc-900 p-6 rounded-2xl border ${isActive ? 'border-rose-500 ring-2 ring-rose-500/20' : 'border-zinc-100'} shadow-sm cursor-pointer transition-all hover:border-rose-300`}
+                >
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase block mb-1">{s.l}</span>
+                  <span className="text-3xl font-bold">{s.v}</span>
+                </div>
+              );
+            })}
           </div>
 
           <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-100 shadow-sm grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">

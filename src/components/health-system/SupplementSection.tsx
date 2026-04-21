@@ -11,9 +11,10 @@ import { LayoutGrid, List, User, Plus, Trash2, Settings } from 'lucide-react';
 import { useStorageSubscription } from '@/hooks/useStorageSubscription';
 
 const STORAGE_KEY = SYNC_KEYS.HEALTH_SUPPLEMENTS;
+const VIEW_MODE_KEY = 'health-supplements-view-mode';
 
 interface SupplementSectionProps {
-  externalFilter?: 'ALL' | 'LOW' | 'MISSING' | 'EXPIRED';
+  externalFilter?: 'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' | 'OK';
 }
 
 export function SupplementSection({ externalFilter }: SupplementSectionProps) {
@@ -24,8 +25,8 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
   const [editingItem, setEditingItem] = useState<SupplementItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedPerson, setSelectedPerson] = useState<string>('All');
-  const [statusFilter, setStatusFilter] = useState<'ALL' | 'LOW' | 'MISSING' | 'EXPIRED'>('ALL');
-  const viewMode = useStorageSubscription<'grid' | 'table'>('health-supplements-view-mode', 'grid');
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' | 'OK'>('ALL');
+  const viewMode = useStorageSubscription<'grid' | 'table'>(VIEW_MODE_KEY, 'grid');
   const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
   const [newPersonName, setNewPersonName] = useState('');
 
@@ -51,7 +52,7 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
   }, []);
 
   const toggleViewMode = (mode: 'grid' | 'table') => {
-    setSyncedItem('health-supplements-view-mode', mode);
+    setSyncedItem(VIEW_MODE_KEY, mode);
   };
 
   const addFamilyMember = () => {

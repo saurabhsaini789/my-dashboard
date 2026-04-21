@@ -14,7 +14,7 @@ const STORAGE_KEY = SYNC_KEYS.HEALTH_FIRST_AID_HOME;
 const VIEW_MODE_KEY = 'health-first-aid-home-view-mode';
 
 interface FirstAidHomeSectionProps {
-  externalFilter?: 'ALL' | 'LOW' | 'MISSING' | 'EXPIRED';
+  externalFilter?: 'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' | 'OK';
 }
 
 export function FirstAidHomeSection({ externalFilter }: FirstAidHomeSectionProps) {
@@ -23,7 +23,7 @@ export function FirstAidHomeSection({ externalFilter }: FirstAidHomeSectionProps
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<MedicineItem | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [statusFilter, setStatusFilter] = useState<'ALL' | 'LOW' | 'MISSING' | 'EXPIRED'>('ALL');
+  const [statusFilter, setStatusFilter] = useState<'ALL' | 'LOW' | 'MISSING' | 'EXPIRED' | 'OK'>('ALL');
   const viewMode = useStorageSubscription<'grid' | 'table'>(VIEW_MODE_KEY, 'grid');
 
   const [formData, setFormData] = useState({
