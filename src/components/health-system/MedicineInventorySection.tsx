@@ -166,7 +166,7 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
     <section className="w-full">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 px-2">
         <SectionTitle>Medicine Inventory</SectionTitle>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-xl h-[54px] items-center border border-zinc-200">
             <button onClick={() => toggleViewMode('grid')} className={`h-full px-3 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-zinc-700 text-rose-600 shadow-sm' : 'text-zinc-500'}`}><LayoutGrid size={18}/></button>
             <button onClick={() => toggleViewMode('table')} className={`h-full px-3 rounded-lg transition-all ${viewMode === 'table' ? 'bg-white dark:bg-zinc-700 text-rose-600 shadow-sm' : 'text-zinc-500'}`}><List size={18}/></button>
@@ -175,21 +175,21 @@ export function MedicineInventorySection({ externalFilter }: MedicineInventorySe
             <option value="All">ALL CATEGORIES</option>
             {MEDICINE_CATEGORIES.map(c => <option key={c} value={c}>{c.toUpperCase()}</option>)}
           </select>
-          <div className="relative group">
+          <div className="relative group flex-1 min-w-[200px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-rose-500 transition-colors" size={18} />
             <input 
               type="text" 
               placeholder="Search inventory..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-zinc-100 dark:bg-zinc-800 text-xs font-bold rounded-2xl h-[54px] pl-12 pr-4 border-none min-w-[200px] outline-none focus:ring-2 focus:ring-rose-500/20 transition-all"
+              className="bg-zinc-100 dark:bg-zinc-800 text-xs font-bold rounded-2xl h-[54px] pl-12 pr-4 border-none w-full outline-none focus:ring-2 focus:ring-rose-500/20 transition-all font-bold"
             />
           </div>
-          <button onClick={openAddModal} className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-bold px-6 h-[54px] rounded-2xl hover:scale-105 transition-all">ADD MEDICINE</button>
+          <button onClick={openAddModal} className="bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-bold px-6 h-[54px] rounded-2xl hover:scale-105 transition-all w-full md:w-auto">ADD MEDICINE</button>
         </div>
       </div>
 
-      <div className={`flex items-center justify-between p-5 rounded-2xl border-2 border-l-[6px] bg-white dark:bg-zinc-900/40 mb-8 shadow-sm ${expiredCount > 0 ? 'border-rose-200 border-l-rose-500' : missingCount > 0 ? 'border-amber-200 border-l-amber-500' : 'border-emerald-200 border-l-emerald-500'}`}>
+      <div className={`flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl border-2 border-l-[6px] bg-white dark:bg-zinc-900/40 mb-8 shadow-sm gap-4 ${expiredCount > 0 ? 'border-rose-200 border-l-rose-500' : missingCount > 0 ? 'border-amber-200 border-l-amber-500' : 'border-emerald-200 border-l-emerald-500'}`}>
         <div className="flex gap-4 items-center">
           <div className={`w-2 h-2 rounded-full ${expiredCount > 0 ? 'bg-rose-500' : missingCount > 0 ? 'bg-amber-500' : 'bg-emerald-500'}`} />
           <Text variant="body" className="font-bold">{expiredCount > 0 ? 'Replace Expired meds' : missingCount > 0 ? 'Restock missing items' : 'Inventory Healthy'}</Text>

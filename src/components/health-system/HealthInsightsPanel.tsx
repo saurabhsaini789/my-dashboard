@@ -109,7 +109,7 @@ export function HealthInsightsPanel({ activeFilter, onFilterChange }: HealthInsi
 
   return (
     <div className="mb-14 px-2">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center"><Activity size={20} className="text-rose-500" /></div>
           <div><h2 className="text-xl font-bold">Health Insights</h2><p className="text-xs text-zinc-400 font-bold uppercase">{totalItemsCount} items tracked</p></div>
@@ -153,7 +153,7 @@ export function HealthInsightsPanel({ activeFilter, onFilterChange }: HealthInsi
           </div>
 
           <div className="bg-white dark:bg-zinc-900 border border-zinc-100 rounded-2xl overflow-hidden shadow-sm">
-            <div className="flex border-b border-zinc-100">
+            <div className="flex flex-wrap border-b border-zinc-100">
               {TABS.map(t => (
                 <button key={t.id} onClick={()=>setActiveTab(t.id)} className={`px-6 py-4 flex items-center gap-2 text-xs font-bold uppercase border-b-2 transition-all ${activeTab===t.id?'border-rose-500 text-rose-600':'border-transparent text-zinc-400'}`}>
                   {t.icon}{t.label}{t.badge! > 0 && <span className="ml-1 bg-rose-500 text-white px-1.5 py-0.5 rounded-full text-[10px]">{t.badge}</span>}

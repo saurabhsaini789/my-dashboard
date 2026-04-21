@@ -176,7 +176,7 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
     <section className="w-full">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 px-2 font-bold uppercase">
         <SectionTitle>Supplement Section</SectionTitle>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-xl h-[54px]">
             <button onClick={() => toggleViewMode('grid')} className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white shadow-sm text-emerald-600' : 'text-zinc-500'}`}><LayoutGrid size={18} /></button>
             <button onClick={() => toggleViewMode('table')} className={`p-2 rounded-lg transition-all ${viewMode === 'table' ? 'bg-white shadow-sm text-emerald-600' : 'text-zinc-500'}`}><List size={18} /></button>
@@ -186,23 +186,23 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
             <option value="Shared">Shared</option>
             {familyMembers.map(m => <option key={m} value={m}>{m}</option>)}
           </select>
-          <div className="relative group">
+          <div className="relative group flex-1 min-w-[200px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-emerald-600 transition-colors" size={18} />
             <input 
               type="text" 
               placeholder="Search supplements..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-zinc-100 text-xs font-bold rounded-2xl h-[54px] pl-12 pr-4 border-none min-w-[200px] outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-bold"
+              className="bg-zinc-100 text-xs font-bold rounded-2xl h-[54px] pl-12 pr-4 border-none w-full outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-bold"
             />
           </div>
           <button onClick={() => setIsFamilyModalOpen(true)} className="bg-zinc-100 p-4 rounded-2xl h-[54px] text-zinc-500"><Settings size={20} /></button>
-          <button onClick={openAddModal} className="bg-zinc-900 text-white text-xs px-8 py-4 rounded-2xl h-[54px] transition-all hover:scale-105">+ ADD</button>
+          <button onClick={openAddModal} className="bg-zinc-900 text-white text-xs px-8 py-4 rounded-2xl h-[54px] transition-all hover:scale-105 w-full md:w-auto">+ ADD</button>
         </div>
       </div>
 
       <div className={`p-5 rounded-2xl border-2 border-l-[6px] bg-white mb-8 shadow-sm ${stats.expired ? 'border-rose-200 border-l-rose-500' : stats.missing ? 'border-amber-200 border-l-amber-500' : 'border-emerald-200 border-l-emerald-500'}`}>
-        <div className="flex justify-between items-center font-bold">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 font-bold">
            <span>{stats.expired ? 'Replace expired items' : stats.missing ? 'Restock missing items' : 'Systems nominal'}</span>
            <div className="flex gap-4 text-xs">
              {stats.low > 0 && <button onClick={() => setStatusFilter('LOW')} className="text-amber-600 underline">{stats.low} low</button>}
@@ -218,13 +218,14 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
           {filtered.map(i => (
             <div key={i.id} onClick={() => openEditModal(i)} className="p-6 bg-white border border-zinc-200 rounded-2xl shadow-sm cursor-pointer hover:bg-zinc-50 transition-all font-bold">
                <div className="flex justify-between">
-                 <div><h3 className="text-lg">{i.itemName}</h3><span className="text-[10px] bg-zinc-100 px-2 py-0.5 rounded uppercase">{i.category}</span></div>
+                 <div><h3 className="text-lg">{i.itemName}</h3><div className="flex gap-2 items-center"><span className="text-[10px] bg-zinc-100 px-2 py-0.5 rounded uppercase">{i.category}</span>{i.purpose && <span className="text-[10px] text-zinc-400 font-medium">{i.purpose}</span>}</div></div>
                  <span className={getStatusStyles(getStatus(i))}>{getStatus(i)}</span>
                </div>
                <div className="mt-4 grid grid-cols-2 text-xs">
                  <div><span className="text-zinc-400 font-bold uppercase">Qty</span><div>{i.quantity} / {i.targetQuantity}</div></div>
                  <div className="text-right"><span className="text-zinc-400 font-bold uppercase">Expiry</span><div>{new Date(i.expiryDate).toLocaleDateString()}</div></div>
                </div>
+               {i.notes && <div className="mt-4 pt-4 border-t border-zinc-100 text-[11px] text-zinc-400 italic line-clamp-2">"{i.notes}"</div>}
             </div>
           ))}
         </div>
@@ -232,16 +233,18 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
         <div className="bg-white border rounded-2xl overflow-hidden shadow-sm">
           <table className="w-full text-left font-bold">
             <thead className="bg-zinc-50 text-[10px] text-zinc-500 uppercase">
-              <tr><th className="p-4">Status</th><th className="p-4">Name</th><th className="p-4">Person</th><th className="p-4">Qty</th><th className="p-4">Expiry</th></tr>
+              <tr><th className="p-4">Status</th><th className="p-4">Name</th><th className="p-4">Purpose</th><th className="p-4">Person</th><th className="p-4">Qty</th><th className="p-4">Expiry</th><th className="p-4">Notes</th></tr>
             </thead>
             <tbody className="text-sm">
               {filtered.map(i => (
                 <tr key={i.id} onClick={() => openEditModal(i)} className="border-b hover:bg-zinc-50 cursor-pointer">
                   <td className="p-4"><span className={getStatusStyles(getStatus(i))}>{getStatus(i)}</span></td>
                   <td className="p-4">{i.itemName}</td>
+                  <td className="p-4 text-zinc-500 font-medium">{i.purpose || '-'}</td>
                   <td className="p-4">{i.person || 'Shared'}</td>
                   <td className="p-4">{i.quantity}</td>
                   <td className="p-4">{new Date(i.expiryDate).toLocaleDateString()}</td>
+                  <td className="p-4 text-[11px] text-zinc-400 max-w-[150px] truncate">{i.notes || '-'}</td>
                 </tr>
               ))}
             </tbody>
@@ -253,13 +256,16 @@ export function SupplementSection({ externalFilter }: SupplementSectionProps) {
         <DynamicForm 
           sections={[{ id: 's', fields: [
             { name: 'itemName', label: 'Name', type: 'text', required: true, fullWidth: true },
+            { name: 'purpose', label: 'Purpose (e.g. Muscle Growth)', type: 'text', fullWidth: true },
             { name: 'category', label: 'Category', type: 'select', options: SUPPLEMENT_CATEGORIES.map(c=>({label:c,value:c})) },
             { name: 'person', label: 'Person', type: 'select', options: ['Shared', ...familyMembers].map(p=>({label:p,value:p})) },
             { name: 'doseAmount', label: 'Dose', type: 'text', required: true },
             { name: 'doseUnit', label: 'Unit', type: 'select', options: [...DOSE_UNITS, 'Other'].map(u=>({label:u,value:u})) },
             { name: 'quantity', label: 'Quantity', type: 'number', required: true },
             { name: 'targetQuantity', label: 'Target', type: 'number', required: true },
-            { name: 'expiryDate', label: 'Expiry', type: 'date', required: true }
+            { name: 'expiryDate', label: 'Expiry', type: 'date', required: true },
+            { name: 'instructions', label: 'Instructions', type: 'textarea', fullWidth: true },
+            { name: 'notes', label: 'Notes', type: 'textarea', fullWidth: true }
           ]}]}
           formData={formData}
           onChange={(n, v) => setFormData(p => ({ ...p, [n]: v }))}
